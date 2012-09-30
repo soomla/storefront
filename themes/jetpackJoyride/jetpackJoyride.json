@@ -1,50 +1,60 @@
 {
     "isCurrencyStoreDisabled" : false,
-    "currencyPacks" : [
+        "currencyPacks" : [
         {
-            "name"              : "10 Muffins",
+            "name"              : "COIN BOOSTER PACK",
             "imgFilePath"       : "http://placehold.it/100x100",
             "itemId"            : "muffins_10",
             "currency_itemId"   : "currency_coin",
             "productId"         : "muffins_10",
             "price"             : 0.99,
-            "amount"            : 10,
-            "categoryId"       : 1
+            "amount"            : 20000,
+            "categoryId"       : 6
         },
         {
-            "name"              : "50 Muffins",
+            "name"              : "COIN MEGA PACK",
             "imgFilePath"       : "http://placehold.it/100x100",
             "itemId"            : "muffins_50",
             "currency_itemId"   : "currency_coin",
             "productId"         : "android.test.purchased",
             "price"             : 1.99,
-            "amount"            : 50,
-            "categoryId"       : 1
+            "amount"            : 50000,
+            "categoryId"       : 6
         },
         {
-            "name"              : "400 Muffins",
+            "name"              : "COIN ULTRA PACK",
             "imgFilePath"       : "http://placehold.it/100x100",
             "itemId"            : "muffins_400",
             "currency_itemId"   : "currency_coin",
             "productId"         : "muffins_400",
-            "price"             : 4.99,
-            "amount"            : 400,
-            "categoryId"       : 1
+            "price"             : 2.99,
+            "amount"            : 100000,
+            "categoryId"       : 6
         },
         {
-            "name"              : "1000 Muffins",
+            "name"              : "COIN JUMBO PACK",
             "imgFilePath"       : "http://placehold.it/100x100",
             "itemId"            : "muffins_1000",
             "currency_itemId"   : "currency_coin",
             "productId"         : "muffins_1000",
-            "price"             : 8.99,
-            "amount"            : 1000,
-            "categoryId"       : 1
+            "price"             : 4.99,
+            "amount"            : 250000,
+            "categoryId"       : 6
+        },
+        {
+            "name"              : "COIN ULTIMATE PACK",
+            "imgFilePath"       : "http://placehold.it/100x100",
+            "itemId"            : "muffins_1000",
+            "currency_itemId"   : "currency_coin",
+            "productId"         : "muffins_1000",
+            "price"             : 9.99,
+            "amount"            : 600000,
+            "categoryId"       : 6
         }
     ],
     "virtualCurrencies" : [
         {
-            "name"          : "Coins",
+            "name"          : "COINS",
             "description"   : "",
             "itemId"        : "currency_coin",
             "balance"       : 1000,
@@ -53,57 +63,201 @@
     ],
     "virtualGoods" : [
         {
-            "name"          : "Fruit Cake",
-            "description"   : "Customers buy a double portion on each purchase of this cake",
+            "name"          : "EXPERIMENTAL FUEL",
+            "description"   : "FLY TWICE AS FAST BUT BE CAREFUL, THERE IS INCREASED CHANCE OF ENGINE FIRE",
             "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "chocolate_cake",
+            "categoryId"   : 1,
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 250
+                    }
+            },
+            
+        },
+        {
+            "name"          : "BAND AID",
+            "description"   : "RECOVER FROM ONE INJURY",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "cream_cup",
+            "categoryId"   : 1, 
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 500
+                }
+            }
+        },       
+        {
+            "name"          : "FIRE EXTINGUISHER",
+            "description"   : "RECOVER FROM ONE ENGINE FIRE",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "cream_cup",
+            "categoryId"   : 1, 
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 1000
+                }
+            }
+        },  
+        {
+            "name"          : "EXTRA LIFE",
+            "description"   : "ESCAPE DEATH ONCE. DOUBLE TAP UP TO 5 SECONDS AFTER GAME IS OVER",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "cream_cup",
+            "categoryId"   : 1, 
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 5000
+                }
+            }
+        },       
+        {
+            "name"          : "LIGHTNING BOLT",
+            "description"   : "SNAP ALL ENEMIES ON SIGHT WITH A SINGLE SHOT. USE DOUBLE TAP TO ACTIVATE",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "fruit_cake",
+            "categoryId"   : 2,
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
                     "currency_coin" : 225
                 }
             },
-            "itemId"        : "fruit_cake",
-            "categoryId"   : 1
         },
         {
-            "name"          : "Pavlova",
-            "description"   : "Gives customers a sugar rush and they call their friends",
+            "name"          : "MORE TIME",
+            "description"   : "GET AN EXTRA MINUTE TO COMPLETE YOUR TASK. TAP ON THE CLOCK TO USE IT",
             "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "fruit_cake",
+            "categoryId"   : 2,
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
                     "currency_coin" : 175
                 }
             },
+        },
+        {
+            "name"          : "RED CROSS",
+            "description"   : "DESCISE AS RED CROSS - INVISIBLE FOR 10 MILES",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "fruit_cake",
+            "categoryId"   : 2,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 375
+                }
+            }, 
+        },
+        {
+            "name"          : "BLUE STAR",
+            "description"   : "BLUE STAR WILL ALLOW YOU TO START AT A HEIGHT OF 10000 FT",
+            "imgFilePath"   : "http://placehold.it/100x100",
             "itemId"        : "pavlova",
-            "categoryId"   : 1
-        },
-        {
-            "name"          : "Choco-Cake",
-            "description"   : "A classic cake to maximize customer satisfaction",
-            "imgFilePath"   : "http://placehold.it/100x100",
-            "priceModel"    : {
+            "categoryId"   : 2,
+             "priceModel"    : {
                 "type" : "static",
                 "values" :{
-                    "currency_coin" : 250
+                    "currency_coin" : 525
                 }
-            },
-            "itemId"        : "chocolate_cake",
-            "categoryId"   : 2
+            }, 
         },
         {
-            "name"          : "Cream Cup",
-            "description"   : "Increase bakery reputation with this original pastry",
+            "name"          : "PURPLE HEART",
+            "description"   : "TAP TO ACTIVATE AND GET 10 HEALTH POINTS",
             "imgFilePath"   : "http://placehold.it/100x100",
-            "priceModel"    : {
+            "itemId"        : "pavlova",
+            "categoryId"   : 2,
+             "priceModel"    : {
                 "type" : "static",
                 "values" :{
-                    "currency_coin" : 50
+                    "currency_coin" : 525
                 }
-            },
-            "itemId"        : "cream_cup",
-            "categoryId"   : 2
-        }
+            }, 
+        },
+        {
+            "name"          : "UPGRADE 1",
+            "description"   : "THIS IS A REALLY GREAT UPGRADE THAT WILL MAKE THE GAME MUCH MORE EXCITING",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 3,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 500
+                }
+            }, 
+        },
+        {
+            "name"          : "UPGRADE 2",
+            "description"   : "THIS IS AN EVEN BETTER UPGRADE THAT WILL ALSO MAKE THE GAME FUN",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 3,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 1000
+                }
+            }, 
+        },
+        {
+            "name"          : "AIRPLANE 1",
+            "description"   : "THIS AIRPLANE FLIES REALLY HIGH",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 4,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 2500
+                }
+            }, 
+        },
+        {
+            "name"          : "AIRPLANE 2",
+            "description"   : "THIS ONE FLIES FOR LONG DISTANCES",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 4,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 5000
+                }
+            }, 
+        },
+        {
+            "name"          : "CLOTHING 1",
+            "description"   : "THIS SHIRT WILL PROTECT YOU FROM FIRES",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 5,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 1000
+                }
+            }, 
+        },
+        {
+            "name"          : "CLOTHING 2",
+            "description"   : "THIS SHIRT WILL PROTECT YOU FROM BULLETS",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "itemId"        : "pavlova",
+            "categoryId"   : 5,
+             "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_coin" : 1500
+                }
+            }, 
+        },
     ],
     "theme" : {
         "name" : "jetpackJoyride",
@@ -144,14 +298,26 @@
             }
         }
     },
-    "categories" : [
+     "categories" : [
         {
             "id" : 1,
-            "name" : "clothing"
+            "name" : "UTILITIES"
         },
         {
             "id" : 2,
-            "name" : "jetpacks"
+            "name" : "GADGETS"
+        {
+            "id" : 3,
+            "name" : "UPGRADES"
+        {
+            "id" : 4,
+            "name" : "AIRPLANES"
+        {
+            "id" : 5,
+            "name" : "CLOTHING"
+        {
+            "id" : 6,
+            "name" : "GET COINS"
         }
     ]
 }
