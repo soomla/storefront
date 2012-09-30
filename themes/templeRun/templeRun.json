@@ -2,49 +2,49 @@
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {
-            "name"              : "10 Muffins",
+            "name"              : "2,500 Coins",
             "imgFilePath"       : "http://placehold.it/180x100",
             "itemId"            : "muffins_10",
             "currency_itemId"   : "currency_muffin",
-            "productId"         : "muffins_10",
+            "productId"         : "2500_coins",
             "price"             : 0.99,
-            "amount"            : 10,
+            "amount"            : 2500,
             "categoryId"       : 1
         },
         {
-            "name"              : "50 Muffins",
+            "name"              : "25,000 Coins",
             "imgFilePath"       : "http://placehold.it/180x100",
             "itemId"            : "muffins_50",
             "currency_itemId"   : "currency_muffin",
             "productId"         : "android.test.purchased",
-            "price"             : 1.99,
-            "amount"            : 50,
+            "price"             : 4.99,
+            "amount"            : 25000,
             "categoryId"       : 1
         },
         {
-            "name"              : "400 Muffins",
+            "name"              : "75,000 Coins",
             "imgFilePath"       : "http://placehold.it/180x100",
             "itemId"            : "muffins_400",
             "currency_itemId"   : "currency_muffin",
-            "productId"         : "muffins_400",
-            "price"             : 4.99,
-            "amount"            : 400,
+            "productId"         : "75000_coins",
+            "price"             : 9.99,
+            "amount"            : 75000,
             "categoryId"       : 1
         },
         {
-            "name"              : "1000 Muffins",
+            "name"              : "200,000 Coins",
             "imgFilePath"       : "http://placehold.it/180x100",
             "itemId"            : "muffins_1000",
             "currency_itemId"   : "currency_muffin",
-            "productId"         : "muffins_1000",
-            "price"             : 8.99,
-            "amount"            : 1000,
+            "productId"         : "200000_coins",
+            "price"             : 19.99,
+            "amount"            : 200000,
             "categoryId"       : 1
         }
     ],
     "virtualCurrencies" : [
         {
-            "name"          : "Muffins",
+            "name"          : "Coins",
             "description"   : "",
             "itemId"        : "currency_muffin",
             "balance"       : 1000,
@@ -53,34 +53,8 @@
     ],
     "virtualGoods" : [
         {
-            "name"          : "Fruit Cake",
-            "description"   : "Customers buy a double portion on each purchase of this cake",
-            "imgFilePath"   : "http://placehold.it/100x100",
-            "priceModel"    : {
-                "type" : "static",
-                "values" :{
-                    "currency_muffin" : 225
-                }
-            },
-            "itemId"        : "fruit_cake",
-            "categoryId"   : 1
-        },
-        {
-            "name"          : "Pavlova",
-            "description"   : "Gives customers a sugar rush and they call their friends",
-            "imgFilePath"   : "http://placehold.it/100x100",
-            "priceModel"    : {
-                "type" : "static",
-                "values" :{
-                    "currency_muffin" : 175
-                }
-            },
-            "itemId"        : "pavlova",
-            "categoryId"   : 1
-        },
-        {
-            "name"          : "Choco-Cake",
-            "description"   : "A classic cake to maximize customer satisfaction",
+            "name"          : "Boost Ahead",
+            "description"   : "Get a head start of 100 miles",
             "imgFilePath"   : "http://placehold.it/100x100",
             "priceModel"    : {
                 "type" : "static",
@@ -88,22 +62,178 @@
                     "currency_muffin" : 250
                 }
             },
-            "itemId"        : "chocolate_cake",
-            "categoryId"   : 2
+            "itemId"        : "boost_ahead",
+            "categoryId"   : 1
         },
         {
-            "name"          : "Cream Cup",
-            "description"   : "Increase bakery reputation with this original pastry",
+            "name"          : "Extra Health",
+            "description"   : "Find hearts in the game to recover your health points",
             "imgFilePath"   : "http://placehold.it/100x100",
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
-                    "currency_muffin" : 50
+                    "currency_muffin" : 500
                 }
             },
-            "itemId"        : "cream_cup",
+            "itemId"        : "extra_health",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Invisibility Hat",
+            "description"   : "Find the invisibility hat to suprise your enemies",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 750
+                }
+            },
+            "itemId"        : "invisibility_hat",
+            "categoryId"   : 1
+        },
+         {
+            "name"          : "Horn of War",
+            "description"   : "Pass the word to your fleet quicker",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 500
+                }
+            },
+            "itemId"        : "horn_of_war",
             "categoryId"   : 2
-        }
+        },
+        {
+            "name"          : "Flagship",
+            "description"   : "Use the power of the wind to move faster",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 1000
+                }
+            },
+            "itemId"        : "flagship",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Mystery Box",
+            "description"   : "Special utility that will be revealed once you open the box",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2000
+                }
+            },
+            "itemId"        : "mystery_box",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Wisdom God",
+            "description"   : "Fight in the name of Wisdom God and get more powerful weapons",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "science_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Wind God",
+            "description"   : "Fight in the name of the Wind God and the wind will always be at your side",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "wind_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Winter God",
+            "description"   : "Fight in the name of the Winter God and avoid glaciers and frost",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "winter_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Stars God",
+            "description"   : "Fight in the name of the Stars God and never be lost",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "stars_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Argriculture God",
+            "description"   : "Fight in the name of Agriculture God and never run out of food",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "chocolate_cake",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Eagle",
+            "description"   : "The eagle can tell you about enemies ahead of time up to 100 miles away",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "eagle",
+            "categoryId"   : 4
+        },
+        {
+            "name"          : "Butterfly",
+            "description"   : "The butterfly can help you control your crew and protect against mutiny",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "butterfly",
+            "categoryId"   : 4
+        },
+        {
+            "name"          : "Fish",
+            "description"   : "Fish can help you trick your enemy into a trap",
+            "imgFilePath"   : "http://placehold.it/100x100",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "fish",
+            "categoryId"   : 4
+        },
     ],
     "theme" : {
         "name" : "templeRun",
@@ -162,6 +292,14 @@
         {
             "id" : 2,
             "name" : "UTILITIES"
-        }
+        },
+        {
+            "id" : 3,
+            "name" : "GODS"
+        },
+        {
+            "id" : 3,
+            "name" : "FRIENDS"
+        },
     ]
 }
