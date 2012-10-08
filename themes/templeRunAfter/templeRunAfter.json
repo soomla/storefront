@@ -239,7 +239,7 @@
         "name" : "templeRunAfter",
         "template" : "templeRunAfter",
         "version" : 1,
-        "background" : "themes/templeRunAfterAfter/img/BG-Level0.png",
+        "background" : "themes/templeRunAfter/img/BG-Level0.png",
         "contentBackground" : "themes/templeRunAfter/img/BG-Level1.png",
         "isOrientationLandscape" : false,
         "common" : {
@@ -256,7 +256,7 @@
         "pages" : {
             "goods" :{
                 "list" : {
-                    "background" : "themes/templeRunAfter/img/Item_Area.png"
+                    "background" : ""
                 },
                 "listItem" : {
                     "background" : "",
@@ -272,7 +272,7 @@
             },
             "currencyPacks" : {
                 "list" : {
-                    "background" : "themes/templeRunAfter/img/Item_Area.png"
+                    "background" : ""
                 },
                 "listItem" : {
                     "balanceBackground" : "",
