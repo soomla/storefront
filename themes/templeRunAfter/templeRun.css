@@ -1,0 +1,265 @@
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
+/*==============  Layout  ==============*/
+@font-face {
+  font-family: AGarmando;
+  src: url('fonts/AGaramondPro-Bold.otf');
+}
+html {
+  font-family: AGarmando;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+@media all and (max-width: 320px) {
+  body {
+    zoom: 0.5;
+  }
+}
+@media all and (min-width: 321px) and (max-width: 479px) {
+  body {
+    zoom: 0.8;
+  }
+}
+@media all and (min-width: 720px) {
+  body {
+    zoom: 1.2;
+  }
+}
+.content-background {
+  position: absolute;
+  z-index: -1;
+  width: 480px;
+  height: 100%;
+  display: block;
+  left: 50%;
+  margin-left: -240px;
+}
+.header,
+.footer {
+  text-align: center;
+}
+.items-container {
+  width: 460px;
+  margin: 0 auto;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+  overflow-y: scroll;
+}
+.virtualGoods,
+.currencyPacks {
+  background-position: center;
+}
+.virtualGoods.items,
+.currencyPacks.items {
+  padding: 0;
+}
+.category {
+  text-align: center;
+}
+.virtualGoods .item {
+  background-position: center;
+  padding-left: 10px;
+}
+.virtualGoods .item .visual {
+  float: left;
+  width: 100px;
+  height: 100px;
+}
+.virtualGoods .item .content {
+  height: 80px;
+  margin-left: 100px;
+  padding: 10px;
+}
+.virtualGoods .item .row:first-child {
+  height: 50px;
+}
+.virtualGoods .item .row:last-child {
+  height: 30px;
+}
+.virtualGoods .item .balance {
+  float: right;
+  font-size: 18px;
+  font-weight: bold;
+  width: 50px;
+  background-size: 100%;
+}
+.virtualGoods .item .description {
+  margin-right: 50px;
+  font-size: 16px;
+  line-height: 16px;
+}
+.virtualGoods .item .balance,
+.virtualGoods .item .description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-orient: vertical;
+  box-pack: center;
+  box-align: center;
+  height: 100%;
+}
+.virtualGoods .item .price {
+  font-size: 20px;
+  font-weight: bold;
+  font-style: italic;
+  color: #ab744d;
+  text-shadow: 2px 2px 2px #FFFFFF;
+}
+.virtualGoods .item .currency {
+  width: 30px;
+  height: 30px;
+}
+.currencyPacks .item {
+  background-position: center;
+  width: 400px;
+  margin: 0 auto;
+}
+.currencyPacks .item .visual {
+  float: left;
+  width: 180px;
+  height: 100px;
+}
+.currencyPacks .item .price {
+  height: 100%;
+  margin-left: 180px;
+  padding: 10px;
+}
+.currencyPacks .item h1 {
+  height: 50px;
+  line-height: 50px;
+}
+.currencyPacks .item h2 {
+  height: 30px;
+  line-height: 30px;
+}
+.currencyPacks .item h1,
+.currencyPacks .item h2 {
+  margin: 0;
+  text-align: right;
+}
+.separator {
+  width: 100%;
+}
+.header {
+  width: 460px;
+  margin: 0 auto;
+}
+.header .title-image {
+  display: block;
+  width: 460px;
+  height: 100px;
+}
+.header .balance-container {
+  position: relative;
+  text-align: right;
+}
+.header .balance-container .label-container {
+  position: absolute;
+  top: -10000px;
+  left: -10000px;
+  text-align: center;
+}
+.footer img {
+  display: block;
+  width: 500px;
+  height: 100px;
+  margin: 0 auto;
+}
+.leave-store,
+.back,
+.buy-more,
+.cancel {
+  cursor: pointer;
+}
+.dialog {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: center;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-pack: center;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-pack: center;
+  box-align: stretch;
+}
+.modal {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-orient: horizontal;
+  box-pack: center;
+  box-align: center;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
+}
+.dialog {
+  text-align: center;
+  width: 540px;
+  height: 300px;
+}
+.dialog .title {
+  height: 60px;
+  line-height: 60px;
+}
+.dialog .description {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: box;
+  box-orient: vertical;
+  box-pack: center;
+  box-align: center;
+}
+.dialog .actions {
+  margin-top: 10px;
+}
+.dialog .actions img {
+  width: 260px;
+  height: 80px;
+}

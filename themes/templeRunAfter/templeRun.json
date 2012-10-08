@@ -1,0 +1,307 @@
+{
+    "isCurrencyStoreDisabled" : false,
+    "currencyPacks" : [
+        {
+            "name"              : "2,500 Coins",
+            "imgFilePath"       : "themes/templeRunAfter/img/CurrencyPacks/GetCoins_1.png",
+            "itemId"            : "muffins_10",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "2500_coins",
+            "price"             : 0.99,
+            "amount"            : 2500,
+            "categoryId"        : 1
+        },
+        {
+            "name"              : "25,000 Coins",
+            "imgFilePath"       : "themes/templeRunAfter/img/CurrencyPacks/GetCoins_2.png",
+            "itemId"            : "muffins_50",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "android.test.purchased",
+            "price"             : 4.99,
+            "amount"            : 25000,
+            "categoryId"        : 1
+        },
+        {
+            "name"              : "75,000 Coins",
+            "imgFilePath"       : "themes/templeRunAfter/img/CurrencyPacks/GetCoins_3.png",
+            "itemId"            : "muffins_400",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "75000_coins",
+            "price"             : 9.99,
+            "amount"            : 75000,
+            "categoryId"        : 1
+        },
+        {
+            "name"              : "200,000 Coins",
+            "imgFilePath"       : "themes/templeRunAfter/img/CurrencyPacks/GetCoins_4.png",
+            "itemId"            : "muffins_1000",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "200000_coins",
+            "price"             : 19.99,
+            "amount"            : 200000,
+            "categoryId"        : 1
+        }
+    ],
+    "virtualCurrencies" : [
+        {
+            "name"          : "Coins",
+            "description"   : "",
+            "itemId"        : "currency_muffin",
+            "balance"       : 1000,
+            "imgFilePath"   : "themes/templeRunAfter/img/Item_Price.png"
+        }
+    ],
+    "virtualGoods" : [
+        {
+            "name"          : "Boost Ahead",
+            "description"   : "Get a head start of 100 miles",
+            "imgFilePath"   : "themes/templeRunAfter/img/Powerups/Object_11.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 250
+                }
+            },
+            "itemId"        : "boost_ahead",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Extra Health",
+            "description"   : "Find hearts in the game to recover your health points",
+            "imgFilePath"   : "themes/templeRunAfter/img/Powerups/Object_12.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 500
+                }
+            },
+            "itemId"        : "extra_health",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Invisibility Hat",
+            "description"   : "Find the invisibility hat to suprise your enemies",
+            "imgFilePath"   : "themes/templeRunAfter/img/Powerups/Object_14.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 750
+                }
+            },
+            "itemId"        : "invisibility_hat",
+            "categoryId"   : 1
+        },
+         {
+            "name"          : "Horn of War",
+            "description"   : "Pass the word to your fleet quicker",
+            "imgFilePath"   : "themes/templeRunAfter/img/Utilities/Object_1.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 500
+                }
+            },
+            "itemId"        : "horn_of_war",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Flagship",
+            "description"   : "Use the power of the wind to move faster",
+            "imgFilePath"   : "themes/templeRunAfter/img/Utilities/Object_2.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 1000
+                }
+            },
+            "itemId"        : "flagship",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Mystery Box",
+            "description"   : "Special utility that will be revealed once you open the box",
+            "imgFilePath"   : "themes/templeRunAfter/img/Utilities/Object_10.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2000
+                }
+            },
+            "itemId"        : "mystery_box",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Wisdom God",
+            "description"   : "Fight in the name of Wisdom God and get more powerful weapons",
+            "imgFilePath"   : "themes/templeRunAfter/img/Gods/Object_4.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "science_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Wind God",
+            "description"   : "Fight in the name of the Wind God and the wind will always be at your side",
+            "imgFilePath"   : "themes/templeRunAfter/img/Gods/Object_5.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "wind_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Winter God",
+            "description"   : "Fight in the name of the Winter God and avoid glaciers and frost",
+            "imgFilePath"   : "themes/templeRunAfter/img/Gods/Object_7.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "winter_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Stars God",
+            "description"   : "Fight in the name of the Stars God and never be lost",
+            "imgFilePath"   : "themes/templeRunAfter/img/Gods/Object_8.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "stars_god",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Argriculture God",
+            "description"   : "Fight in the name of Agriculture God and never run out of food",
+            "imgFilePath"   : "themes/templeRunAfter/img/Gods/Object_15.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "chocolate_cake",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Eagle",
+            "description"   : "The eagle can tell you about enemies ahead of time up to 100 miles away",
+            "imgFilePath"   : "themes/templeRunAfter/img/Friends/Object_3.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "eagle",
+            "categoryId"   : 4
+        },
+        {
+            "name"          : "Butterfly",
+            "description"   : "The butterfly can help you control your crew and protect against mutiny",
+            "imgFilePath"   : "themes/templeRunAfter/img/Friends/Object_9.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "butterfly",
+            "categoryId"   : 4
+        },
+        {
+            "name"          : "Fish",
+            "description"   : "Fish can help you trick your enemy into a trap",
+            "imgFilePath"   : "themes/templeRunAfter/img/Friends/Object_13.png",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "fish",
+            "categoryId"   : 4
+        }
+    ],
+    "theme" : {
+        "name" : "templeRunAfter",
+        "template" : "templeRunAfter",
+        "version" : 1,
+        "background" : "themes/templeRunAfterAfter/img/BG-Level0.png",
+        "contentBackground" : "themes/templeRunAfter/img/BG-Level1.png",
+        "isOrientationLandscape" : false,
+        "common" : {
+            "titleImage" : "themes/templeRunAfter/img/Header_Title.png",
+            "balanceImage" : "themes/templeRunAfter/img/Header_Balance.png",
+            "backButton" : "themes/templeRunAfter/img/Back_BTN.png",
+            "moreCurrencyButton" : "themes/templeRunAfter/img/GetMore_BTN.png",
+            "balanceLabelStyle" : ""
+        },
+        "itemSeparator" : "themes/templeRunAfter/img/Item_Seperator.png",
+        "balance" : {
+            "style" : "top: 20px; left: 200px; font-size: 36px; color: #FFF;"
+        },
+        "pages" : {
+            "goods" :{
+                "list" : {
+                    "background" : "themes/templeRunAfter/img/Item_Area.png"
+                },
+                "listItem" : {
+                    "background" : "",
+                    "balanceBackground" : "themes/templeRunAfter/img/Item_Balance.png"
+                },
+                "noFundsModal" : {
+                    "background" : "themes/templeRunAfter/img/Alert_BG.png",
+                    "title" : "Need More Coins!",
+                    "description" : "Would you like to get more coins?",
+                    "yesButton" : "themes/templeRunAfter/img/Yes_BTN.png",
+                    "noButton" : "themes/templeRunAfter/img/No_BTN.png"
+                }
+            },
+            "currencyPacks" : {
+                "list" : {
+                    "background" : "themes/templeRunAfter/img/Item_Area.png"
+                },
+                "listItem" : {
+                    "balanceBackground" : "",
+                    "nameStyle" : "",
+                    "priceStyle" : ""
+                }
+
+            }
+        },
+        "categories" : {
+            "style" : "background-image: url('themes/templeRunAfter/img/Catagory_Seperator.png'); color: #FFF;"
+        }
+    },
+    "categories" : [
+        {
+            "id" : 1,
+            "name" : "POWERUPS"
+        },
+        {
+            "id" : 2,
+            "name" : "UTILITIES"
+        },
+        {
+            "id" : 3,
+            "name" : "GODS"
+        },
+        {
+            "id" : 4,
+            "name" : "FRIENDS"
+        }
+    ]
+}
