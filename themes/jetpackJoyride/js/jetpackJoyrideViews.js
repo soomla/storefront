@@ -38,17 +38,17 @@ define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates
 
 
             var VirtualGoodView = Components.ExpandableListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "item"),
+                template        : Handlebars.getTemplate("item"),
                 templateHelpers : templateHelpers,
                 css             : { "background-image" : "url('" + this.theme.images.itemBackgroundImage + "')" }
             });
             var CurrencyPackView = Components.ExpandableListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "currencyPack"),
+                template        : Handlebars.getTemplate("currencyPack"),
                 templateHelpers : templateHelpers,
                 css             : { "background-image" : "url('" + this.theme.images.itemBackgroundImage + "')" }
             });
             var CategoryView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "categoryMenuItem")
+                template        : Handlebars.getTemplate("categoryMenuItem")
             });
 
             this.currencyPacksView = new Components.CollectionListView({

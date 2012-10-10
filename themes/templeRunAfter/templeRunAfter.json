@@ -1,4 +1,7 @@
 {
+    "cssFile" : "themes/templeRunAfter/templeRunAfter.css",
+    "jsFiles" : ["themes/templeRunAfter/js/templeRunAfterViews.js"],
+    "templatePath" : "themes/templeRunAfter/templates",
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {

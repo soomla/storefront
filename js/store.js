@@ -64,14 +64,17 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
-                var link = $("<link rel='stylesheet' href='themes/" + json.theme.name + "/" + json.theme.name + ".css'>");
+                var link = $("<link rel='stylesheet' href='" + json.cssFile + "'>");
                 link.appendTo($("head"));
+
+                // Set template base path
+                Handlebars.setTemplatePath(json.templatePath);
 
                 // Initialize model
                 this.newStore(json);
                 var $this = this;
 
-                require(["themes/" + json.theme.name + "/js/" + json.theme.name + "Views.js"], function(ThemeViews) {
+                require(json.jsFiles, function(ThemeViews) {
 
                     // Add pointing device events
                     addPointingDeviceEvents(ThemeViews.StoreView.prototype.events, {
@@ -85,7 +88,7 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                         model : $this.store,
                         el : $("#main"),
                         callbacks : json ? json.callbacks : {},
-                        template : Handlebars.getTemplate("themes/" + json.theme.name + "/templates", "template")
+                        template : Handlebars.getTemplate("template")
                     }).render();
 
                     if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();

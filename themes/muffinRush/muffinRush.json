@@ -1,4 +1,7 @@
 {
+    "cssFile" : "themes/muffinRush/muffinRush.css",
+    "jsFiles" : ["themes/muffinRush/js/muffinRushViews.js"],
+    "templatePath" : "themes/muffinRush/templates",
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {

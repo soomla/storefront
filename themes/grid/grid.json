@@ -1,4 +1,7 @@
 {
+    "cssFile" : "themes/grid/grid.css",
+    "jsFiles" : ["themes/grid/js/gridViews.js"],
+    "templatePath" : "themes/grid/templates",
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {

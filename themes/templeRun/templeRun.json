@@ -1,4 +1,7 @@
 {
+    "cssFile" : "themes/templeRun/templeRun.css",
+    "jsFiles" : ["themes/templeRun/js/templeRunViews.js"],
+    "templatePath" : "themes/templeRun/templates",
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {

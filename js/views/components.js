@@ -327,7 +327,7 @@ define(["jquery", "backbone", "viewMixins", "backboneAddons"], function($, Backb
         createDialog : function(options) {
             return new ModalDialog(_.extend({
                 parent : this.$el,
-                template : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "modalDialog")
+                template : Handlebars.getTemplate("modalDialog")
             }, options));
         },
         render : function() {

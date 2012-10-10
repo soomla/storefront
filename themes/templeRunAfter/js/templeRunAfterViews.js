@@ -17,7 +17,7 @@ define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates
 
 
             var VirtualGoodView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "item"),
+                template        : Handlebars.getTemplate("item"),
                 templateHelpers : {
                     balanceBackground : this.theme.pages.goods.listItem.balanceBackground,
                     balanceLabelStyle : this.theme.common.balanceLabelStyle,
@@ -26,7 +26,7 @@ define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates
                 css             : { "background-image" : "url('" + $this.theme.pages.goods.listItem.background + "')" }
             });
             var CurrencyPackView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "currencyPack"),
+                template        : Handlebars.getTemplate("currencyPack"),
                 templateHelpers : {
                     nameStyle       : this.theme.pages.currencyPacks.listItem.nameStyle,
                     priceStyle      : this.theme.pages.currencyPacks.listItem.priceStyle,
@@ -43,7 +43,7 @@ define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates
                     className           : "items virtualGoods",
                     collection          : categoryGoods,
                     itemView            : VirtualGoodView,
-                    template            : Handlebars.getTemplate("themes/" + $this.theme.name + "/templates", "listContainer"),
+                    template            : Handlebars.getTemplate("listContainer"),
                     templateHelpers     :_.extend({category : category.get("name")}, $this.theme.categories)
                 }).on("selected", $this.wantsToBuyVirtualGoods);
                 $this.categoryViews.push(view);

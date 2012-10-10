@@ -12,10 +12,10 @@ define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates
             this.model.get("virtualCurrencies").on("change:balance", this.updateBalance); // TODO: Fix
 
             var VirtualGoodView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "item")
+                template        : Handlebars.getTemplate("item")
             });
             var CurrencyPackView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "currencyPack")
+                template        : Handlebars.getTemplate("currencyPack")
             });
 
             var virtualGoodsView = new Components.CollectionListView({

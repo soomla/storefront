@@ -1,4 +1,7 @@
 {
+    "cssFile" : "themes/basic/basic.css",
+    "jsFiles" : ["themes/basic/js/basicViews.js"],
+    "templatePath" : "themes/basic/templates",
     "isCurrencyStoreDisabled" : false,
     "currencyPacks" : [
         {

@@ -14,12 +14,12 @@ define(["jquery", "backbone", "components", "handlebars", "templates"], function
 
 
             var VirtualGoodView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "item"),
+                template        : Handlebars.getTemplate("item"),
                 templateHelpers : { itemBackground : this.theme.pages.goods.listItem.itemBackground },
                 css             : { "background-image" : "url('" + this.theme.pages.goods.listItem.background + "')" }
             });
             var CurrencyPackView = Components.ListItemView.extend({
-                template        : Handlebars.getTemplate("themes/" + this.theme.name + "/templates", "currencyPack"),
+                template        : Handlebars.getTemplate("currencyPack"),
                 templateHelpers : { itemBackground : this.theme.pages.currencyPacks.listItem.itemBackground },
                 css             : { "background-image" : "url('" + this.theme.pages.currencyPacks.listItem.background + "')" }
             });
