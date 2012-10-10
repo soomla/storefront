@@ -30,3 +30,5 @@ _.extend(Handlebars, {
     }
 });
 
+// Rigger directive for including compiled Handlebars templates.  See grunt.js file
+//= handlebars-templates
