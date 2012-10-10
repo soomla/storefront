@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "components", "cssUtils", "handlebars", "templates"], function($, Backbone, Components, CssUtils, Handlebars) {
+define(["jquery", "backbone", "components", "handlebars", "templates"], function($, Backbone, Components, Handlebars) {
 
     var HeaderView = Backbone.View.extend({
         initialize : function() {
