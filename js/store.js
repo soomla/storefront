@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "native-api", "models", "components", "handlebars", "soomla-ios", "templates"], function($, jsAPI, NativeAPI, Models, Components, Handlebars, SoomlaIos) {
+define(["jquery", "js-api", "native-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, NativeAPI, Models, Components, Handlebars, SoomlaIos, Less) {
 
     // If pointing devices are enable (i.e. in the desktop generator \ mobile preview),
     // extend the views to capture their events.
@@ -64,8 +64,14 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
-                var link = $("<link rel='stylesheet' href='" + json.cssFile + "'>");
-                link.appendTo($("head"));
+                var isLess  = json.cssFile.match(/\.less$/),
+                    type    = isLess ? "text/less" : "text/css",
+                    link    = $("<style>").appendTo($("head"));
+
+                $.get(json.cssFile, function(data, textStatus, jqXHR) {
+                    link.html(data).attr("type", type);
+                    if (isLess) less.refreshStyles();
+                });
 
                 // Set template base path
                 Handlebars.setTemplatePath(json.templatePath);

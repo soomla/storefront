@@ -13,7 +13,7 @@
 /*==============  Layout  ==============*/
 @font-face {
   font-family: Calibri;
-  src: url('fonts/calibrib.ttf');
+  src: url("themes/jetpackJoyride/fonts/calibrib.ttf");
 }
 @media all and (max-width: 320px) {
   body {

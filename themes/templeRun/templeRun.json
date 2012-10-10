@@ -1,5 +1,5 @@
 {
-    "cssFile" : "themes/templeRun/templeRun.css",
+    "cssFile" : "themes/templeRun/less/templeRun.less",
     "jsFiles" : ["themes/templeRun/js/templeRunViews.js"],
     "templatePath" : "themes/templeRun/templates",
     "isCurrencyStoreDisabled" : false,

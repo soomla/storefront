@@ -1,5 +1,5 @@
 {
-    "cssFile" : "themes/muffinRush/muffinRush.css",
+    "cssFile" : "themes/muffinRush/less/muffinRush.less",
     "jsFiles" : ["themes/muffinRush/js/muffinRushViews.js"],
     "templatePath" : "themes/muffinRush/templates",
     "isCurrencyStoreDisabled" : false,

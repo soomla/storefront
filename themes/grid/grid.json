@@ -1,5 +1,5 @@
 {
-    "cssFile" : "themes/grid/grid.css",
+    "cssFile" : "themes/grid/less/grid.less",
     "jsFiles" : ["themes/grid/js/gridViews.js"],
     "templatePath" : "themes/grid/templates",
     "isCurrencyStoreDisabled" : false,

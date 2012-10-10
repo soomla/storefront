@@ -1,5 +1,5 @@
 {
-    "cssFile" : "themes/jetpackJoyride/jetpackJoyride.css",
+    "cssFile" : "themes/jetpackJoyride/less/jetpackJoyride.less",
     "jsFiles" : ["themes/jetpackJoyride/js/jetpackJoyrideViews.js"],
     "templatePath" : "themes/jetpackJoyride/templates",
     "isCurrencyStoreDisabled" : false,

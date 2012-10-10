@@ -13,7 +13,7 @@
 /*==============  Layout  ==============*/
 @font-face {
   font-family: AGarmando;
-  src: url('fonts/AGaramondPro-Bold.otf');
+  src: url("themes/templeRunAfter/fonts/AGaramondPro-Bold.otf");
 }
 html {
   font-family: AGarmando;

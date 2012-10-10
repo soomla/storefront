@@ -13,7 +13,7 @@
 /*==============  Layout  ==============*/
 @font-face {
   font-family: Hobo;
-  src: url('fonts/HoboStd.otf');
+  src: url("themes/muffinRush/fonts/HoboStd.otf");
 }
 @media all and (max-width: 479px) {
   body {
