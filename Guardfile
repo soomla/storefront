@@ -27,8 +27,8 @@ themes = Dir.entries("themes/")[2..-1].reject{|e| e == "empty"}
 #end
 
 # Precompile LESS stylesheets
-themes.each do |theme|
-  guard 'less', :all_on_start => true, :all_after_change => true, :output => "themes/#{theme}" do
-    watch(%r{^themes/#{theme}/less/.+\.less$})
-  end
-end
+#themes.each do |theme|
+#  guard 'less', :all_on_start => true, :all_after_change => true, :output => "themes/#{theme}" do
+#    watch(%r{^themes/#{theme}/less/.+\.less$})
+#  end
+#end
