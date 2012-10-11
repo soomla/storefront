@@ -10,7 +10,6 @@
             "price" : 0.99,
             "description" : "Testing for a refund ...",
             "name" : "Super Saver Pack",
-            "imgFilePath" : "themes/basic/img/clam.png",
             "itemId" : "super_saver_pack",
             "productId" : "android.test.refunded"
         },
@@ -20,7 +19,6 @@
             "price" : 1.99,
             "description" : "Testing for an item purchase ...",
             "name" : "Malibu Medium Pack",
-            "imgFilePath" : "themes/basic/img/clam.png",
             "itemId" : "malibu_medium_pack",
             "productId" : "android.test.purchased"
         },
@@ -30,7 +28,6 @@
             "price" : 5.99,
             "description" : "Testing for purchase cacellation ...",
             "name" : "Pipeline Pumpin' Pack",
-            "imgFilePath" : "themes/basic/img/clam.png",
             "itemId" : "pipeline_pumpin_pack",
             "productId" : "android.test.canceled"
         },
@@ -40,7 +37,6 @@
             "price" : 15.99,
             "description" : "Testing for item unavailable ...",
             "name" : "Silver Pack",
-            "imgFilePath" : "themes/basic/img/clam.png",
             "itemId" : "pipeline_pumpin_pack",
             "productId" : "android.test.item_unavailable"
         }
@@ -48,14 +44,12 @@
     "virtualCurrencies" : [
         {
             "itemId" : "currency_clam",
-            "imgFilePath" : "themes/basic/img/clam.png",
             "description" : "",
             "name" : "clams"
         }
     ],
     "virtualGoods" : [
         {
-            "imgFilePath" : "themes/basic/img/items/blue-surfboard.png",
             "itemId" : "blue_surfboard",
             "priceModel" :{
                 "type" : "static",
@@ -67,7 +61,6 @@
             "name" : "Rip Curl Shortboard"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/girl-surfboard-th.png",
             "itemId" : "girl_surfboard_th",
             "priceModel" :{
                 "type" : "balance",
@@ -84,7 +77,6 @@
             "name" : "Billanbog Vintage Longboard"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/keelfish.png",
             "itemId" : "keelfish",
             "priceModel" :{
                 "type" : "static",
@@ -97,7 +89,6 @@
             "name" : "Keel Fish"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/picasso-peeler.png",
             "itemId" : "picasso_peeler",
             "priceModel" :{
                 "type" : "static",
@@ -110,7 +101,6 @@
             "name" : "Picasso Peeler"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/reef-shredder.png",
             "itemId" : "reef_shredder",
             "priceModel" :{
                 "type" : "static",
@@ -123,7 +113,6 @@
             "name" : "Reef Shredder"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/sixties-gun.png",
             "itemId" : "sixties_gun",
             "priceModel" :{
                 "type" : "static",
@@ -136,7 +125,6 @@
             "name" : "Sixties Gun"
         },
         {
-            "imgFilePath" : "themes/basic/img/items/traditional-fish.png",
             "itemId" : "traditional_fish",
             "priceModel" : {
                 "type" : "static",
@@ -149,6 +137,25 @@
             "name" : "Traditional Fish"
         }
     ],
+    "modelAssets" : {
+        "virtualGoods" : {
+            "blue_surfboard" : "themes/basic/img/items/blue-surfboard.png",
+            "girl_surfboard_th" : "themes/basic/img/items/girl-surfboard-th.png",
+            "keelfish" : "themes/basic/img/items/keelfish.png",
+            "picasso_peeler" : "themes/basic/img/items/picasso-peeler.png",
+            "reef_shredder" : "themes/basic/img/items/reef-shredder.png",
+            "sixties_gun" : "themes/basic/img/items/sixties-gun.png",
+            "traditional_fish" : "themes/basic/img/items/traditional-fish.png"
+        },
+        "currencyPacks" : {
+            "super_saver_pack" : "themes/basic/img/clam.png",
+            "malibu_medium_pack" : "themes/basic/img/clam.png",
+            "pipeline_pumpin_pack" : "themes/basic/img/clam.png"
+        },
+        "virtualCurrencies" : {
+            "currency_clam" : "themes/basic/img/clam.png"
+        }
+    },
     "theme" : {
         "name" : "grid",
         "template" : "grid",

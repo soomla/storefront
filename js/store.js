@@ -55,9 +55,18 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                     if (json.isCurrencyStoreDisabled)
                         attributes.isCurrencyStoreDisabled = json.isCurrencyStoreDisabled;
+
+
                 }
 
-                this.store = new Models.Store(attributes);
+                this.store          = new Models.Store(attributes);
+                var currencies      = this.store.get("virtualCurrencies"),
+                    virtualGoods    = this.store.get("virtualGoods"),
+                    currencyPacks   = this.store.get("currencyPacks");
+
+                currencies.each(    function(currency)  { currency.set("imgFilePath", json.modelAssets.virtualCurrencies[currency.id]); });
+                virtualGoods.each(  function(good)      { good.set("imgFilePath", json.modelAssets.virtualGoods[good.id]);              });
+                currencyPacks.each( function(pack)      { pack.set("imgFilePath", json.modelAssets.currencyPacks[pack.id]);             });
             },
             // The native UI is loaded and the html needs to be rendered now
             initialize : function(json) {

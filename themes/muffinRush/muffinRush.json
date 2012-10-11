@@ -6,7 +6,6 @@
     "currencyPacks" : [
         {
             "name"              : "10 Muffins",
-            "imgFilePath"       : "themes/muffinRush/img/currencyPacks/muffins01.png",
             "itemId"            : "muffins_10",
             "currency_itemId"   : "currency_muffin",
             "productId"         : "muffins_10",
@@ -16,7 +15,6 @@
         },
         {
             "name"              : "50 Muffins",
-            "imgFilePath"       : "themes/muffinRush/img/currencyPacks/muffins02.png",
             "itemId"            : "muffins_50",
             "currency_itemId"   : "currency_muffin",
             "productId"         : "android.test.purchased",
@@ -26,7 +24,6 @@
         },
         {
             "name"              : "400 Muffins",
-            "imgFilePath"       : "themes/muffinRush/img/currencyPacks/muffins03.png",
             "itemId"            : "muffins_400",
             "currency_itemId"   : "currency_muffin",
             "productId"         : "muffins_400",
@@ -36,7 +33,6 @@
         },
         {
             "name"              : "1000 Muffins",
-            "imgFilePath"       : "themes/muffinRush/img/currencyPacks/muffins04.png",
             "itemId"            : "muffins_1000",
             "currency_itemId"   : "currency_muffin",
             "productId"         : "muffins_1000",
@@ -50,15 +46,13 @@
             "name"          : "Muffins",
             "description"   : "",
             "itemId"        : "currency_muffin",
-            "balance"       : 1000,
-            "imgFilePath"   : "themes/muffinRush/img/muffin.png"
+            "balance"       : 1000
         }
     ],
     "virtualGoods" : [
         {
             "name"          : "Fruit Cake",
             "description"   : "Customers buy a double portion on each purchase of this cake",
-            "imgFilePath"   : "themes/muffinRush/img/items/fruit_cake.png",
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
@@ -71,7 +65,6 @@
         {
             "name"          : "Pavlova",
             "description"   : "Gives customers a sugar rush and they call their friends",
-            "imgFilePath"   : "themes/muffinRush/img/items/pavlova.png",
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
@@ -84,7 +77,6 @@
         {
             "name"          : "Choco-Cake",
             "description"   : "A classic cake to maximize customer satisfaction",
-            "imgFilePath"   : "themes/muffinRush/img/items/chocolate_cake.png",
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
@@ -97,7 +89,6 @@
         {
             "name"          : "Cream Cup",
             "description"   : "Increase bakery reputation with this original pastry",
-            "imgFilePath"   : "themes/muffinRush/img/items/cream_cup.png",
             "priceModel"    : {
                 "type" : "static",
                 "values" :{
@@ -108,6 +99,23 @@
             "categoryId"   : 1
         }
     ],
+    "modelAssets" : {
+        "virtualGoods" : {
+            "fruit_cake" : "themes/muffinRush/img/items/fruit_cake.png",
+            "pavlova" : "themes/muffinRush/img/items/pavlova.png",
+            "chocolate_cake" : "themes/muffinRush/img/items/chocolate_cake.png",
+            "cream_cup" : "themes/muffinRush/img/items/cream_cup.png"
+        },
+        "currencyPacks" : {
+            "muffins_10" : "themes/muffinRush/img/currencyPacks/muffins01.png",
+            "muffins_50" : "themes/muffinRush/img/currencyPacks/muffins02.png",
+            "muffins_400" : "themes/muffinRush/img/currencyPacks/muffins03.png",
+            "muffins_1000" : "themes/muffinRush/img/currencyPacks/muffins04.png"
+        },
+        "virtualCurrencies" : {
+            "currency_muffin" : "themes/muffinRush/img/muffin.png"
+        }
+    },
     "theme" : {
         "name" : "muffinRush",
         "template" : "muffinRush",

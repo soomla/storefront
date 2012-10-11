@@ -6,7 +6,6 @@
         "currencyPacks" : [
         {
             "name"              : "COIN BOOSTER PACK",
-            "imgFilePath"       : "themes/jetpackJoyride/img/coins/objects-05.png",
             "itemId"            : "muffins_10",
             "currency_itemId"   : "currency_coin",
             "productId"         : "coin_booster_pack",
@@ -16,7 +15,6 @@
         },
         {
             "name"              : "COIN MEGA PACK",
-            "imgFilePath"       : "themes/jetpackJoyride/img/coins/objects-04.png",
             "itemId"            : "muffins_50",
             "currency_itemId"   : "currency_coin",
             "productId"         : "android.test.purchased",
@@ -26,7 +24,6 @@
         },
         {
             "name"              : "COIN ULTRA PACK",
-            "imgFilePath"       : "themes/jetpackJoyride/img/coins/objects-01.png",
             "itemId"            : "muffins_400",
             "currency_itemId"   : "currency_coin",
             "productId"         : "coin_ultra_pack",
@@ -36,7 +33,6 @@
         },
         {
             "name"              : "COIN JUMBO PACK",
-            "imgFilePath"       : "themes/jetpackJoyride/img/coins/objects-03.png",
             "itemId"            : "muffins_1000",
             "currency_itemId"   : "currency_coin",
             "productId"         : "coin_jumbo_pack",
@@ -46,7 +42,6 @@
         },
         {
             "name"              : "COIN ULTIMATE PACK",
-            "imgFilePath"       : "themes/jetpackJoyride/img/coins/objects-02.png",
             "itemId"            : "muffins_1000",
             "currency_itemId"   : "currency_coin",
             "productId"         : "coin_ultimate_pack",
@@ -60,15 +55,13 @@
             "name"          : "COINS",
             "description"   : "",
             "itemId"        : "currency_coin",
-            "balance"       : 1000,
-            "imgFilePath"   : "themes/jetpackJoyride/img/coin.png"
+            "balance"       : 1000
         }
     ],
     "virtualGoods" : [
         {
             "name"          : "EXPERIMENTAL FUEL",
             "description"   : "FLY TWICE AS FAST BUT BE CAREFUL, THERE IS INCREASED CHANCE OF ENGINE FIRE",
-            "imgFilePath"   : "themes/jetpackJoyride/img/UtilitiesObjects/objects-06.png",
             "itemId"        : "experimental_fuel",
             "categoryId"   : 1,
             "priceModel"    : {
@@ -81,7 +74,6 @@
         {
             "name"          : "BAND AID",
             "description"   : "RECOVER FROM ONE INJURY",
-            "imgFilePath"   : "themes/jetpackJoyride/img/UtilitiesObjects/objects-08.png",
             "itemId"        : "band_aid",
             "categoryId"   : 1, 
             "priceModel"    : {
@@ -94,7 +86,6 @@
         {
             "name"          : "FIRE EXTINGUISHER",
             "description"   : "RECOVER FROM ONE ENGINE FIRE",
-            "imgFilePath"   : "themes/jetpackJoyride/img/UtilitiesObjects/objects-09.png",
             "itemId"        : "fire_extinguisher",
             "categoryId"   : 1, 
             "priceModel"    : {
@@ -107,7 +98,6 @@
         {
             "name"          : "EXTRA LIFE",
             "description"   : "ESCAPE DEATH ONCE. DOUBLE TAP UP TO 5 SECONDS AFTER GAME IS OVER",
-            "imgFilePath"   : "themes/jetpackJoyride/img/UtilitiesObjects/objects-07.png",
             "itemId"        : "extra_life",
             "categoryId"   : 1, 
             "priceModel"    : {
@@ -120,7 +110,6 @@
         {
             "name"          : "LIGHTNING BOLT",
             "description"   : "SNAP ALL ENEMIES ON SIGHT WITH A SINGLE SHOT. USE DOUBLE TAP TO ACTIVATE",
-            "imgFilePath"   : "themes/jetpackJoyride/img/GadgetsObjects/objects-11.png",
             "itemId"        : "lightning_bolt",
             "categoryId"   : 2,
             "priceModel"    : {
@@ -133,7 +122,6 @@
         {
             "name"          : "MORE TIME",
             "description"   : "GET AN EXTRA MINUTE TO COMPLETE YOUR TASK. TAP ON THE CLOCK TO USE IT",
-            "imgFilePath"   : "themes/jetpackJoyride/img/GadgetsObjects/objects-12.png",
             "itemId"        : "more_time",
             "categoryId"   : 2,
             "priceModel"    : {
@@ -146,7 +134,6 @@
         {
             "name"          : "RED CROSS",
             "description"   : "DESCISE AS RED CROSS - INVISIBLE FOR 10 MILES",
-            "imgFilePath"   : "themes/jetpackJoyride/img/GadgetsObjects/objects-13.png",
             "itemId"        : "red_cross",
             "categoryId"   : 2,
              "priceModel"    : {
@@ -159,7 +146,6 @@
         {
             "name"          : "BLUE STAR",
             "description"   : "BLUE STAR WILL ALLOW YOU TO START AT A HEIGHT OF 10000 FT",
-            "imgFilePath"   : "themes/jetpackJoyride/img/GadgetsObjects/objects-14.png",
             "itemId"        : "blue_star",
             "categoryId"   : 2,
              "priceModel"    : {
@@ -172,7 +158,6 @@
         {
             "name"          : "PURPLE HEART",
             "description"   : "TAP TO ACTIVATE AND GET 10 HEALTH POINTS",
-            "imgFilePath"   : "themes/jetpackJoyride/img/GadgetsObjects/objects-15.png",
             "itemId"        : "purple_heart",
             "categoryId"   : 2,
              "priceModel"    : {
@@ -185,7 +170,6 @@
         {
             "name"          : "UPGRADE 1",
             "description"   : "THIS IS A REALLY GREAT UPGRADE THAT WILL MAKE THE GAME MUCH MORE EXCITING",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Upgrades/Upgrade 1.png",
             "itemId"        : "upgrade_1",
             "categoryId"   : 3,
              "priceModel"    : {
@@ -198,7 +182,6 @@
         {
             "name"          : "UPGRADE 2",
             "description"   : "THIS IS AN EVEN BETTER UPGRADE THAT WILL ALSO MAKE THE GAME FUN",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Upgrades/Upgrade 2.png",
             "itemId"        : "upgrade_2",
             "categoryId"   : 3,
              "priceModel"    : {
@@ -211,7 +194,6 @@
         {
             "name"          : "AIRPLANE 1",
             "description"   : "THIS AIRPLANE FLIES REALLY HIGH",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Airplanes/Airplane_1.png",
             "itemId"        : "airplane_1",
             "categoryId"   : 4,
              "priceModel"    : {
@@ -224,7 +206,6 @@
         {
             "name"          : "AIRPLANE 2",
             "description"   : "THIS ONE FLIES FOR LONG DISTANCES",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Airplanes/Airplane_2.png",
             "itemId"        : "airplane_2",
             "categoryId"   : 4,
              "priceModel"    : {
@@ -237,7 +218,6 @@
         {
             "name"          : "CLOTHING 1",
             "description"   : "THIS SHIRT WILL PROTECT YOU FROM FIRES",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Clothing/Clothing_1.png",
             "itemId"        : "clothing_1",
             "categoryId"   : 5,
              "priceModel"    : {
@@ -250,7 +230,6 @@
         {
             "name"          : "CLOTHING 2",
             "description"   : "THIS SHIRT WILL PROTECT YOU FROM BULLETS",
-            "imgFilePath"   : "themes/jetpackJoyride/img/Clothing/Clothing_2.png",
             "itemId"        : "clothing_2",
             "categoryId"   : 5,
              "priceModel"    : {
@@ -261,6 +240,34 @@
             }
         }
     ],
+    "modelAssets" : {
+        "virtualGoods" : {
+            "experimental_fuel" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-06.png",
+            "band_aid" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-08.png",
+            "fire_extinguisher" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-09.png",
+            "extra_life" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-07.png",
+            "lightning_bolt" : "themes/jetpackJoyride/img/GadgetsObjects/objects-11.png",
+            "more_time" : "themes/jetpackJoyride/img/GadgetsObjects/objects-12.png",
+            "red_cross" : "themes/jetpackJoyride/img/GadgetsObjects/objects-13.png",
+            "blue_star" : "themes/jetpackJoyride/img/GadgetsObjects/objects-14.png",
+            "purple_heart" : "themes/jetpackJoyride/img/GadgetsObjects/objects-15.png",
+            "upgrade_1" : "themes/jetpackJoyride/img/Upgrades/Upgrade 1.png",
+            "upgrade_2" : "themes/jetpackJoyride/img/Upgrades/Upgrade 2.png",
+            "airplane_1" : "themes/jetpackJoyride/img/Airplanes/Airplane_1.png",
+            "airplane_2" : "themes/jetpackJoyride/img/Airplanes/Airplane_2.png",
+            "clothing_1" : "themes/jetpackJoyride/img/Clothing/Clothing_1.png",
+            "clothing_2" : "themes/jetpackJoyride/img/Clothing/Clothing_2.png"
+        },
+        "currencyPacks" : {
+            "muffins_10" : "themes/jetpackJoyride/img/coins/objects-05.png",
+            "muffins_50" : "themes/jetpackJoyride/img/coins/objects-04.png",
+            "muffins_400" : "themes/jetpackJoyride/img/coins/objects-01.png",
+            "muffins_1000" : "themes/jetpackJoyride/img/coins/objects-02.png"
+        },
+        "virtualCurrencies" : {
+            "currency_coin" : "themes/jetpackJoyride/img/coin.png"
+        }
+    },
     "theme" : {
         "name" : "jetpackJoyride",
         "template" : "jetpackJoyride",

@@ -1,6 +1,8 @@
 define(["backboneRelational"], function() {
 
-    var CurrencyPack = Backbone.RelationalModel.extend({});
+    var CurrencyPack = Backbone.RelationalModel.extend({
+        idAttribute : "itemId"
+    });
     var Currency = Backbone.RelationalModel.extend({
         defaults : {
             name    : "coins",
