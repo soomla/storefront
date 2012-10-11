@@ -92,7 +92,7 @@ module.exports = function (grunt) {
 
 
     // Default task.
-    grunt.registerTask("theme", function(name) {
+    grunt.registerTask("theme", "Builds the given theme. Compiles Handlebars templates and Less CSS, minifies and concatenates JS & CSS files", function(name) {
 
         theme = name;
         themeFolder = distFolder + '/themes/' + theme;
@@ -100,8 +100,8 @@ module.exports = function (grunt) {
         // Dynamically add less configuration specific to this theme
         var lessConfig = grunt.config.get("less");
         lessConfig[theme] = {
-            src  : themeFolder + '/' + theme + '.less',
-            dest : themeFolder + '/' + theme + '/' + theme + '.css',
+            src  : themeFolder + '/less/*.less',
+            dest : themeFolder + '/' + theme + '.css',
             options:{
                 compress:true
             }
@@ -115,6 +115,14 @@ module.exports = function (grunt) {
             }
         });
 
-        grunt.task.run('clean copy less handlebars rig requirejs cleanup');
+        // Dynamically add minify configuration specific to this theme
+        grunt.config.set("min", {
+            all: {
+                src: themeFolder + "/js/*",
+                dest: themeFolder + "/js/" + theme + "Views.js"
+            }
+        });
+
+        grunt.task.run('clean copy less handlebars rig min requirejs cleanup');
     });
 };
