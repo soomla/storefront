@@ -49,6 +49,12 @@
             "balance"       : 1000
         }
     ],
+    "categories" : [
+        {
+            "id" : 1,
+            "name" : "General"
+        }
+    ],
     "virtualGoods" : [
         {
             "name"          : "Fruit Cake",
@@ -159,11 +165,5 @@
 
             }
         }
-    },
-    "categories" : [
-        {
-            "id" : 1,
-            "name" : "General"
-        }
-    ]
+    }
 }

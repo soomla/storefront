@@ -62,11 +62,21 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 this.store          = new Models.Store(attributes);
                 var currencies      = this.store.get("virtualCurrencies"),
                     virtualGoods    = this.store.get("virtualGoods"),
-                    currencyPacks   = this.store.get("currencyPacks");
+                    currencyPacks   = this.store.get("currencyPacks"),
+                    categories      = this.store.get("categories");
 
+                // Add visual assets into the models
                 currencies.each(    function(currency)  { currency.set("imgFilePath", json.modelAssets.virtualCurrencies[currency.id]); });
                 virtualGoods.each(  function(good)      { good.set("imgFilePath", json.modelAssets.virtualGoods[good.id]);              });
                 currencyPacks.each( function(pack)      { pack.set("imgFilePath", json.modelAssets.currencyPacks[pack.id]);             });
+
+                // Add visual assets into categories.  Check if category assets are used first
+                if (json.modelAssets.categories) {
+                    _.each(categories, function(category) {
+                        category.imgFilePath = json.modelAssets.categories[category.id];
+                    });
+                    this.store.set("categories", categories);
+                }
             },
             // The native UI is loaded and the html needs to be rendered now
             initialize : function(json) {

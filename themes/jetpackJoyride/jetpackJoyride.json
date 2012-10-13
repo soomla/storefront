@@ -241,6 +241,14 @@
         }
     ],
     "modelAssets" : {
+        "categories" : {
+            "1" : "themes/jetpackJoyride/img/-_Object_4.png",
+            "2" : "themes/jetpackJoyride/img/-_Object_5.png",
+            "3" : "themes/jetpackJoyride/img/-_Object_3.png",
+            "4" : "themes/jetpackJoyride/img/-_Object_2.png",
+            "5" : "themes/jetpackJoyride/img/-_Object_1.png",
+            "6" : "themes/jetpackJoyride/img/-_Object_8.png"
+        },
         "virtualGoods" : {
             "experimental_fuel" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-06.png",
             "band_aid" : "themes/jetpackJoyride/img/UtilitiesObjects/objects-08.png",
@@ -304,38 +312,32 @@
         {
             "id" : 1,
             "name" : "utilities",
-            "title" : "UTILITIES",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_4.png"
+            "title" : "UTILITIES"
         },
         {
             "id" : 2,
             "name" : "gadgets",
-            "title" : "GADGETS",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_5.png"
+            "title" : "GADGETS"
         },
         {
             "id" : 3,
             "name" : "upgrades",
-            "title" : "UPGRADES",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_3.png"
+            "title" : "UPGRADES"
         },
         {
             "id" : 4,
             "name" : "airplanes",
-            "title" : "AIRPLANES",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_2.png"
+            "title" : "AIRPLANES"
         },
         {
             "id" : 5,
             "name" : "clothing",
-            "title" : "CLOTHING",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_1.png"
+            "title" : "CLOTHING"
         },
         {
             "id" : 6,
             "name" : "currencyPacks",
-            "title" : "GET COINS",
-            "categoryImage" : "themes/jetpackJoyride/img/-_Object_8.png"
+            "title" : "GET COINS"
         }
     ]
 }

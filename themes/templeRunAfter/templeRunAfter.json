@@ -10,8 +10,7 @@
             "currency_itemId"   : "currency_muffin",
             "productId"         : "2500_coins",
             "price"             : 0.99,
-            "amount"            : 2500,
-            "categoryId"        : 1
+            "amount"            : 2500
         },
         {
             "name"              : "25,000 Coins",
@@ -19,8 +18,7 @@
             "currency_itemId"   : "currency_muffin",
             "productId"         : "android.test.purchased",
             "price"             : 4.99,
-            "amount"            : 25000,
-            "categoryId"        : 1
+            "amount"            : 25000
         },
         {
             "name"              : "75,000 Coins",
@@ -28,8 +26,7 @@
             "currency_itemId"   : "currency_muffin",
             "productId"         : "75000_coins",
             "price"             : 9.99,
-            "amount"            : 75000,
-            "categoryId"        : 1
+            "amount"            : 75000
         },
         {
             "name"              : "200,000 Coins",
@@ -37,8 +34,7 @@
             "currency_itemId"   : "currency_muffin",
             "productId"         : "200000_coins",
             "price"             : 19.99,
-            "amount"            : 200000,
-            "categoryId"        : 1
+            "amount"            : 200000
         }
     ],
     "virtualCurrencies" : [
@@ -47,6 +43,24 @@
             "description"   : "",
             "itemId"        : "currency_muffin",
             "balance"       : 1000
+        }
+    ],
+    "categories" : [
+        {
+            "id" : 1,
+            "name" : "POWERUPS"
+        },
+        {
+            "id" : 2,
+            "name" : "UTILITIES"
+        },
+        {
+            "id" : 3,
+            "name" : "GODS"
+        },
+        {
+            "id" : 4,
+            "name" : "FRIENDS"
         }
     ],
     "virtualGoods" : [
@@ -296,23 +310,5 @@
         "categories" : {
             "style" : "background-image: url('themes/templeRunAfter/img/Catagory_Seperator.png'); color: #FFF;"
         }
-    },
-    "categories" : [
-        {
-            "id" : 1,
-            "name" : "POWERUPS"
-        },
-        {
-            "id" : 2,
-            "name" : "UTILITIES"
-        },
-        {
-            "id" : 3,
-            "name" : "GODS"
-        },
-        {
-            "id" : 4,
-            "name" : "FRIENDS"
-        }
-    ]
+    }
 }
