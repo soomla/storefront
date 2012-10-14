@@ -1,0 +1,298 @@
+{
+    "cssFile" : "themes/templeRunAfter/less/templeRunAfter.less",
+    "jsFiles" : ["themes/templeRunAfter/js/templeRunAfterViews.js"],
+    "templatePath" : "themes/templeRunAfter/templates",
+    "isCurrencyStoreDisabled" : false,
+    "currencyPacks" : [
+        {
+            "name"              : "2,500",
+            "itemId"            : "muffins_10",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "2500_coins",
+            "price"             : 0.99,
+            "amount"            : 2500
+        },
+        {
+            "name"              : "25,000",
+            "itemId"            : "muffins_50",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "android.test.purchased",
+            "price"             : 4.99,
+            "amount"            : 25000
+        },
+        {
+            "name"              : "75,000",
+            "itemId"            : "muffins_400",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "75000_coins",
+            "price"             : 9.99,
+            "amount"            : 75000
+        },
+        {
+            "name"              : "200,000",
+            "itemId"            : "muffins_1000",
+            "currency_itemId"   : "currency_muffin",
+            "productId"         : "200000_coins",
+            "price"             : 19.99,
+            "amount"            : 200000
+        }
+    ],
+    "virtualCurrencies" : [
+        {
+            "name"          : "Coins",
+            "description"   : "",
+            "itemId"        : "currency_muffin",
+            "balance"       : 1000
+        }
+    ],
+    "categories" : [
+        {
+            "id" : 1,
+            "name" : "POWERUPS"
+        },
+        {
+            "id" : 2,
+            "name" : "UTILITIES"
+        },
+        {
+            "id" : 3,
+            "name" : "CHARACTERS"
+        }
+    ],
+    "virtualGoods" : [
+        {
+            "name"          : "Coin Magnet",
+            "description"   : "Coin Magnet doubles coin value",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2500
+                }
+            },
+            "itemId"        : "coin_magnet",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Mega Coin",
+            "description"   : "Increase Mega Coin to 100 Coins",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 5000
+                }
+            },
+            "itemId"        : "mega_coin",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Invisibility",
+            "description"   : "Make Invisibiilty Last Longer",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2500
+                }
+            },
+            "itemId"        : "invisibility",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Triple Value",
+            "description"   : "Triple Value coins after 3000m",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2500
+                }
+            },
+            "itemId"        : "triple_value",
+            "categoryId"   : 1
+        },
+        {
+            "name"          : "Resurrection Wings",
+            "description"   : "When active you resurrect immediately after death",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 500
+                }
+            },
+            "itemId"        : "resurrection_wings",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Permanent Wings",
+            "description"   : "Resurrection wings that are active permanently",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "perm_wings",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Boost Ahead",
+            "description"   : "Boost ahead 1000m at the start of the game",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 2500
+                }
+            },
+            "itemId"        : "boost_ahead",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Mega Boost",
+            "description"   : "Mega Boost ahead 2500m at the start of the game",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "mega_boost",
+            "categoryId"   : 2
+        },
+        {
+            "name"          : "Guy Dangerous",
+            "description"   : "Guy Dangerous, Just your average explorer",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "guy_dangerous",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Scarlett Fox",
+            "description"   : "Scarlett Fox, the cunning escape artist ",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "scarlett_fox",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Barry Bones",
+            "description"   : "Barry Bones, a city cop with an attitude",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 10000
+                }
+            },
+            "itemId"        : "barry_bones",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Karma Kim",
+            "description"   : "Karma Kim, the fastest legs in the Far East",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 25000
+                }
+            },
+            "itemId"        : "karma_kim",
+            "categoryId"   : 3
+        },
+        {
+            "name"          : "Montana Smith",
+            "description"   : "Montana Smith, the secnod greatest explorer ever",
+            "priceModel"    : {
+                "type" : "static",
+                "values" :{
+                    "currency_muffin" : 25000
+                }
+            },
+            "itemId"        : "montana_smith",
+            "categoryId"   : 3
+        }
+
+    ],
+    "modelAssets" : {
+        "virtualGoods" : {
+            "mega_coin" : "themes/templeRunAfter1/img/Powerups/Mega_Coin.png",
+            "coin_magnet" : "themes/templeRunAfter1/img/Powerups/Coin_Magnet.png",
+            "invisibility" : "themes/templeRunAfter1/img/Powerups/Invisibility.png",
+            "triple_value" : "themes/templeRunAfter1/img/Powerups/Triple_Value.png",
+            "resurrection_wings" : "themes/templeRunAfter1/img/Utilities/Resurrection_Wings.png",
+            "perm_wings" : "themes/templeRunAfter1/img/Utilities/Perm_Wings.png",
+            "boost_ahead" : "themes/templeRunAfter1/img/Utilities/Boost_Ahead.png",
+            "mega_boost" : "themes/templeRunAfter1/img/Utilities/Mega_Boost.png",
+            "guy_dangerous" : "themes/templeRunAfter1/img/Characters/Guy_Dangerous.png",
+            "scarlett_fox" : "themes/templeRunAfter1/img/Characters/Scarlett_Fox.png",
+            "barry_bones" : "themes/templeRunAfter1/img/Characters/Barry_Bones.png",
+            "karma_kim" : "themes/templeRunAfter1/img/Characters/Karma_Kim.png",
+            "montana_smith" : "themes/templeRunAfter1/img/Characters/Montana_Smith.png"
+        },
+        "currencyPacks" : {
+            "muffins_10" : "themes/templeRunAfter1/img/CurrencyPacks/GetCoins_1.png",
+            "muffins_50" : "themes/templeRunAfter1/img/CurrencyPacks/GetCoins_2.png",
+            "muffins_400" : "themes/templeRunAfter1/img/CurrencyPacks/GetCoins_3.png",
+            "muffins_1000" : "themes/templeRunAfter1/img/CurrencyPacks/GetCoins_4.png"
+        },
+        "virtualCurrencies" : {
+            "currency_muffin" : "themes/templeRunAfter1/img/CurrencyPacks/Item_Price.png"
+        }
+    },
+    "theme" : {
+        "name" : "templeRunAfter",
+        "template" : "templeRunAfter",
+        "version" : 1,
+        "background" : "themes/templeRunAfter/img/BG-Level0.png",
+        "contentBackground" : "themes/templeRunAfter/img/BG-Level1.png",
+        "isOrientationLandscape" : false,
+        "common" : {
+            "titleImage" : "themes/templeRunAfter/img/Header_Title.png",
+            "balanceImage" : "themes/templeRunAfter/img/Header_Balance.png",
+            "backButton" : "themes/templeRunAfter/img/Back_BTN.png",
+            "moreCurrencyButton" : "themes/templeRunAfter/img/GetMore_BTN.png",
+            "balanceLabelStyle" : ""
+        },
+        "itemSeparator" : "themes/templeRunAfter/img/Item_Seperator.png",
+        "balance" : {
+            "style" : "top: 20px; left: 200px; font-size: 36px; color: #FFF;"
+        },
+        "pages" : {
+            "goods" :{
+                "list" : {
+                    "background" : ""
+                },
+                "listItem" : {
+                    "background" : "",
+                    "balanceBackground" : "themes/templeRunAfter/img/Item_Balance.png"
+                },
+                "noFundsModal" : {
+                    "background" : "themes/templeRunAfter/img/Alert_BG.png",
+                    "title" : "Need More Coins!",
+                    "description" : "Would you like to get more coins?",
+                    "yesButton" : "themes/templeRunAfter/img/Yes_BTN.png",
+                    "noButton" : "themes/templeRunAfter/img/No_BTN.png"
+                }
+            },
+            "currencyPacks" : {
+                "list" : {
+                    "background" : ""
+                },
+                "listItem" : {
+                    "balanceBackground" : "",
+                    "nameStyle" : "",
+                    "priceStyle" : ""
+                }
+
+            }
+        },
+        "categories" : {
+            "style" : "background-image: url('themes/templeRunAfter/img/Catagory_Seperator.png'); color: #FFF;"
+        }
+    }
+}
