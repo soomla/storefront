@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "backboneAddons"], function($, Backbone, ViewMixins) {
+define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "marionetteExtensions"], function($, Backbone, ViewMixins, Marionette) {
 
     var BaseView = Backbone.View.extend({
         // Serialize the model or collection for the view. If a model is
