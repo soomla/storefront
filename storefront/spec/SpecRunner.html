@@ -46,7 +46,6 @@
         require.config({
             baseUrl : "../js",
             paths : {
-                storeViews          : "views/store-views",
                 viewMixins          : "views/view-mixins",
                 cssUtils            : "views/css-utils",
                 components          : "views/components",
@@ -54,7 +53,6 @@
                 backboneAddons      : "views/backbone-addons",
                 "components.spec"   : "../spec/jasmine/spec/components.spec",
                 "generator.spec"    : "../spec/jasmine/spec/generator.spec",
-                "storeView.spec"    : "../spec/jasmine/spec/store-view.spec",
 
                 // 3rd party modules
                 jquery              : "libs/jquery/jquery-1.8.0.min",
@@ -88,7 +86,7 @@
         });
 
 
-        require(["store", "soomla-ios", "generator.spec", "storeView.spec", "components.spec"], function() {
+        require(["store", "soomla-ios", "generator.spec", "components.spec"], function() {
             var jasmineEnv = jasmine.getEnv();
             jasmineEnv.updateInterval = 1000;
 
