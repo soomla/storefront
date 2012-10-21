@@ -67,7 +67,7 @@ public class StorefrontActivity extends Activity {
             }
         });
 
-        mWebView.loadUrl("file:///android_asset/soomla_ui/store.html");
+        mWebView.loadUrl("file:///android_asset/storefront/store.html");
     }
 
     public void loadWebView(){
