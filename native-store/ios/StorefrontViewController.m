@@ -47,7 +47,7 @@
     storeWebview = [[UIWebView alloc] initWithFrame:self.view.frame];
     storeWebview.delegate = self.storefrontJS;
     storeWebview.userInteractionEnabled = YES;
-    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"store" ofType:@"html" inDirectory:@"soomla_ui"]];
+    NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"store" ofType:@"html" inDirectory:@"storefront"]];
     [storeWebview loadRequest:[NSURLRequest requestWithURL:url]];
 
 }
