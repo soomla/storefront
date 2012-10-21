@@ -83,14 +83,17 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
-                var isLess  = json.cssFile.match(/\.less$/),
-                    type    = isLess ? "text/less" : "text/css",
-                    link    = $("<style>").appendTo($("head"));
+                _.each(json.cssFiles, function(file) {
+                    var isLess  = file.match(/\.less$/),
+                        type    = isLess ? "text/less" : "text/css",
+                        link    = $("<style>").appendTo($("head"));
 
-                $.get(json.cssFile, function(data, textStatus, jqXHR) {
-                    link.html(data).attr("type", type);
-                    if (isLess) less.refreshStyles();
+                    $.get(file, function(data, textStatus, jqXHR) {
+                        link.html(data).attr("type", type);
+                        if (isLess) less.refreshStyles();
+                    });
                 });
+
 
                 // Set template base path
                 Handlebars.setTemplatePath(json.templatePath);
