@@ -15,9 +15,11 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
     addPointingDeviceEvents(Components.ExpandableListItemView.prototype.triggers, {
         "click .buy"    : "bought"
     });
-    addPointingDeviceEvents(Components.ModalDialog.prototype.events, {
-        "click .close"  : "close",
-        "click .modal"  : "close"
+    addPointingDeviceEvents(Components.ModalDialog.prototype.triggers, {
+        "click .close"      : "cancel",
+        "click .modal"      : "cancel",
+        "click .buy-more"   : "buyMore",
+        "click .cancel"     : "cancel"
     });
 
     $(function() {

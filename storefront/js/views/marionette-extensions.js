@@ -41,7 +41,7 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
                     if (e && e.stopPropagation){ e.stopPropagation(); }
 
                     // Add the source view as the argument
-                    that.trigger(value, that);
+                    that.trigger(value, that.model);
                 };
 
             });

@@ -7,51 +7,34 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         initialize : function() {
             _.bindAll(this, "close");
         },
-        events : {
-            "touchend .close"    : "close",
-            "touchend .modal"    : "close",
-            "touchend .buy-more" : "close",
-            "touchend .cancel"   : "close"
+        triggers : {
+            "touchend .close"    : "cancel",
+            "touchend .modal"    : "cancel",
+            "touchend .buy-more" : "buyMore",
+            "touchend .cancel"   : "cancel"
         },
-        close : function(event) {
-            this.remove();
-
-            // Decide which command to dispatch as an argument according to the
-            // target element's class
-            var target  = $(event.target),
-                command = (target && target.hasClass("buy-more")) ? "buyMore" : "cancel";
-
-            // Finally, notify observers that the dialog is closing and detach
-            // any remaining event handlers.
-            this.trigger("closed", command).off();
-
-            return this;
-        },
-        render : function() {
-            this.$el.html(this.getTemplate()(this.model));
+        onRender : function() {
             this.options.parent.append(this.$el);
-            return this;
+        },
+        // The modal dialog model is a simple object, not a Backbone model
+        serializeData : function() {
+            return this.model;
         }
     });
 
     var ListItemView = BaseView.extend({
         className : "item",
         tagName : "li",
-        constructor : function() {
-            BaseView.prototype.constructor.apply(this, arguments);
-            _.bindAll(this, "render");
+        initialize : function() {
+            _.bindAll(this, "onBeforeRender");
             this.model.on("change:balance change:price change:currency", this.render);
         },
         triggers : {
             touchend : "selected"
         },
-        render : function() {
+        onBeforeRender : function() {
             var css = this.options.css || this.css;
             if (css) this.$el.css(css);
-            var template = this.getTemplate(),
-                context  = this.serializeData();
-            this.$el.html(template(context));
-            return this;
         }
     });
 
@@ -228,11 +211,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         serializeData : function() {
             return _.extend({}, this.theme, {currencies : this.model.get("virtualCurrencies").toJSON()});
         },
-        createDialog : function(options) {
-            return new ModalDialog(_.extend({
+        openDialog : function() {
+            var dialog = new ModalDialog({
                 parent : this.$el,
-                template : Handlebars.getTemplate("modalDialog")
-            }, options));
+                template : Handlebars.getTemplate("modalDialog"),
+                model : this.dialogModel
+            });
+            dialog.on("cancel buyMore", dialog.close).on("buyMore", this.showCurrencyStore);
+            return dialog.render();
         },
         render : function() {
             var context = this.serializeData();
