@@ -35,31 +35,8 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // TODO: Refactor function
             newStore : function(json) {
-                var attributes = {};
-                if (json) {
 
-                    if (json.theme)
-                        attributes.theme = json.theme;
-
-                    if (json.virtualGoods)
-                        attributes.virtualGoods = json.virtualGoods;
-
-                    if (json.virtualCurrencies)
-                        attributes.virtualCurrencies = json.virtualCurrencies;
-
-                    if (json.currencyPacks)
-                        attributes.currencyPacks = json.currencyPacks;
-
-                    if (json.categories)
-                        attributes.categories = json.categories;
-
-                    if (json.isCurrencyStoreDisabled)
-                        attributes.isCurrencyStoreDisabled = json.isCurrencyStoreDisabled;
-
-
-                }
-
-                this.store          = new Models.Store(attributes);
+                this.store          = new Models.Store(json);
                 var currencies      = this.store.get("virtualCurrencies"),
                     virtualGoods    = this.store.get("virtualGoods"),
                     currencyPacks   = this.store.get("currencyPacks"),
@@ -80,6 +57,16 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
             },
             // The native UI is loaded and the html needs to be rendered now
             initialize : function(json) {
+
+                // First, validate JSON attributes
+                if (!json) {
+                    throw new Error("No JSON passed to `initialize`");
+                }
+                var attributes = [  "cssFiles", "jsFiles", "templatePath", "theme", "virtualGoods",
+                                    "virtualCurrencies", "currencyPacks", "categories"];
+                _.each(attributes, function(attribute) {
+                    if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
+                });
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
