@@ -128,6 +128,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
 
     ////////////////////  Collection Views  /////////////////////
 
+    // TODO: Remove this and its specs once CollectionGridView stops extending it
     var BaseCollectionView = BaseView.extend({
         initialize : function(options) {
             this.children = []; // expose sub views for testing purposes
@@ -155,12 +156,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
-    var CollectionListView = BaseCollectionView.extend({
+    var CollectionListView = Marionette.CollectionView.extend({
         tagName : "ul",
-        constructor : function(options) {
-            BaseCollectionView.prototype.constructor.apply(this, arguments);
+        initialize : function(options) {
             _.bindAll(this, "adjustWidth");
-            this.buildChildViews();
             this.orientation = this.options.orientation || "vertical";
         },
         itemView : ListItemView,
@@ -169,26 +168,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             // and multiply it by the number of elements.  The product will be the scrollable container's width
             var elementWidth = this.$(".item:first").outerWidth(true);
             this.$el.css("width", this.collection.length * elementWidth);
-        },
-        render : function() {
-            this.renderChildren();
-            if (this.orientation == "horizontal") this.adjustWidth();
-            return this;
-        },
-        renderChildren : function() {
-            var $this = this;
-
-            // Render each item and append it
-            _.each(this.children, function(view) {
-                view.render().$el.addClass($this.orientation);
-                $this.getChildrenContainer().append(view.el);
-            });
-        },
-        // TODO: Remove once all components use Marionette's CompositeView
-        getChildrenContainer : function() {
-            var container = this.options.childrenContainer || this.childrenContainer || this.$el;
-            if (_.isString(container)) container = this.$(container);
-            return container;
         }
     });
 
