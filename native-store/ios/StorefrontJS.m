@@ -155,7 +155,9 @@
             NSMutableDictionary* storeInfoDict = [NSMutableDictionary dictionaryWithDictionary:[[StoreInfo getInstance] toDictionary]];
             NSDictionary* storefrontInfoDict = [[StorefrontInfo getInstance] toDictionary];
             
-            [storeInfoDict setObject:[storefrontInfoDict objectForKey:@"theme"] forKey:@"theme"];
+            for (NSString* key in storefrontInfoDict.allKeys){
+                [storeInfoDict setObject:[storefrontInfoDict objectForKey:key] forKey:key];
+            }
             
             NSString* initJSON = [storeInfoDict JSONString];
             
