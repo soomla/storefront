@@ -38,6 +38,43 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
+    /**
+     * A varitaion of the regular item view which has
+     * different UI states - regular, bought and equipped
+     */
+    var EquippableListItemView = ListItemView.extend({
+        initialize : function() {
+            _.bindAll(this, "onBeforeRender", "bought", "equipped");
+            this.model.on("change:price change:currency", this.render);
+            this.model.on("change:balance", this.bought);
+            this.model.on("change:equipped", this.equipped);
+        },
+        triggers : {
+            "touchend .buy"    : "buy",
+            "touchend .equip"  : "equip"
+        },
+        ui : {
+            "buy"       : ".buy",
+            "equip"     : ".equip",
+            "active"    : ".active"
+        },
+        bought : function() {
+            this.ui.buy.hide();
+            this.ui.equip.show();
+        },
+        equipped : function() {
+            var equipped = this.model.get("equipped");
+            if (equipped) {
+                this.ui.equip.hide();
+                this.ui.active.show();
+                this.trigger("equipped");
+            } else {
+                this.ui.active.hide();
+                this.ui.equip.show();
+            }
+        }
+    });
+
     var GridItemView = ListItemView.extend({
         tagName : "div"
     });
@@ -147,22 +184,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 $this.getChildrenContainer().append(view.el);
             });
         },
+        // TODO: Remove once all components use Marionette's CompositeView
         getChildrenContainer : function() {
             var container = this.options.childrenContainer || this.childrenContainer || this.$el;
             if (_.isString(container)) container = this.$(container);
             return container;
         }
-    });
-
-    // TODO: Write unit test for this component
-    var SectionedListView = CollectionListView.extend({
-        tagName : "div",
-        render : function() {
-            this.$el.html(this.getTemplate()(this.serializeData()));
-            this.renderChildren();
-            return this;
-        },
-        childrenContainer : ".container"
     });
 
     var CollectionGridView = BaseCollectionView.extend({
@@ -239,13 +266,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
     return {
         BaseView                : BaseView,
         ListItemView            : ListItemView,
+        EquippableListItemView  : EquippableListItemView,
         ExpandableListItemView  : ExpandableListItemView,
         GridItemView            : GridItemView,
         ModalDialog             : ModalDialog,
         BaseCollectionView      : BaseCollectionView,
         CollectionListView      : CollectionListView,
         CollectionGridView      : CollectionGridView,
-        SectionedListView       : SectionedListView,
         BaseStoreView           : BaseStoreView
     };
 });
