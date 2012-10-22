@@ -93,7 +93,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             "touchend"      : "onSelect"
         },
         triggers : {
-            "touchend .buy" : "bought"
+            "touchend .buy" : "buy"
         },
         onSelect : function() {
             // "touchend" on Android is triggered several times (probably a bug).
