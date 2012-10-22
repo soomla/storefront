@@ -111,12 +111,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 this.expanded = false;
                 this.$el.removeClass("expanded");
                 this.$(".expand-collapse").attr("src", this.templateHelpers.images.expandImage);
-                this.trigger("collapsed", this);
+                this.trigger("collapsed");
             } else {
                 this.expanded = true;
                 this.$el.addClass("expanded");
                 this.$(".expand-collapse").attr("src", this.templateHelpers.images.collapseImage);
-                this.trigger("expanded", this);
+                this.trigger("expanded");
             }
 
             // If the event handler was executed, update the time the event was triggered.
