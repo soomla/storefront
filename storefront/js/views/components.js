@@ -84,7 +84,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         constructor : function(options) {
             ListItemView.prototype.constructor.apply(this, arguments);
             _.bindAll(this, "onSelect");
-            this.model.on("change:equipped", this.render);
+            this.model.on({
+                "change:equipped" : this.render,
+                "change:balance"  : function() {
+                    if (this.model.get("balance") > 0)
+                        this.collapse();
+                }
+            }, this);
 
             this.expanded = false;
             this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
@@ -107,18 +113,21 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 return;
             }
 
-            if (this.expanded) {
-                this.expanded = false;
-                if (this.onCollapse) this.onCollapse();
-                this.trigger("collapsed");
-            } else {
-                this.expanded = true;
-                if (this.onExpand) this.onExpand();
-                this.trigger("expanded");
-            }
+            // Decide whether to expand or collapse
+            this.expanded ? this.collapse() : this.expand();
 
             // If the event handler was executed, update the time the event was triggered.
             this.lastEventTime = currentTime;
+        },
+        expand : function() {
+            this.expanded = true;
+            if (this.onExpand) this.onExpand();
+            this.trigger("expanded");
+        },
+        collapse : function() {
+            this.expanded = false;
+            if (this.onCollapse) this.onCollapse();
+            this.trigger("collapsed");
         },
         eventInterval : 500
     });
