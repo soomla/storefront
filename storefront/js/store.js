@@ -45,9 +45,10 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                     categories      = this.store.get("categories");
 
                 // Add visual assets into the models
-                currencies.each(    function(currency)  { currency.set("imgFilePath", json.modelAssets.virtualCurrencies[currency.id]); });
-                virtualGoods.each(  function(good)      { good.set("imgFilePath", json.modelAssets.virtualGoods[good.id]);              });
-                currencyPacks.each( function(pack)      { pack.set("imgFilePath", json.modelAssets.currencyPacks[pack.id]);             });
+                categories.each(    function(category)  {   category.set("imgFilePath", json.modelAssets.categories[category.id]);          });
+                currencies.each(    function(currency)  {   currency.set("imgFilePath", json.modelAssets.virtualCurrencies[currency.id]);   });
+                virtualGoods.each(  function(good)      {       good.set("imgFilePath", json.modelAssets.virtualGoods[good.id]);            });
+                currencyPacks.each( function(pack)      {       pack.set("imgFilePath", json.modelAssets.currencyPacks[pack.id]);           });
 
                 // Add visual assets into categories.  Check if category assets are used first
                 if (json.modelAssets.categories) {

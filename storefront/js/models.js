@@ -1,5 +1,10 @@
 define(["backboneRelational"], function() {
 
+    var Category = Backbone.RelationalModel.extend({
+        defaults : {
+            name    : "General"
+        }
+    });
     var CurrencyPack = Backbone.RelationalModel.extend({
         idAttribute : "itemId"
     });
@@ -27,13 +32,23 @@ define(["backboneRelational"], function() {
     });
 
 
-    var VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency     }),
+    var CategoryCollection          = Backbone.Collection.extend({ model : Category     }),
+        VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency     }),
         CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  });
 
 
     var Store = Backbone.RelationalModel.extend({
         relations: [
+            {
+                type: Backbone.HasMany,
+                key: 'categories',
+                relatedModel: Category,
+                collectionType: CategoryCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            },
             {
                 type: Backbone.HasMany,
                 key: 'virtualGoods',
