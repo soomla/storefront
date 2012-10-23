@@ -219,6 +219,53 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
+
+    // TODO: Write unit test for this component
+    var CarouselView = BaseCollectionView.extend({
+        constructor : function(options) {
+            BaseCollectionView.prototype.constructor.apply(this, arguments);
+            this.buildChildViews();
+            this.activeChild = this.children[0];
+        },
+        showNext : function() {
+            var i = _.indexOf(this.children, this.activeChild);
+            if (i == this.children.length - 1) {
+                this.activeChild.$el.hide();
+                this.activeChild = this.children[0];
+                this.activeChild.$el.show();
+            } else {
+                this.activeChild.$el.hide();
+                this.activeChild = this.children[i + 1];
+                this.activeChild.$el.show();
+            }
+        },
+        renderChildren : function() {
+            var $this = this;
+
+            // Render each item and append it
+            _.each(this.children, function(view) {
+                $this.getChildrenContainer().append(view.render().el);
+            });
+        },
+        // TODO: Refactor
+        render : function() {
+            this.renderChildren();
+            _.each(this.children, function(view) {
+                view.$el.hide();
+            });
+            this.activeChild.$el.show();
+            return this;
+        },
+        // TODO: Refactor
+        getChildrenContainer : function() {
+            var container = this.options.childrenContainer || this.childrenContainer || this.$el;
+            if (_.isString(container)) container = this.$(container);
+            return container;
+        }
+
+    });
+
+
     // TODO: Write unit test for this component
     var BaseStoreView = Backbone.View.extend({
         serializeData : function() {
@@ -259,6 +306,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         BaseCollectionView      : BaseCollectionView,
         CollectionListView      : CollectionListView,
         CollectionGridView      : CollectionGridView,
+        CarouselView            : CarouselView,
         BaseStoreView           : BaseStoreView
     };
 });
