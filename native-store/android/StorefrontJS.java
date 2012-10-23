@@ -58,7 +58,11 @@ public class StorefrontJS{
             Log.d(TAG, "wantsToBuyCurrencyPacks " + productId);
         }
 
-        StoreController.getInstance().buyCurrencyPack(productId);
+        try {
+            StoreController.getInstance().buyCurrencyPack(productId);
+        } catch (VirtualItemNotFoundException e) {
+            mActivity.sendToJS("unexpectedError", "");
+        }
     }
 
     /**
