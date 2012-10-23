@@ -109,13 +109,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
 
             if (this.expanded) {
                 this.expanded = false;
-                this.$el.removeClass("expanded");
-                this.$(".expand-collapse").attr("src", this.templateHelpers.images.expandImage);
+                if (this.onCollapse) this.onCollapse();
                 this.trigger("collapsed");
             } else {
                 this.expanded = true;
-                this.$el.addClass("expanded");
-                this.$(".expand-collapse").attr("src", this.templateHelpers.images.collapseImage);
+                if (this.onExpand) this.onExpand();
                 this.trigger("expanded");
             }
 
