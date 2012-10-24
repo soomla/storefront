@@ -221,48 +221,41 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
 
 
     // TODO: Write unit test for this component
-    var CarouselView = BaseCollectionView.extend({
-        constructor : function(options) {
-            BaseCollectionView.prototype.constructor.apply(this, arguments);
-            this.buildChildViews();
-            this.activeChild = this.children[0];
+    var CarouselView = Marionette.CompositeView.extend({
+        initialize : function() {
+            _.bindAll(this, "switchActive");
+        },
+        events : {
+            "click .next"       : "showNext",
+            "click .previous"   : "showPrevious"
         },
         showNext : function() {
-            var i = _.indexOf(this.children, this.activeChild);
-            if (i == this.children.length - 1) {
-                this.activeChild.$el.hide();
-                this.activeChild = this.children[0];
-                this.activeChild.$el.show();
-            } else {
-                this.activeChild.$el.hide();
-                this.activeChild = this.children[i + 1];
-                this.activeChild.$el.show();
-            }
+            this.activeIndex += 1;
+            if (this.activeIndex == this.keys.length) this.activeIndex = 0;
+            this.switchActive();
         },
-        renderChildren : function() {
-            var $this = this;
+        showPrevious : function() {
+            this.activeIndex -= 1;
+            if (this.activeIndex == -1) this.activeIndex = this.keys.length - 1;
+            this.switchActive();
+        },
+        switchActive : function() {
+            this.activeChild.$el.hide();
+            this.activeChild = this.children[this.keys[this.activeIndex]];
+            this.activeChild.$el.show();
+        },
+        onRender : function() {
+            // Initialize variables necessary for next / previous functionality
+            this.keys        = _.keys(this.children);
+            this.activeIndex = 0;
+            this.activeChild = this.children[this.keys[this.activeIndex]];
 
-            // Render each item and append it
-            _.each(this.children, function(view) {
-                $this.getChildrenContainer().append(view.render().el);
-            });
-        },
-        // TODO: Refactor
-        render : function() {
-            this.renderChildren();
             _.each(this.children, function(view) {
                 view.$el.hide();
             });
             this.activeChild.$el.show();
             return this;
-        },
-        // TODO: Refactor
-        getChildrenContainer : function() {
-            var container = this.options.childrenContainer || this.childrenContainer || this.$el;
-            if (_.isString(container)) container = this.$(container);
-            return container;
         }
-
     });
 
 
