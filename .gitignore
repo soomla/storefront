@@ -35,7 +35,7 @@ dwsync.xml
 intermediate
 publish
 .idea
-soomla_ui
+storefront/themes
 node_modules
 
 # build script local files
