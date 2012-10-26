@@ -261,6 +261,28 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
 
     // TODO: Write unit test for this component
     var BaseStoreView = Backbone.View.extend({
+        constructor : function(options){
+
+            if (options && (!options.model || !options.model.get("theme"))) {
+                var err = new Error("You must initialize the store with a model and make sure it has a theme");
+                err.name = "InvalidInitializationError";
+                throw err;
+            }
+
+
+            // Bind native API
+            this.nativeAPI = options.nativeAPI || window.SoomlaNative;
+            _.bindAll(this, "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyCurrencyPacks", "render");
+
+            // Assign theme before initialize function is called
+            this.theme = options.model.get("theme");
+
+            // Apply original Backbone.View constructor
+            Backbone.View.prototype.constructor.apply(this, arguments);
+
+            // Balance currency balance changes
+            this.model.get("virtualCurrencies").on("change:balance", this.updateBalance, this);
+        },
         serializeData : function() {
             return _.extend({}, this.theme, {currencies : this.model.get("virtualCurrencies").toJSON()});
         },
