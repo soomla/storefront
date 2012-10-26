@@ -219,6 +219,46 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
+
+    // TODO: Write unit test for this component
+    var CarouselView = Marionette.CompositeView.extend({
+        initialize : function() {
+            _.bindAll(this, "switchActive");
+        },
+        events : {
+            "click .next"       : "showNext",
+            "click .previous"   : "showPrevious"
+        },
+        showNext : function() {
+            this.activeIndex += 1;
+            if (this.activeIndex == this.keys.length) this.activeIndex = 0;
+            this.switchActive();
+        },
+        showPrevious : function() {
+            this.activeIndex -= 1;
+            if (this.activeIndex == -1) this.activeIndex = this.keys.length - 1;
+            this.switchActive();
+        },
+        switchActive : function() {
+            this.activeChild.$el.hide();
+            this.activeChild = this.children[this.keys[this.activeIndex]];
+            this.activeChild.$el.show();
+        },
+        onRender : function() {
+            // Initialize variables necessary for next / previous functionality
+            this.keys        = _.keys(this.children);
+            this.activeIndex = 0;
+            this.activeChild = this.children[this.keys[this.activeIndex]];
+
+            _.each(this.children, function(view) {
+                view.$el.hide();
+            });
+            this.activeChild.$el.show();
+            return this;
+        }
+    });
+
+
     // TODO: Write unit test for this component
     var BaseStoreView = Backbone.View.extend({
         serializeData : function() {
@@ -259,6 +299,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         BaseCollectionView      : BaseCollectionView,
         CollectionListView      : CollectionListView,
         CollectionGridView      : CollectionGridView,
+        CarouselView            : CarouselView,
         BaseStoreView           : BaseStoreView
     };
 });
