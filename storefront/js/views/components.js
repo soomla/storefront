@@ -273,6 +273,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             dialog.on("cancel buyMore", dialog.close).on("buyMore", this.showCurrencyStore);
             return dialog.render();
         },
+        updateBalance : function(model) {
+            this.$("#balance-container label").html(model.get("balance"));
+        },
         render : function() {
             var context = this.serializeData();
             this.$el.html(this.options.template(context));
