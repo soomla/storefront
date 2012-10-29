@@ -26,7 +26,7 @@
 
 + (StorefrontController*)getInstance;
 
-- (void)openStoreWithParentViewController:(UIViewController *)viewController andStorefrontInfoJSON:(NSString*)storefrontJSON;
+- (void)openStoreWithParentViewController:(UIViewController *)viewController;
 
 
 @end
