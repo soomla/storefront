@@ -30,9 +30,30 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class StorefrontController implements IStoreEventHandler {
 
-    public void openStore(Activity activity, String storefrontJSON){
+    public void openStore(Activity activity){
+        String storefrontJSON = "";
+        try {
+            InputStream in = activity.getAssets().open("theme.json");
+
+            byte[] buffer = new byte[in.available()];
+            in.read(buffer);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            out.write(buffer);
+            out.close();
+            in.close();
+
+            storefrontJSON = out.toString();
+        } catch (IOException e) {
+            Log.e(TAG, "Can't read JSON storefront file. Please add theme.json to your 'assets' folder.");
+            return;
+        }
+
         StorefrontInfo.getInstance().initialize(storefrontJSON);
 
         Intent intent = new Intent(activity.getApplicationContext(), StorefrontActivity.class);
