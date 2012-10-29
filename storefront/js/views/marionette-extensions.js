@@ -56,7 +56,7 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
             this.triggerMethod("before:close");
 
             // Allow the DOM node not to be removed but just unbound from events
-            if (this.noRemove) {
+            if (this.noRemove || this.options.noRemove) {
                 this.$el.off()
             } else {
                 this.remove();
