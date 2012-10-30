@@ -41,9 +41,12 @@
     return _instance;
 }
 
-- (void)openStoreWithParentViewController:(UIViewController *)viewController andStorefrontInfoJSON:(NSString*)storefrontJSON{
+- (void)openStoreWithParentViewController:(UIViewController *)viewController{
 
-    [[StorefrontInfo getInstance] initializeWithJSON:storefrontJSON];
+    NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"theme" ofType:@"json"];
+    NSString *json = [NSString stringWithContentsOfFile:jsonPath encoding:NSUTF8StringEncoding error:nil];
+    
+    [[StorefrontInfo getInstance] initializeWithJSON:json];
     
 //    UIStoryboard *storyboard = [viewController storyboard];
     sfViewController = [[StorefrontViewController alloc] init];
