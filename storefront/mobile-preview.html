@@ -64,30 +64,51 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             else
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         };
-        var storeDefinition = getParameterByName("store_def") || "themes/basic/basic.json";
 
-        $.ajax({
-            url : storeDefinition,
-            error : function(jqXHR, textStatus, errorThrown) {
-                alert("Can't retrieve the default JSON from the server.  Looks like you're on your own filling in the form :-)");
-            },
-            success : function(data) {
+        var modelDefinition = getParameterByName("store_def"),
+            themeDefinition = modelDefinition.replace(/theme\/.*json$/, "theme.json"),
+            themePath       = modelDefinition.match(/themes\/.+\/theme/)[0],
+            regexp          = /^\.\.\/theme/,
+            modelAjax       = $.ajax({url : modelDefinition, dataType : "json"}),
+            themeAjax       = $.ajax({url : themeDefinition, dataType : "json"});
 
-                // Initialize store
-                SoomlaJS.initialize(data);
 
-                // Inject prices and balances
-                var goods = {};
-                _.each(data.virtualGoods, function(good) {
-                    goods[good.itemId] = {
-                        balance : 0,
-                        price : good.priceModel.values
-                    };
-                });
-                SoomlaJS.goodsUpdated(goods);
-            },
-            dataType : "json"
+        var updateJsonPaths = function(json) {
+            _.each(json, function(value, key) {
+                if (_.isObject(value)) {
+                    // Recursive call
+                    updateJsonPaths(value);
+                } else if (_.isString(value) && value.match(regexp)) {
+                    // Replace the path
+                    json[key] = value.replace(regexp, themePath);
+                }
+            });
+        };
+
+        // Request both JSONs
+        $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
+
+            // Replace paths with
+            var model = modelData[0], theme = themeData[0];
+            updateJsonPaths(theme);
+            var data = _.extend({}, model, theme);
+
+            // Initialize store
+            SoomlaJS.initialize(data);
+
+            // Inject prices and balances
+            var goods = {};
+            _.each(data.virtualGoods, function(good) {
+                goods[good.itemId] = {
+                    balance : 0,
+                    price : good.priceModel.values
+                };
+            });
+            SoomlaJS.goodsUpdated(goods);
+        }).fail(function(modelData, themeData) {
+            alert("Can't retrieve the default JSON from the server.  Looks like you're on your own filling in the form :-)");
         });
+
     });
 </script>
 <script data-main="js/main-store" src="js/libs/require.js"></script>
