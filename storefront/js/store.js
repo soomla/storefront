@@ -65,15 +65,18 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 if (!json) {
                     throw new Error("No JSON passed to `initialize`");
                 }
-                var attributes = [  "cssFiles", "jsFiles", "templatePath", "theme", "virtualGoods",
-                                    "virtualCurrencies", "currencyPacks", "categories"];
+                var attributes = ["template", "modelAssets", "theme", "virtualGoods", "virtualCurrencies", "currencyPacks", "categories"];
                 _.each(attributes, function(attribute) {
                     if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
+                });
+                var templateAttributes = ["cssFiles", "jsFiles", "htmlTemplatesPath"];
+                _.each(templateAttributes, function(attribute) {
+                    if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
-                _.each(json.cssFiles, function(file) {
+                _.each(json.template.cssFiles, function(file) {
                     var isLess  = file.match(/\.less$/),
                         type    = isLess ? "text/less" : "text/css",
                         link    = $("<style>").appendTo($("head"));
@@ -86,13 +89,13 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
 
                 // Set template base path
-                Handlebars.setTemplatePath(json.templatePath);
+                Handlebars.setTemplatePath(json.template.htmlTemplatesPath);
 
                 // Initialize model
                 this.newStore(json);
                 var $this = this;
 
-                require(json.jsFiles, function(ThemeViews) {
+                require(json.template.jsFiles, function(ThemeViews) {
 
                     // Add pointing device events
                     addPointingDeviceEvents(ThemeViews.StoreView.prototype.events, {
