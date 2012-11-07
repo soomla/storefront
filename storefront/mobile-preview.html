@@ -68,7 +68,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         var modelDefinition = getParameterByName("store_def"),
             themeDefinition = modelDefinition.replace(/theme\/.*json$/, "theme.json"),
             themePath       = modelDefinition.match(/themes\/.+\/theme/)[0],
-            regexp          = /^\.\.\/theme/,
+            regexp          = /\.\.\/theme/,
             modelAjax       = $.ajax({url : modelDefinition, dataType : "json"}),
             themeAjax       = $.ajax({url : themeDefinition, dataType : "json"});
 
