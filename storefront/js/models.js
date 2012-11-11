@@ -16,18 +16,11 @@ define(["backboneRelational"], function() {
         },
         idAttribute : "itemId"
     });
-    var VirtualGood             = Backbone.RelationalModel.extend({
+    var VirtualGood = Backbone.RelationalModel.extend({
         idAttribute : "itemId",
         defaults : {
             balance     : 0,
-            equipped    : false,
-            consumable  : true
-        },
-        initialize : function() {
-            _.bindAll(this, "isConsumable");
-        },
-        isConsumable : function() {
-            return this.get("consumable");
+            equipped    : false
         }
     });
 

@@ -103,10 +103,6 @@ define("generator.spec", ["models", "native-api", "components"], function (Model
                 expect(new Models.VirtualGood().get("balance")).toEqual(0);
             });
 
-            it("should be consumable by default", function() {
-                expect(new Models.VirtualGood().isConsumable()).toEqual(true);
-            });
-
             it("should not be equipped by default", function() {
                 expect(new Models.VirtualGood().get("equipped")).toEqual(false);
             });
