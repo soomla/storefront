@@ -42,7 +42,7 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 var currencies      = this.store.get("virtualCurrencies"),
                     virtualGoods    = this.store.get("virtualGoods"),
                     currencyPacks   = this.store.get("currencyPacks"),
-                    categories      = this.store.get("categories");
+                    categories      = this.store.get("categories") || {};
 
                 // Add visual assets into the models
                 categories.each(    function(category)  {   category.set("imgFilePath", json.modelAssets.categories[category.id]);          });
