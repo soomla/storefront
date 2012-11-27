@@ -112,6 +112,10 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                         template : Handlebars.getTemplate("template")
                     }).render();
 
+
+                    // place modules on SoomlaJS namespace for the designer to use
+                    $this.Models = Models;
+
                     if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
 
                 });
