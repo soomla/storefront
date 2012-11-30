@@ -309,7 +309,27 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 });
             }
             if (this.onRender) this.onRender();
+            this.adjustZoom();
             return this;
+        },
+        adjustZoom : function() {
+            if (this.zoomFunction) {
+                // Adjust zoom to fit nicely in viewport
+                // This helps cope with various viewports, i.e. mobile, tablet...
+                var $this = this;
+                var adjustBodySize = function() {
+                    var zoomFactor      = $this.zoomFunction(),
+                        zoomPercentage  = (zoomFactor * 100) + "%";
+                    $("body").css({
+                        "zoom"                      : zoomFactor,
+                        "-ms-text-size-adjust"      : zoomPercentage,
+                        "-moz-text-size-adjust"     : zoomPercentage,
+                        "-webkit-text-size-adjust"  : zoomPercentage
+                    });
+                };
+                $(window).resize(adjustBodySize);
+                adjustBodySize();
+            }
         }
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
