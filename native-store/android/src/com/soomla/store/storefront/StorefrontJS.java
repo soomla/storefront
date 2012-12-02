@@ -15,6 +15,8 @@
  */
 package com.soomla.store.storefront;
 
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
 import com.soomla.store.StoreConfig;
@@ -176,6 +178,23 @@ public class StorefrontJS{
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
             Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
+        }
+    }
+
+    public void playPop() {
+        if (StoreConfig.debug){
+            Log.d(TAG, "playPop");
+        }
+
+        try {
+            MediaPlayer mp = new MediaPlayer();
+            AssetFileDescriptor descriptor = mActivity.getAssets().openFd( "theme/sounds/pop.mp3" );
+            mp.setDataSource( descriptor.getFileDescriptor(), descriptor.getStartOffset(),  descriptor.getLength() );
+            descriptor.close();
+            mp.prepare();
+            mp.start();
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't play pop. error: " + e.getMessage());
         }
     }
 
