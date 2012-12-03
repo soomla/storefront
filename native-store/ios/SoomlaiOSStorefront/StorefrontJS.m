@@ -38,6 +38,13 @@
     self = [super init];
     if (self){
         self.sfViewController = sfvc;
+        
+        NSString *popFilePath = [[NSBundle mainBundle] pathForResource:@"pop" ofType:@"mp3"];
+        NSURL *soundFileURL = [NSURL fileURLWithPath:popFilePath];
+        
+        player = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:nil];
+        player.volume = 1.0;
+        player.numberOfLoops = 0;
     }
     
     return self;
@@ -175,6 +182,14 @@
             NSLog(@"storeInitialized");
             
             [sfViewController loadWebView];
+        }
+        
+        /**
+         * Plays a "pop" sound
+         */
+        if([(NSString *)[components objectAtIndex:1] isEqualToString:@"playPop"])
+		{
+            [player play];
         }
 
         
