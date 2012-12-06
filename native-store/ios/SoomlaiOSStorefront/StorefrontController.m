@@ -24,6 +24,8 @@
 #import "VirtualCurrencyStorage.h"
 #import "JSONKit.h"
 #import "StorefrontInfo.h"
+#import "AppStoreItem.h"
+#import "StoreInfo.h"
 
 @implementation StorefrontController
 
@@ -53,7 +55,7 @@
     
     [viewController presentViewController:sfViewController animated:YES completion:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualCurrencyPackPurchased:) name:EVENT_VIRTUAL_CURRENCY_PACK_PURCHASED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualCurrencyPackPurchased:) name:EVENT_APPSTORE_PURCHASED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodPurchased:) name:EVENT_VIRTUAL_GOOD_EQUIPPED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodEquipped:) name:EVENT_VIRTUAL_GOOD_UNEQUIPPED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodUnEquipped:) name:EVENT_VIRTUAL_GOOD_PURCHASED object:nil];
@@ -64,9 +66,10 @@
 
 - (void)virtualCurrencyPackPurchased:(NSNotification*)notification{
     NSDictionary* userInfo = notification.userInfo;
-    VirtualCurrencyPack* pack = [userInfo objectForKey:@"VirtualCurrencyPack"];
+    AppStoreItem* apItem = [userInfo objectForKey:@"AppStoreItem"];
+    VirtualCurrencyPack* pack = [[StoreInfo getInstance] currencyPackWithProductId:apItem.productId];
     VirtualCurrency* currency = pack.currency;
-    
+
     int balance = [[[StorageManager getInstance] virtualCurrencyStorage] getBalanceForCurrency:currency];
     NSDictionary* currencyBalanceDict = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithInt:balance], currency.itemId,
