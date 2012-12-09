@@ -102,8 +102,6 @@ public class StorefrontJS{
                 mActivity.finish();
             }
         });
-
-        StoreController.getInstance().storeClosing();
     }
 
     /**

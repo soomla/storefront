@@ -39,9 +39,6 @@ public class StorefrontActivity extends Activity {
 
         StorefrontController.getInstance().registerStorefrontActivity(this);
 
-        setRequestedOrientation(StorefrontInfo.getInstance().isOrientationLandscape() ?
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mProgressDialog = ProgressDialog.show(StorefrontActivity.this, "",
                 "Loading. Please wait...", true);
 
