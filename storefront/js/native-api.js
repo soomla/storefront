@@ -8,5 +8,6 @@ define({
     wantsToEquipGoods       : function(model) {},
     wantsToUnequipGoods     : function(model) {},
     storeInitialized        : function() {},
-    wantsToLeaveStore       : function() {}
+    wantsToLeaveStore       : function() {},
+    requestEarnedCurrency   : function(provider) {}
 });
