@@ -26,7 +26,7 @@ define({
         SoomlaJS.storeView.openDialog(currency);
     },
     unexpectedError : function() {
-        alert("An unexpected error has occurred.  Please try again.");
+        console.log("An unexpected error has occurred.  Please try again.");
     },
     notEnoughGoods : function(itemId) {
         var good = SoomlaJS.store.get("virtualGoods").get(itemId);
