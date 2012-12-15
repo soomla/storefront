@@ -70,9 +70,9 @@ public class StorefrontController implements IStoreEventHandler {
     public void onMarketPurchase(GoogleMarketItem googleMarketItem) {
         try {
             JSONObject jsonObject = new JSONObject();
-            VirtualCurrency virtualCurrency = StoreInfo.getInstance().getPackByGoogleProductId(
+            VirtualCurrency virtualCurrency = StoreInfo.getPackByGoogleProductId(
                     googleMarketItem.getProductId()).getVirtualCurrency();
-            jsonObject.put(virtualCurrency.getItemId(), StorageManager.getInstance()
+            jsonObject.put(virtualCurrency.getItemId(), StorageManager
                     .getVirtualCurrencyStorage().getBalance(virtualCurrency));
 
             mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());

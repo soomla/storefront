@@ -114,7 +114,7 @@ public class StorefrontJS{
         mActivity.JSuiReady();
 
         try {
-            JSONObject storeJSONObject = StoreInfo.getInstance().toJSONObject();
+            JSONObject storeJSONObject = StoreInfo.toJSONObject();
             JSONObject storefrontJSONObject = new JSONObject(StorefrontInfo.getInstance().getStorefrontJSON());
             Iterator<?> keys = storefrontJSONObject.keys();
             while(keys.hasNext())
@@ -202,19 +202,19 @@ public class StorefrontJS{
     public void updateContentInJS(){
         try {
             JSONObject jsonObject = new JSONObject();
-            for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
+            for(VirtualCurrency virtualCurrency : StoreInfo.getVirtualCurrencies()){
                 jsonObject.put(virtualCurrency.getItemId(),
-                        StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency));
+                        StorageManager.getVirtualCurrencyStorage().getBalance(virtualCurrency));
             }
 
             mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
 
             jsonObject = new JSONObject();
-            for (VirtualGood good : StoreInfo.getInstance().getVirtualGoods()){
+            for (VirtualGood good : StoreInfo.getVirtualGoods()){
                 JSONObject updatedValues = new JSONObject();
-                updatedValues.put("balance", StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good));
+                updatedValues.put("balance", StorageManager.getVirtualGoodsStorage().getBalance(good));
                 updatedValues.put("price", good.getCurrencyValuesAsJSONObject());
-                updatedValues.put("equipped", StorageManager.getInstance().getVirtualGoodsStorage().isEquipped(good));
+                updatedValues.put("equipped", StorageManager.getVirtualGoodsStorage().isEquipped(good));
 
                 jsonObject.put(good.getItemId(), updatedValues);
             }
