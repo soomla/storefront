@@ -133,6 +133,7 @@ define(["backboneRelational"], function() {
         Store                       : Store,
         Currency                    : Currency,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
-        CurrencyPacksCollection     : CurrencyPacksCollection
+        CurrencyPacksCollection     : CurrencyPacksCollection,
+        RelationalModel             : Backbone.RelationalModel
     };
 });
