@@ -21,6 +21,9 @@ define(["backboneRelational"], function() {
         defaults : {
             balance     : 0,
             equipped    : false
+        },
+        getCurrencyId : function() {
+            return _.keys(this.get("priceModel").values)[0];
         }
     });
 
@@ -110,15 +113,13 @@ define(["backboneRelational"], function() {
                     // TODO: Support passing multiple prices in different currencies
                     // Currently this code always takes the currency of the first price it encounters
                     // regardless of the number of prices passed
-                    var currencyItemId;
+                    var priceModel = _.clone(good.get("priceModel"));
                     if (_.isArray(attributes.price)) {
-                        currencyItemId = _.keys(attributes.price[0])[0];
-                        good.set("price", attributes.price[0][currencyItemId]);
+                        _.each(attributes.price, function(price, currency) {priceModel.values[currency] = price; });
                     } else {
-                        currencyItemId = _.keys(attributes.price)[0];
-                        good.set("price", attributes.price[currencyItemId]);
+                        if (priceModel.type === "static") priceModel.values = attributes.price;
                     }
-                    good.set("currency", $this.get("virtualCurrencies").get(currencyItemId).toJSON());
+                    good.set("priceModel", priceModel);
                 }
             });
             return this;

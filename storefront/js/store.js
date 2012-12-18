@@ -35,29 +35,6 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
         };
 
         window.SoomlaJS = _.extend({}, jsAPI, {
-            // TODO: Refactor function
-            newStore : function(json) {
-
-                this.store          = new Models.Store(json);
-                var currencies      = this.store.get("virtualCurrencies"),
-                    virtualGoods    = this.store.get("virtualGoods"),
-                    currencyPacks   = this.store.get("currencyPacks"),
-                    categories      = this.store.get("categories") || {};
-
-                // Add visual assets into the models
-                categories.each(    function(category)  {   category.set("imgFilePath", json.modelAssets.categories[category.id]);          });
-                currencies.each(    function(currency)  {   currency.set("imgFilePath", json.modelAssets.virtualCurrencies[currency.id]);   });
-                virtualGoods.each(  function(good)      {       good.set("imgFilePath", json.modelAssets.virtualGoods[good.id]);            });
-                currencyPacks.each( function(pack)      {       pack.set("imgFilePath", json.modelAssets.currencyPacks[pack.id]);           });
-
-                // Add visual assets into categories.  Check if category assets are used first
-                if (json.modelAssets.categories) {
-                    _.each(categories, function(category) {
-                        category.imgFilePath = json.modelAssets.categories[category.id];
-                    });
-                    this.store.set("categories", categories);
-                }
-            },
             // The native UI is loaded and the html needs to be rendered now
             initialize : function(json) {
 
@@ -92,7 +69,7 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 Handlebars.setTemplatePath(json.template.htmlTemplatesPath);
 
                 // Initialize model
-                this.newStore(json);
+                this.store = new Models.Store(json);
                 var $this = this;
 
                 require(json.template.jsFiles, function(ThemeViews) {
@@ -121,7 +98,8 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 });
 
                 return this.store;
-            }
+            },
+            Models : Models
         });
 
         // Notify native code that we're initialized only if an interface exists

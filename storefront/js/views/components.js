@@ -27,7 +27,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         tagName : "li",
         initialize : function() {
             _.bindAll(this, "onBeforeRender");
-            this.model.on("change:balance change:price change:currency", this.render);
+            this.model.on("change:balance change:priceModel", this.render);
         },
         triggers : {
             touchend : "selected"
@@ -45,7 +45,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
     var EquippableListItemView = ListItemView.extend({
         initialize : function() {
             _.bindAll(this, "onBeforeRender", "bought", "equipped");
-            this.model.on("change:price change:currency", this.render);
+            this.model.on("change:priceModel", this.render);
             this.model.on("change:balance", this.bought);
             this.model.on("change:equipped", this.equipped);
         },
