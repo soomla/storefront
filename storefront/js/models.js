@@ -1,19 +1,6 @@
 define(["backboneRelational"], function() {
 
-    var Category = Backbone.RelationalModel.extend({
-        defaults : {
-            name    : "General"
-        }
-    });
     var CurrencyPack = Backbone.RelationalModel.extend({
-        idAttribute : "itemId"
-    });
-    var Currency = Backbone.RelationalModel.extend({
-        defaults : {
-            name    : "coins",
-            balance : 0,
-            itemId  : "currency_coin"
-        },
         idAttribute : "itemId"
     });
     var VirtualGood = Backbone.RelationalModel.extend({
@@ -33,6 +20,42 @@ define(["backboneRelational"], function() {
         CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  });
 
+    var Currency = Backbone.RelationalModel.extend({
+        defaults : {
+            name    : "coins",
+            balance : 0,
+            itemId  : "currency_coin"
+        },
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: 'packs',
+                relatedModel: CurrencyPack,
+                collectionType: CurrencyPacksCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            }
+        ],
+        idAttribute : "itemId"
+    });
+
+    var Category = Backbone.RelationalModel.extend({
+        defaults : {
+            name    : "General"
+        },
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: 'goods',
+                relatedModel: VirtualGood,
+                collectionType: VirtualGoodsCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            }
+        ]
+    });
 
     var Store = Backbone.RelationalModel.extend({
         relations: [
@@ -47,35 +70,24 @@ define(["backboneRelational"], function() {
             },
             {
                 type: Backbone.HasMany,
-                key: 'virtualGoods',
-                relatedModel: VirtualGood,
-                collectionType: VirtualGoodsCollection,
-                reverseRelation: {
-                    includeInJSON: 'id'
-                }
-            },
-            {
-                type: Backbone.HasMany,
                 key: 'virtualCurrencies',
                 relatedModel: Currency,
                 collectionType: VirtualCurrencyCollection,
                 reverseRelation: {
                     includeInJSON: 'id'
                 }
-            },
-            {
-                type: Backbone.HasMany,
-                key: 'currencyPacks',
-                relatedModel: CurrencyPack,
-                collectionType: CurrencyPacksCollection,
-                reverseRelation: {
-                    key: 'belongsTo',
-                    includeInJSON: 'id'
-                }
             }
         ],
         initialize : function() {
             _.bindAll(this, "getBalance", "setBalance", "updateVirtualGoods");
+
+            // Create a {ID : good} map with goods from all categories
+            var goodsMap = this.goodsMap = {};
+            this.get("categories").each(function(category) {
+                category.get("goods").each(function(good) {
+                    goodsMap[good.id] = good;
+                });
+            });
         },
         setBalance : function(balances) {
             var model = this.get("virtualCurrencies");
@@ -88,10 +100,10 @@ define(["backboneRelational"], function() {
             return this.get("virtualCurrencies").get(currency).get("balance");
         },
         updateVirtualGoods : function(goods) {
-            var virtualGoods    = this.get("virtualGoods"),
-                $this           = this;
+            var $this = this;
+
             _.each(goods, function(attributes, good) {
-                var good = virtualGoods.get(good);
+                var good = $this.goodsMap[attributes.id];
 
                 if (attributes.balance)
                     good.set("balance", attributes.balance);

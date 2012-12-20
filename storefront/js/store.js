@@ -42,7 +42,7 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                 if (!json) {
                     throw new Error("No JSON passed to `initialize`");
                 }
-                var attributes = ["template", "modelAssets", "theme", "virtualGoods", "virtualCurrencies", "currencyPacks", "categories"];
+                var attributes = ["template", "modelAssets", "theme", "virtualCurrencies", "categories"];
                 _.each(attributes, function(attribute) {
                     if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
                 });
@@ -67,6 +67,30 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                 // Set template base path
                 Handlebars.setTemplatePath(json.template.htmlTemplatesPath);
+
+
+                // In case we're in the old model without a category => goods relationship, normalize.
+                // **********   WARNING   **********
+                // This condition can be removed only if all DB records have been migrated to the new relational model
+                if (json.virtualGoods) {
+                    _.each(json.categories, function(category) {
+                        var categoryGoods = _.filter(json.virtualGoods, (function(item) {return item.categoryId == category.id}));
+                        category.goods = categoryGoods;
+                    });
+                    delete json.virtualGoods;
+                }
+
+                // In case we're in the old model without a currency => packs relationship, normalize.
+                // **********   WARNING   **********
+                // This condition can be removed only if all DB records have been migrated to the new relational model
+                if (json.currencyPacks) {
+                    _.each(json.virtualCurrencies, function(currency) {
+                        var packs = _.filter(json.currencyPacks, (function(item) {return item.currency_itemId == currency.itemId}));
+                        currency.packs = packs;
+                    });
+                    delete json.currencyPacks;
+                }
+
 
                 // Initialize model
                 this.store = new Models.Store(json);

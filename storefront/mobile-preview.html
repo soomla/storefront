@@ -117,11 +117,14 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
             // Inject prices and balances
             var goods = {};
-            _.each(data.virtualGoods, function(good) {
-                goods[good.itemId] = {
-                    balance : 0,
-                    price : good.priceModel.values
-                };
+            _.each(data.categories, function(category) {
+                _.each(category.goods, function(good) {
+                    goods[good.itemId] = {
+                        id : good.itemId,
+                        balance : 0,
+                        price : good.priceModel.values
+                    };
+                });
             });
             SoomlaJS.goodsUpdated(goods);
         }).fail(function(modelData, themeData) {
