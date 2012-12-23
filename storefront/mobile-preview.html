@@ -120,7 +120,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             _.each(data.categories, function(category) {
                 _.each(category.goods, function(good) {
                     goods[good.itemId] = {
-                        id : good.itemId,
                         balance : 0,
                         price : good.priceModel.values
                     };

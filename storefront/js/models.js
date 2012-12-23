@@ -103,7 +103,7 @@ define(["backboneRelational"], function() {
             var $this = this;
 
             _.each(goods, function(attributes, good) {
-                var good = $this.goodsMap[attributes.id];
+                var good = $this.goodsMap[good];
 
                 if (attributes.balance)
                     good.set("balance", attributes.balance);
