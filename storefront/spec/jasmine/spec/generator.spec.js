@@ -72,7 +72,7 @@ define("generator.spec", ["models", "native-api", "components"], function (Model
             });
 
             it("should have 'store_currency' as the default currency itemId", function() {
-                expect(store.get("virtualCurrencies").at(0).get("itemId")).toEqual("currency_coin");
+                expect(store.get("virtualCurrencies").at(0).get("itemId")).toEqual("currency_coins");
             });
 
             it("should start with a balance of zero", function() {

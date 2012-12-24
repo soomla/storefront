@@ -24,7 +24,7 @@ define(["backboneRelational"], function() {
         defaults : {
             name    : "coins",
             balance : 0,
-            itemId  : "currency_coin"
+            itemId  : "currency_coins"
         },
         relations: [
             {
