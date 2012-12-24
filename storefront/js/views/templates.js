@@ -32,7 +32,4 @@ define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
         }
     });
 
-    // Rigger directive for including compiled Handlebars templates.  See grunt.js file
-    //= handlebars-templates
-
 });

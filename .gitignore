@@ -37,6 +37,7 @@ publish
 .idea
 storefront/themes
 node_modules
+dist
 
 # build script local files
 build/buildinfo.properties
