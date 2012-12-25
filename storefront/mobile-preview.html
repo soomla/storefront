@@ -127,7 +127,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             });
             SoomlaJS.goodsUpdated(goods);
         }).fail(function(modelData, themeData) {
-            alert("Can't retrieve the default JSON from the server.  Looks like you're on your own filling in the form :-)");
+            console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
         });
 
     });
