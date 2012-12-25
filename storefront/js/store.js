@@ -111,6 +111,12 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
                         el : $("#main"),
                         callbacks : json ? json.callbacks : {},
                         template : Handlebars.getTemplate("template")
+                    }).on("imagesLoaded", function() {
+
+                        // Notify window when all images are loaded
+                        var evt = document.createEvent('Event');
+                        evt.initEvent('imagesLoaded', true, true);
+                        window.dispatchEvent(evt);
                     }).render();
 
 

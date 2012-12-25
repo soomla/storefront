@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "marionetteExtensions"], function($, Backbone, ViewMixins, Marionette) {
+define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded"], function($, Backbone, ViewMixins, Marionette) {
 
     var BaseView = Marionette.ItemView;
 
@@ -309,6 +309,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 });
             }
             if (this.onRender) this.onRender();
+
+            // When all store images are loaded, trigger an event
+            // TODO: Preload images that aren't visible at first
+            var $this = this;
+            this.$el.imagesLoaded(function() {
+                $this.trigger("imagesLoaded");
+            });
+
             this.adjustZoom();
             return this;
         },
