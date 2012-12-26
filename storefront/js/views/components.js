@@ -232,17 +232,18 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         showNext : function() {
             this.activeIndex += 1;
             if (this.activeIndex == this.keys.length) this.activeIndex = 0;
-            this.switchActive();
+            this.switchActive().trigger("next");
         },
         showPrevious : function() {
             this.activeIndex -= 1;
             if (this.activeIndex == -1) this.activeIndex = this.keys.length - 1;
-            this.switchActive();
+            this.switchActive().trigger("previous");
         },
         switchActive : function() {
             this.activeChild.$el.hide();
             this.activeChild = this.children[this.keys[this.activeIndex]];
             this.activeChild.$el.show();
+            return this;
         },
         onRender : function() {
             // Initialize variables necessary for next / previous functionality
