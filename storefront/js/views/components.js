@@ -292,7 +292,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
                 template : Handlebars.getTemplate("modalDialog"),
                 model : this.dialogModel
             });
-            dialog.on("cancel buyMore", dialog.close).on("buyMore", this.showCurrencyStore);
+
+            var $this = this;
+            dialog.on("cancel buyMore", function() {
+                $this.playSound();
+                dialog.close();
+            }).on("buyMore", function() {
+                $this.playSound().showCurrencyStore();
+            });
             return dialog.render();
         },
         updateBalance : function(model) {

@@ -100,7 +100,7 @@ define(["jquery", "js-api", "native-api", "models", "components", "handlebars", 
 
                     // Add pointing device events
                     addPointingDeviceEvents(ThemeViews.StoreView.prototype.events, {
-                        "click .leave-store"    : "wantsToLeaveStore",
+                        "click .leave-store"    : "leaveStore",
                         "click .buy-more"       : "showCurrencyStore",
                         "click .back"           : "showGoodsStore"
                     });
