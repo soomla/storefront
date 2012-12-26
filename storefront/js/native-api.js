@@ -9,5 +9,6 @@ define({
     wantsToUnequipGoods     : function(model) {},
     storeInitialized        : function() {},
     wantsToLeaveStore       : function() {},
-    requestEarnedCurrency   : function(provider) {}
+    requestEarnedCurrency   : function(provider) {},
+    playPop                 : function() {}
 });

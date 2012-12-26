@@ -68,6 +68,11 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         }
     };
 
+    // Stub this function so it won't show up in the console and block the rest of execution of native calls
+    SoomlaNative = {
+        playPop : function() {}
+    };
+
 
     $(window).load(function() {
 
