@@ -16,5 +16,9 @@ define({
 
         // TODO: Release view bindings and destroy view
         this.nativeAPI.wantsToLeaveStore();
+    },
+    playSound :function() {
+        this.nativeAPI.playPop();
+        return this;
     }
 });
