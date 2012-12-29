@@ -1,6 +1,7 @@
-define("generator.spec", ["models", "native-api", "components"], function (Models, NativeAPI, Components) {
+define("generator.spec", ["models", "components"], function (Models, Components) {
 
-    window.SoomlaNative = NativeAPI;
+    // TODO: Restore the native API stubs that were once loaded as a module
+    // window.SoomlaNative = NativeAPI;
 
     var objectFromString = function(str, value) {
         var keys = str.split(".");

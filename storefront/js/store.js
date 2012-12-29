@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "native-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, NativeAPI, Models, Components, Handlebars, SoomlaIos, Less) {
+define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos, Less) {
 
     // If pointing devices are enable (i.e. in the desktop generator \ mobile preview),
     // extend the views to capture their events.
