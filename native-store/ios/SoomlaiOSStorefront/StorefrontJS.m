@@ -71,7 +71,14 @@
             NSString* productId = [components objectAtIndex:2];
             NSLog(@"wantsToBuyCurrencyPacks %@", productId);
             
-            [[StoreController getInstance] buyCurrencyPackWithProcuctId:productId];
+			@try {
+            	[[StoreController getInstance] buyCurrencyPackWithProcuctId:productId];
+			}
+			
+            @catch (VirtualItemNotFoundException *e) {
+                NSLog(@"Couldn't find a VirtualCurrencyPack with productId: %@. Purchase is cancelled.", productId);
+                [sfViewController sendToJSWithAction:@"unexpectedError" andData:@""];
+            }
         }
         
         /**
@@ -138,7 +145,7 @@
             }
             
             @catch (VirtualItemNotFoundException *e) {
-                NSLog(@"Couldn't find a VirtualGood with itemId: %@. Equipping is cancelled.", itemId);
+                NSLog(@"Couldn't find a VirtualGood with itemId: %@. UnEquipping is cancelled.", itemId);
                 [sfViewController sendToJSWithAction:@"unexpectedError" andData:@""];
             }
         }
