@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import com.soomla.store.IStoreEventHandler;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.StoreEventHandlers;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
@@ -66,23 +67,98 @@ public class StorefrontController implements IStoreEventHandler {
         this.mActivity = storefrontActivity;
     }
 
-    @Override
-    public void onMarketPurchase(GoogleMarketItem googleMarketItem) {
+    public void updateCurrenciesBalanceOnScreen() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            for(VirtualCurrency virtualCurrency : StoreInfo.getVirtualCurrencies()){
+                jsonObject.put(virtualCurrency.getItemId(),
+                        StorageManager.getVirtualCurrencyStorage().getBalance(virtualCurrency));
+            }
+
+            mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
+
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "couldn't generate json to send balances");
+            }
+        }
+    }
+
+    public void updateGoodsBalanceOnScreen() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            for (VirtualGood good : StoreInfo.getVirtualGoods()){
+                JSONObject updatedValues = new JSONObject();
+                updatedValues.put("balance", StorageManager.getVirtualGoodsStorage().getBalance(good));
+                updatedValues.put("price", good.getCurrencyValuesAsJSONObject());
+                updatedValues.put("equipped", StorageManager.getVirtualGoodsStorage().isEquipped(good));
+
+                jsonObject.put(good.getItemId(), updatedValues);
+            }
+
+            mActivity.sendToJS("goodsUpdated", jsonObject.toString());
+
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "couldn't generate json to send balances");
+            }
+        }
+    }
+
+    public void updateManagedItemsStateOnScreen() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            for (GoogleMarketItem googleMarketItem : StoreInfo.getGoogleManagedItems()){
+                JSONObject updatedValues = new JSONObject();
+                updatedValues.put("owned",
+                        StorageManager.getGoogleManagedItemsStorage().googleManagedItemExists(googleMarketItem));
+
+                jsonObject.put(googleMarketItem.getProductId(), updatedValues);
+            }
+
+            mActivity.sendToJS("nonConsumablesUpdated", jsonObject.toString());
+        } catch (JSONException e) {
+            Log.d(TAG, "couldn't generate json to send balances");
+        }
+    }
+
+    public void updateSingleGoogleMarketItemOnScreen(String productId) {
         try {
             JSONObject jsonObject = new JSONObject();
             VirtualCurrency virtualCurrency = StoreInfo.getPackByGoogleProductId(
-                    googleMarketItem.getProductId()).getVirtualCurrency();
+                    productId).getVirtualCurrency();
             jsonObject.put(virtualCurrency.getItemId(), StorageManager
                     .getVirtualCurrencyStorage().getBalance(virtualCurrency));
 
             mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
         } catch (JSONException e) {
             Log.e(TAG, "couldn't generate json to return balance.");
-        } catch (VirtualItemNotFoundException e) {
-            Log.e(TAG, "this is really unexpected. the currency pack associated with the given " +
-                    "GoogleMarketItem is not found. productId: " + googleMarketItem.getProductId());
-            StoreEventHandlers.getInstance().onUnexpectedErrorInStore();
+        } catch (VirtualItemNotFoundException ex) {
+            try {
+                GoogleMarketItem googleMarketItem = StoreInfo.getGoogleManagedItemByProductId(productId);
+
+                JSONObject jsonObject = new JSONObject();
+                JSONObject updatedValues = new JSONObject();
+                updatedValues.put("owned",
+                        StorageManager.getGoogleManagedItemsStorage().googleManagedItemExists(googleMarketItem));
+
+                jsonObject.put(googleMarketItem.getProductId(), updatedValues);
+
+                mActivity.sendToJS("nonConsumablesUpdated", jsonObject.toString());
+            }catch (VirtualItemNotFoundException e) {
+                Log.e(TAG, "this is really unexpected. the currency pack (or managed item) associated with the given " +
+                        "GoogleMarketItem is not found. productId: " + productId);
+                StoreEventHandlers.getInstance().onUnexpectedErrorInStore();
+            } catch (JSONException e) {
+                Log.e(TAG, "couldn't generate json to return balance.");
+            }
+
         }
+    }
+
+    @Override
+    public void onMarketPurchase(GoogleMarketItem googleMarketItem) {
+        updateSingleGoogleMarketItemOnScreen(googleMarketItem.getProductId());
     }
 
     @Override
@@ -137,6 +213,11 @@ public class StorefrontController implements IStoreEventHandler {
 
     @Override
     public void onOpeningStore() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onEarnedCurrencyRequested(String provider) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
