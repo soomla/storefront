@@ -256,7 +256,7 @@ define("generator.spec", ["models", "components"], function (Models, Components)
 
             it("should have Soomla Native API functions defined", function() {
                 expect(SoomlaNative.wantsToBuyVirtualGoods).toBeDefined();
-                expect(SoomlaNative.wantsToBuyCurrencyPacks).toBeDefined();
+                expect(SoomlaNative.wantsToBuyMarketItem).toBeDefined();
                 expect(SoomlaNative.wantsToLeaveStore).toBeDefined();
             });
 

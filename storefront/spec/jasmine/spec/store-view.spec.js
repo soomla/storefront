@@ -15,7 +15,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                 touchendEvent = $.Event("touchend", {originalEvent : {touches : [1]}});
                 nativeAPIStub   = {
                     wantsToBuyVirtualGoods  : sinon.spy(),
-                    wantsToBuyCurrencyPacks : sinon.spy(),
+                    wantsToBuyMarketItem : sinon.spy(),
                     wantsToLeaveStore       : sinon.spy()
                 };
                 theme = {
@@ -211,7 +211,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                             }
                         }
                     });
-                    nativeAPIStub   = {wantsToBuyVirtualGoods : sinon.spy(), wantsToBuyCurrencyPacks : sinon.spy()};
+                    nativeAPIStub   = {wantsToBuyVirtualGoods : sinon.spy(), wantsToBuyMarketItem : sinon.spy()};
 
                     attributes = {
                         model               : modelStub,
@@ -228,7 +228,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                 it("should invoke a currency pack purchase when the 'selected' event is captured from the currency packs sub-view", function() {
                     storeView = new StoreView(attributes).render();
                     storeView.currencyPacksView.triggerSelectedEvent();
-                    expect(nativeAPIStub.wantsToBuyCurrencyPacks.calledWith(modelStub.toJSON().productId)).toBeTruthy();
+                    expect(nativeAPIStub.wantsToBuyMarketItem.calledWith(modelStub.toJSON().productId)).toBeTruthy();
                 });
 
                 it("should update the view when the balance is changed", function() {

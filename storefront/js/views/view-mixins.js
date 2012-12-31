@@ -2,8 +2,8 @@ define({
     wantsToBuyVirtualGoods : function(model) {
         this.nativeAPI.wantsToBuyVirtualGoods(model.toJSON().itemId);
     },
-    wantsToBuyCurrencyPacks : function(model) {
-        this.nativeAPI.wantsToBuyCurrencyPacks(model.toJSON().productId);
+    wantsToBuyMarketItem : function(model) {
+        this.nativeAPI.wantsToBuyMarketItem(model.toJSON().productId);
     },
     wantsToEquipGoods : function(model) {
         this.nativeAPI.wantsToEquipGoods(model.toJSON().itemId);

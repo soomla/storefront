@@ -55,9 +55,9 @@ public class StorefrontJS{
      * The user wants to buy a virtual currency pack.
      * @param productId is the product id of the pack.
      */
-    public void wantsToBuyCurrencyPacks(String productId){
+    public void wantsToBuyMarketItem(String productId){
         if (StoreConfig.debug){
-            Log.d(TAG, "wantsToBuyCurrencyPacks " + productId);
+            Log.d(TAG, "wantsToBuyMarketItem " + productId);
         }
 
         try {

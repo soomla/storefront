@@ -66,10 +66,10 @@
          * The user wants to buy a virtual currency pack.
          * productId is the product id of the pack.
          */
-        if([(NSString *)[components objectAtIndex:1] isEqualToString:@"wantsToBuyCurrencyPacks"])
+        if([(NSString *)[components objectAtIndex:1] isEqualToString:@"wantsToBuyMarketItem"])
 		{
             NSString* productId = [components objectAtIndex:2];
-            NSLog(@"wantsToBuyCurrencyPacks %@", productId);
+            NSLog(@"wantsToBuyMarketItem %@", productId);
             
 			@try {
             	[[StoreController getInstance] buyCurrencyPackWithProcuctId:productId];

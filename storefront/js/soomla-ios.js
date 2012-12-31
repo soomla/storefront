@@ -12,8 +12,8 @@ define([], function() {
         wantsToBuyVirtualGoods : function(itemId) {
             document.location = "soomla:wantsToBuyVirtualGoods:" + itemId;
         },
-        wantsToBuyCurrencyPacks : function(productId) {
-            document.location = "soomla:wantsToBuyCurrencyPacks:" + productId;
+        wantsToBuyMarketItem : function(productId) {
+            document.location = "soomla:wantsToBuyMarketItem:" + productId;
         }
     };
 });
