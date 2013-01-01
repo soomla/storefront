@@ -216,10 +216,10 @@ public class StorefrontController implements IStoreEventHandler {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
+/*    @Override
     public void onEarnedCurrencyRequested(String provider) {
         //To change body of implemented methods use File | Settings | File Templates.
-    }
+    }*/
 
     /** Singleton **/
 
