@@ -15,6 +15,10 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
     addPointingDeviceEvents(Components.BuyOnlyItemView.prototype.triggers, {
         "click"             : "buy"
     });
+    addPointingDeviceEvents(Components.EquippableListItemView.prototype.triggers, {
+        "click .buy"        : "buy",
+        "click .equip"      : "equip"
+    });
     addPointingDeviceEvents(Components.ExpandableListItemView.prototype.triggers, {
         "click .buy"        : "buy"
     });

@@ -68,24 +68,4 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
         }
     });
 
-    // Override Marionette's original "buildItemView" so that
-    // the item view will bubble its events to the collection view
-    _.extend(Marionette.CollectionView.prototype, {
-        // Build an `itemView` for every model in the collection.
-        buildItemView: function(item, ItemView){
-            var itemViewOptions;
-
-            if (_.isFunction(this.itemViewOptions)){
-                itemViewOptions = this.itemViewOptions(item);
-            } else {
-                itemViewOptions = this.itemViewOptions;
-            }
-
-            var options = _.extend({model: item}, itemViewOptions);
-            var view = new ItemView(options).bubbleEventsTo(this);  // Bubble events to collection view
-            return view;
-
-            // TODO: Check if really necessary to manually bubble events from item view
-        }
-    });
 });
