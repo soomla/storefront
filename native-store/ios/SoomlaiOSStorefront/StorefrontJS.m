@@ -28,6 +28,7 @@
 #import "JSONKit.h"
 #import "StoreController.h"
 #import "NotEnoughGoodsException.h"
+#import "StorefrontController.h"
 
 
 @implementation StorefrontJS
@@ -72,11 +73,11 @@
             NSLog(@"wantsToBuyMarketItem %@", productId);
             
 			@try {
-            	[[StoreController getInstance] buyCurrencyPackWithProcuctId:productId];
+            	[[StoreController getInstance] buyAppStoreItemWithProcuctId:productId];
 			}
 			
             @catch (VirtualItemNotFoundException *e) {
-                NSLog(@"Couldn't find a VirtualCurrencyPack with productId: %@. Purchase is cancelled.", productId);
+                NSLog(@"Couldn't find a VirtualCurrencyPack or NonConsumableItem with productId: %@. Purchase is cancelled.", productId);
                 [sfViewController sendToJSWithAction:@"unexpectedError" andData:@""];
             }
         }
@@ -213,34 +214,9 @@
 }
 
 - (void)updateContentInJS{
-    NSMutableDictionary* currenciesDict = [[NSMutableDictionary alloc] init];
-    for(VirtualCurrency* currency in [[StoreInfo getInstance] virtualCurrencies]){
-        int balance = [[[StorageManager getInstance] virtualCurrencyStorage] getBalanceForCurrency:currency];
-        [currenciesDict setValue:[NSNumber numberWithInt:balance] forKey:currency.itemId];
-    }
-    
-    [sfViewController sendToJSWithAction:@"currencyBalanceChanged" andData:[currenciesDict JSONString]];
-
-    NSMutableDictionary* goodsDict = [[NSMutableDictionary alloc] init];
-    for(VirtualGood* good in [[StoreInfo getInstance] virtualGoods]){
-        int balance = [[[StorageManager getInstance] virtualGoodStorage] getBalanceForGood:good];
-        BOOL equipped = [[[StorageManager getInstance] virtualGoodStorage] isGoodEquipped:good];
-        NSDictionary* updatedValues = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSNumber numberWithInt:balance], @"balance",
-                                       [good currencyValues], @"price",
-                                       [NSNumber numberWithBool:equipped], @"equipped",
-                                       nil];
-        [goodsDict setValue:updatedValues forKey:good.itemId];
-    }
-
-    for (NSString* str in goodsDict.allKeys){
-        NSLog(@"%@", str);
-        NSLog(@"%d", ((NSDictionary*)[goodsDict valueForKey:str]).count);
-    }
-    
-    NSLog(@"%@", [goodsDict JSONString]);
-    [sfViewController sendToJSWithAction:@"goodsUpdated" andData:[goodsDict JSONString]];
-
+	[[StorefrontController getInstance] updateCurrenciesBalanceOnScreen];
+	[[StorefrontController getInstance] updateGoodsBalanceOnScreen];
+	[[StorefrontController getInstance] updateNonConsumableItemsStateOnScreen];
 }
 
 @end
