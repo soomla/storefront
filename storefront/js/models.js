@@ -14,11 +14,16 @@ define(["backboneRelational"], function() {
         }
     });
 
+    var NonConsumable = Backbone.RelationalModel.extend({
+        idAttribute : "productId"
+    });
+
 
     var CategoryCollection          = Backbone.Collection.extend({ model : Category     }),
         VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency     }),
         CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
-        VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  });
+        VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  }),
+        NonConsumablesCollection    = Backbone.Collection.extend({ model : NonConsumable  });
 
     var Currency = Backbone.RelationalModel.extend({
         defaults : {
@@ -73,6 +78,15 @@ define(["backboneRelational"], function() {
                 key: 'virtualCurrencies',
                 relatedModel: Currency,
                 collectionType: VirtualCurrencyCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            },
+            {
+                type: Backbone.HasMany,
+                key: 'nonConsumables',
+                relatedModel: NonConsumable,
+                collectionType: NonConsumablesCollection,
                 reverseRelation: {
                     includeInJSON: 'id'
                 }

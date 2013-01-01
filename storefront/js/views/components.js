@@ -38,6 +38,16 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
+    var BuyOnlyItemView = ListItemView.extend({
+        initialize : function() {
+            _.bindAll(this, "onBeforeRender");
+            this.model.on("change", this.render, this);
+        },
+        triggers : {
+            "touchend" : "buy"
+        }
+    });
+
     /**
      * A varitaion of the regular item view which has
      * different UI states - regular, bought and equipped
@@ -353,6 +363,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
     return {
         BaseView                : BaseView,
         ListItemView            : ListItemView,
+        BuyOnlyItemView         : BuyOnlyItemView,
         EquippableListItemView  : EquippableListItemView,
         ExpandableListItemView  : ExpandableListItemView,
         GridItemView            : GridItemView,
