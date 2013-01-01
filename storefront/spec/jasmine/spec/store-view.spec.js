@@ -99,13 +99,6 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                 expect(nativeAPIStub.wantsToLeaveStore.called).toBeTruthy();
             });
 
-            it("should call a 'beforeLeave' callback if provided when tapping the back button", function () {
-                var spy = sinon.spy();
-                storeView = new StoreView(_.extend({}, attributes, { callbacks : { beforeLeave : spy } }));
-                storeView.$(".leave-store").trigger(touchendEvent);
-                expect(spy.called).toBeTruthy();
-            });
-
             it("should show the currency store when 'Buy more' is tapped", function () {
                 var spy = sinon.spy(StoreView.prototype, "showCurrencyStore");
                 storeView = new StoreView(attributes);
@@ -150,12 +143,6 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                     storeView = new StoreView(attributes);
                     storeView.$(".leave-store").click();
                     expect(nativeAPIStub.wantsToLeaveStore.called).toBeTruthy();
-                });
-
-                it("should call a 'beforeLeave' callback if provided when clicking the back button", function () {
-                    storeView = new StoreView(_.extend({}, attributes, { callbacks : { beforeLeave : sinon.spy() } }));
-                    storeView.$(".leave-store").click();
-                    expect(storeView.options.callbacks.beforeLeave.called).toBeTruthy();
                 });
 
                 it("should show the currency store when 'Buy more' is clicked", function () {

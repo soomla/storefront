@@ -240,15 +240,6 @@ define("generator.spec", ["models", "components"], function (Models, Components)
                 expect(SoomlaJS.store.get("virtualCurrencies").length).toEqual(1);
             });
 
-            // TODO: Be able to access SoomlaJS properties even though they are asynchronously set
-            xit("should accept a 'beforeLeave' callback", function() {
-                var callbacks = {
-                    beforeLeave : function() {}
-                };
-                SoomlaJS.initialize({ callbacks : callbacks, template : {name : "empty"}, theme : {name : "empty"} });
-                expect(SoomlaJS.storeView.options.callbacks.beforeLeave).toEqual(callbacks.beforeLeave);
-            });
-
         });
 
 

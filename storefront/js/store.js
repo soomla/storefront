@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos, Less) {
+define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos) {
 
     // If pointing devices are enable (i.e. in the desktop generator \ mobile preview),
     // extend the views to capture their events.
@@ -30,16 +30,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
     });
 
     $(function() {
-
-        var recursiveThemeUpdate = function(obj) {
-            _.each(obj, function(value, key) {
-                if (_.isObject(value)) {
-                    recursiveThemeUpdate(value);
-                } else if (key == "template" && Handlebars.templates[value] && _.isFunction(Handlebars.templates[value])) {
-                    obj[key] = Handlebars.templates[value];
-                }
-            });
-        };
 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
@@ -116,7 +106,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     $this.storeView = new ThemeViews.StoreView({
                         model : $this.store,
                         el : $("#main"),
-                        callbacks : json ? json.callbacks : {},
                         template : Handlebars.getTemplate("template")
                     }).on("imagesLoaded", function() {
 
