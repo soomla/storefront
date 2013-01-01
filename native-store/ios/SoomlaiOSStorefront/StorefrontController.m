@@ -22,10 +22,14 @@
 #import "VirtualCurrencyPack.h"
 #import "StorageManager.h"
 #import "VirtualCurrencyStorage.h"
+#import "NonConsumableStorage.h"
+#import "VirtualGoodStorage.h"	 
+#import "VirtualGood.h"
 #import "JSONKit.h"
 #import "StorefrontInfo.h"
 #import "AppStoreItem.h"
 #import "StoreInfo.h"
+#import "VirtualItemNotFoundException.h"
 
 @implementation StorefrontController
 
@@ -97,7 +101,7 @@
         NSDictionary* updatedValues = [NSDictionary dictionaryWithObjectsAndKeys:
                                        [NSNumber numberWithBool:exists], @"owned",
                                        nil];
-        [nonConsDict setValue:updatedValues forKey:productId];
+        [nonConsDict setValue:updatedValues forKey:apItem.productId];
     }
 	
 	[sfViewController sendToJSWithAction:@"nonConsumablesUpdated" andData:[nonConsDict JSONString]];
@@ -127,6 +131,8 @@
 		    [nonConsDict setValue:updatedValues forKey:productId];
 		
 			[sfViewController sendToJSWithAction:@"nonConsumablesUpdated" andData:[nonConsDict JSONString]];
+		}
+		
 		@catch (VirtualItemNotFoundException *e) {
 	        NSLog(@"Couldn't find an AppStore Item with productId: %@. Purchase is cancelled.", productId);
 	        [sfViewController sendToJSWithAction:@"unexpectedError" andData:@""];
