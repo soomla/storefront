@@ -112,25 +112,28 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            // Replace paths with
-            var model = modelData[0], theme = themeData[0];
-            updateJsonPaths(theme);
-            var data = _.extend({}, model, theme);
+            require(["pointingDeviceSupport"], function(PointingDeviceSupport) {
 
-            // Initialize store
-            SoomlaJS.initialize(data);
+                // Replace paths with
+                var model = modelData[0], theme = themeData[0];
+                updateJsonPaths(theme);
+                var data = _.extend({}, model, theme);
 
-            // Inject prices and balances
-            var goods = {};
-            _.each(data.categories, function(category) {
-                _.each(category.goods, function(good) {
-                    goods[good.itemId] = {
-                        balance : 0,
-                        price : good.priceModel.values
-                    };
+                // Initialize store
+                SoomlaJS.initialize(data, PointingDeviceSupport.mixinEvents);
+
+                // Inject prices and balances
+                var goods = {};
+                _.each(data.categories, function(category) {
+                    _.each(category.goods, function(good) {
+                        goods[good.itemId] = {
+                            balance : 0,
+                            price : good.priceModel.values
+                        };
+                    });
                 });
+                SoomlaJS.goodsUpdated(goods);
             });
-            SoomlaJS.goodsUpdated(goods);
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
         });

@@ -8,32 +8,12 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
             _.extend(target, events);
         }
     };
-    addPointingDeviceEvents(Components.ListItemView.prototype.triggers, {click : "selected"});
-    addPointingDeviceEvents(Components.ExpandableListItemView.prototype.events, {
-        click               : "onSelect"
-    });
-    addPointingDeviceEvents(Components.BuyOnlyItemView.prototype.triggers, {
-        "click"             : "buy"
-    });
-    addPointingDeviceEvents(Components.EquippableListItemView.prototype.triggers, {
-        "click .buy"        : "buy",
-        "click .equip"      : "equip"
-    });
-    addPointingDeviceEvents(Components.ExpandableListItemView.prototype.triggers, {
-        "click .buy"        : "buy"
-    });
-    addPointingDeviceEvents(Components.ModalDialog.prototype.triggers, {
-        "click .close"      : "cancel",
-        "click .modal"      : "cancel",
-        "click .buy-more"   : "buyMore",
-        "click .cancel"     : "cancel"
-    });
 
     $(function() {
 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
-            initialize : function(json) {
+            initialize : function(json, templateLoadCallback) {
 
                 // First, validate JSON attributes
                 if (!json) {
@@ -95,12 +75,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
 
                 require(json.template.jsFiles, function(ThemeViews) {
 
-                    // Add pointing device events
-                    addPointingDeviceEvents(ThemeViews.StoreView.prototype.events, {
-                        "click .leave-store"    : "leaveStore",
-                        "click .buy-more"       : "showCurrencyStore",
-                        "click .back"           : "showGoodsStore"
-                    });
+                    // Call template load callback if provided
+                    if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(ThemeViews, Components);
 
                     // Initialize view
                     $this.storeView = new ThemeViews.StoreView({

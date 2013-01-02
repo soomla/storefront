@@ -6,6 +6,7 @@ require.config({
         marionetteExtensions    : "views/marionette-extensions",
         templates           	: "views/templates",
         backboneAddons      	: "views/backbone-addons",
+        pointingDeviceSupport   : "pointing-device-support",
 
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.8.0.min",
