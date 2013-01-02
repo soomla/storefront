@@ -19,9 +19,7 @@ define(["backboneRelational"], function() {
     });
 
 
-    var CategoryCollection          = Backbone.Collection.extend({ model : Category     }),
-        VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency     }),
-        CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
+    var CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  }),
         NonConsumablesCollection    = Backbone.Collection.extend({ model : NonConsumable  });
 
@@ -61,6 +59,10 @@ define(["backboneRelational"], function() {
             }
         ]
     });
+
+    var CategoryCollection          = Backbone.Collection.extend({ model : Category }),
+        VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency });
+
 
     var Store = Backbone.RelationalModel.extend({
         relations: [
