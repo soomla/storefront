@@ -26,6 +26,11 @@
 
 + (StorefrontController*)getInstance;
 
+- (void)updateCurrenciesBalanceOnScreen;
+- (void)updateGoodsBalanceOnScreen;
+- (void)updateNonConsumableItemsStateOnScreen;
+- (void)updateSingleAppStoreItemOnScreen:(NSString*)productId;
+
 - (void)openStoreWithParentViewController:(UIViewController *)viewController;
 
 

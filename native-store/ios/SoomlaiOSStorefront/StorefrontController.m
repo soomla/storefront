@@ -22,10 +22,14 @@
 #import "VirtualCurrencyPack.h"
 #import "StorageManager.h"
 #import "VirtualCurrencyStorage.h"
+#import "NonConsumableStorage.h"
+#import "VirtualGoodStorage.h"	 
+#import "VirtualGood.h"
 #import "JSONKit.h"
 #import "StorefrontInfo.h"
 #import "AppStoreItem.h"
 #import "StoreInfo.h"
+#import "VirtualItemNotFoundException.h"
 
 @implementation StorefrontController
 
@@ -55,7 +59,7 @@
     
     [viewController presentViewController:sfViewController animated:YES completion:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualCurrencyPackPurchased:) name:EVENT_APPSTORE_PURCHASED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appStoreItemPurchased:) name:EVENT_APPSTORE_PURCHASED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodPurchased:) name:EVENT_VIRTUAL_GOOD_EQUIPPED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodEquipped:) name:EVENT_VIRTUAL_GOOD_UNEQUIPPED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(virtualGoodUnEquipped:) name:EVENT_VIRTUAL_GOOD_PURCHASED object:nil];
@@ -64,17 +68,82 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unexpectedError:) name:EVENT_UNEXPECTED_ERROR_IN_STORE object:nil];
 }
 
-- (void)virtualCurrencyPackPurchased:(NSNotification*)notification{
-    NSDictionary* userInfo = notification.userInfo;
-    AppStoreItem* apItem = [userInfo objectForKey:@"AppStoreItem"];
-    VirtualCurrencyPack* pack = [[StoreInfo getInstance] currencyPackWithProductId:apItem.productId];
-    VirtualCurrency* currency = pack.currency;
+- (void)updateCurrenciesBalanceOnScreen {
+    NSMutableDictionary* currenciesDict = [[NSMutableDictionary alloc] init];
+    for(VirtualCurrency* currency in [[StoreInfo getInstance] virtualCurrencies]){
+        int balance = [[[StorageManager getInstance] virtualCurrencyStorage] getBalanceForCurrency:currency];
+        [currenciesDict setValue:[NSNumber numberWithInt:balance] forKey:currency.itemId];
+    }
+    
+    [sfViewController sendToJSWithAction:@"currencyBalanceChanged" andData:[currenciesDict JSONString]];
+}
 
-    int balance = [[[StorageManager getInstance] virtualCurrencyStorage] getBalanceForCurrency:currency];
-    NSDictionary* currencyBalanceDict = [NSDictionary dictionaryWithObjectsAndKeys:
+- (void)updateGoodsBalanceOnScreen {
+    NSMutableDictionary* goodsDict = [[NSMutableDictionary alloc] init];
+    for(VirtualGood* good in [[StoreInfo getInstance] virtualGoods]){
+        int balance = [[[StorageManager getInstance] virtualGoodStorage] getBalanceForGood:good];
+        BOOL equipped = [[[StorageManager getInstance] virtualGoodStorage] isGoodEquipped:good];
+        NSDictionary* updatedValues = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       [NSNumber numberWithInt:balance], @"balance",
+                                       [good currencyValues], @"price",
+                                       [NSNumber numberWithBool:equipped], @"equipped",
+                                       nil];
+        [goodsDict setValue:updatedValues forKey:good.itemId];
+    }
+
+    [sfViewController sendToJSWithAction:@"goodsUpdated" andData:[goodsDict JSONString]];
+}
+
+- (void)updateNonConsumableItemsStateOnScreen {
+    NSMutableDictionary* nonConsDict = [[NSMutableDictionary alloc] init];
+    for (AppStoreItem* apItem in [[StoreInfo getInstance] appStoreNonConsumableItems]) {
+        BOOL exists = [[[StorageManager getInstance] nonConsumableStorage] nonConsumableExists:apItem];
+        NSDictionary* updatedValues = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       [NSNumber numberWithBool:exists], @"owned",
+                                       nil];
+        [nonConsDict setValue:updatedValues forKey:apItem.productId];
+    }
+	
+	[sfViewController sendToJSWithAction:@"nonConsumablesUpdated" andData:[nonConsDict JSONString]];
+}
+
+- (void)updateSingleAppStoreItemOnScreen:(NSString*)productId {
+	@try {
+    	VirtualCurrencyPack* pack = [[StoreInfo getInstance] currencyPackWithProductId:productId];
+    	VirtualCurrency* currency = pack.currency;
+
+    	int balance = [[[StorageManager getInstance] virtualCurrencyStorage] getBalanceForCurrency:currency];
+    	NSDictionary* currencyBalanceDict = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithInt:balance], currency.itemId,
                                          nil];
-    [sfViewController sendToJSWithAction:@"currencyBalanceChanged" andData:[currencyBalanceDict JSONString]];
+		[sfViewController sendToJSWithAction:@"currencyBalanceChanged" andData:[currencyBalanceDict JSONString]];
+	}
+	
+    @catch (VirtualItemNotFoundException *e) {
+		@try {
+			AppStoreItem* apItem = [[StoreInfo getInstance] appStoreNonConsumableItemWithProductId:productId];
+		
+		    NSMutableDictionary* nonConsDict = [[NSMutableDictionary alloc] init];
+		    BOOL exists = [[[StorageManager getInstance] nonConsumableStorage] nonConsumableExists:apItem];
+		    NSDictionary* updatedValues = [NSDictionary dictionaryWithObjectsAndKeys:
+		                                   [NSNumber numberWithBool:exists], @"owned",
+		                                   nil];
+		    [nonConsDict setValue:updatedValues forKey:productId];
+		
+			[sfViewController sendToJSWithAction:@"nonConsumablesUpdated" andData:[nonConsDict JSONString]];
+		}
+		
+		@catch (VirtualItemNotFoundException *e) {
+	        NSLog(@"Couldn't find an AppStore Item with productId: %@. Purchase is cancelled.", productId);
+	        [sfViewController sendToJSWithAction:@"unexpectedError" andData:@""];
+		}
+    }
+}
+
+- (void)appStoreItemPurchased:(NSNotification*)notification{
+    NSDictionary* userInfo = notification.userInfo;
+    AppStoreItem* apItem = [userInfo objectForKey:@"AppStoreItem"];
+	[self updateSingleAppStoreItemOnScreen:apItem.productId];
 }
 
 - (void)virtualGoodPurchased:(NSNotification*)notification{

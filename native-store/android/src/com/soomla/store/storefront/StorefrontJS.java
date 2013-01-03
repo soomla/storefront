@@ -61,7 +61,7 @@ public class StorefrontJS{
         }
 
         try {
-            StoreController.getInstance().buyCurrencyPack(productId);
+            StoreController.getInstance().buyGoogleMarketItem(productId);
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
         }
@@ -200,32 +200,9 @@ public class StorefrontJS{
      * Sends the virtual currency and virtual goods updated data to the webview's JS.
      */
     public void updateContentInJS(){
-        try {
-            JSONObject jsonObject = new JSONObject();
-            for(VirtualCurrency virtualCurrency : StoreInfo.getVirtualCurrencies()){
-                jsonObject.put(virtualCurrency.getItemId(),
-                        StorageManager.getVirtualCurrencyStorage().getBalance(virtualCurrency));
-            }
-
-            mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
-
-            jsonObject = new JSONObject();
-            for (VirtualGood good : StoreInfo.getVirtualGoods()){
-                JSONObject updatedValues = new JSONObject();
-                updatedValues.put("balance", StorageManager.getVirtualGoodsStorage().getBalance(good));
-                updatedValues.put("price", good.getCurrencyValuesAsJSONObject());
-                updatedValues.put("equipped", StorageManager.getVirtualGoodsStorage().isEquipped(good));
-
-                jsonObject.put(good.getItemId(), updatedValues);
-            }
-
-            mActivity.sendToJS("goodsUpdated", jsonObject.toString());
-
-        } catch (JSONException e) {
-            if (StoreConfig.debug){
-                Log.d(TAG, "couldn't generate json to send balances");
-            }
-        }
+		StorefrontController.getInstance().updateCurrenciesBalanceOnScreen();
+		StorefrontController.getInstance().updateGoodsBalanceOnScreen();
+		StorefrontController.getInstance().updateManagedItemsStateOnScreen();
     }
 
 
