@@ -163,6 +163,7 @@ define(["backboneRelational"], function() {
         Currency                    : Currency,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
+        NonConsumable               : NonConsumable,
         RelationalModel             : Backbone.RelationalModel
     };
 });
