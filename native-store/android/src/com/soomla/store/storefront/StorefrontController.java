@@ -158,7 +158,7 @@ public class StorefrontController implements IStoreEventHandler {
 
     @Override
     public void onMarketPurchase(GoogleMarketItem googleMarketItem) {
-        updateSingleGoogleMarketItemOnScreen(googleMarketItem.getProductId());
+         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -168,7 +168,7 @@ public class StorefrontController implements IStoreEventHandler {
 
     @Override
     public void onVirtualGoodPurchased(VirtualGood good) {
-        mActivity.getStoreJS().updateContentInJS();
+         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -218,12 +218,12 @@ public class StorefrontController implements IStoreEventHandler {
 	
     @Override
     public void currencyBalanceChanged(VirtualCurrency currency, int balance) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mActivity.getStoreJS().updateContentInJS();
     }
 
     @Override
     public void goodBalanceChanged(VirtualGood good, int balance) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mActivity.getStoreJS().updateContentInJS();
     }
 
 /*    @Override
