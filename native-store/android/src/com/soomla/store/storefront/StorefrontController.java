@@ -215,6 +215,16 @@ public class StorefrontController implements IStoreEventHandler {
     public void onOpeningStore() {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+	
+    @Override
+    public void currencyBalanceChanged(VirtualCurrency currency, int balance) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void goodBalanceChanged(VirtualGood good, int balance) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 /*    @Override
     public void onEarnedCurrencyRequested(String provider) {
