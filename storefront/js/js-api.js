@@ -22,6 +22,9 @@ define({
     goodsUpdated : function(virtualGoods) {
         SoomlaJS.store.updateVirtualGoods(virtualGoods);
     },
+    NonConsumablesUpdated : function(nonConsumables) {
+        // TODO: Implement
+    },
     insufficientFunds : function(currency) {
         SoomlaJS.storeView.openDialog(currency);
     },
