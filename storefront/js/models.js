@@ -151,6 +151,12 @@ define(["backboneRelational"], function() {
                 }
             });
             return this;
+        },
+        updateNonConsumables : function(nonConsumables) {
+            var $this = this;
+            _.each(nonConsumables, function(attributes, nonConsumableId) {
+                $this.get("nonConsumables").get(nonConsumableId).set(attributes);
+            });
         }
     });
 
