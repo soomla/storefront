@@ -38,13 +38,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         }
     });
 
-    var BuyOnlyItemView = ListItemView.extend({
+    var BuyOnceItemView = ListItemView.extend({
         initialize : function() {
             _.bindAll(this, "onBeforeRender");
             this.model.on("change", this.render, this);
+            this.model.on("change:owned", this.disable, this);
         },
         triggers : {
             "touchend" : "buy"
+        },
+        disable : function() {
+            if (this.model.get("owned") === true) this.undelegateEvents();
         }
     });
 
@@ -363,7 +367,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
     return {
         BaseView                : BaseView,
         ListItemView            : ListItemView,
-        BuyOnlyItemView         : BuyOnlyItemView,
+        BuyOnceItemView         : BuyOnceItemView,
         EquippableListItemView  : EquippableListItemView,
         ExpandableListItemView  : ExpandableListItemView,
         GridItemView            : GridItemView,
