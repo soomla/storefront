@@ -64,7 +64,7 @@ public class StorefrontController implements IStoreEventHandler {
     }
 	
 	public void storefrontVisible() {
-		SoomlaTapjoy.getInstance().update();
+		// SoomlaTapjoy.getInstance().update();
 	}
 
     public void registerStorefrontActivity(StorefrontActivity storefrontActivity){

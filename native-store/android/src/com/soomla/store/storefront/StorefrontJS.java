@@ -201,9 +201,9 @@ public class StorefrontJS{
             Log.d(TAG, "requestEarnedCurrency");
         }
 
-		if (provider.equals("tapjoy")) {
-			SoomlaTapjoy.getInstance().showOfferWall();
-		}
+		// if (provider.equals("tapjoy")) {
+		// 	SoomlaTapjoy.getInstance().showOfferWall();
+		// }
     }
 
     /**
