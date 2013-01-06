@@ -1,4 +1,7 @@
 define({
+    wantsToLeaveStore : function() {
+        this.nativeAPI.wantsToLeaveStore();
+    },
     wantsToBuyVirtualGoods : function(model) {
         this.nativeAPI.wantsToBuyVirtualGoods(model.toJSON().itemId);
     },
@@ -11,8 +14,8 @@ define({
     wantsToUnequipGoods : function(model) {
         this.nativeAPI.wantsToUnequipGoods(model.toJSON().itemId);
     },
-    wantsToLeaveStore : function() {
-        this.nativeAPI.wantsToLeaveStore();
+    requestEarnedCurrency : function(provider) {
+        this.nativeAPI.requestEarnedCurrency(provider);
     },
     playSound :function() {
         this.nativeAPI.playPop();
