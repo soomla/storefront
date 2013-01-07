@@ -124,6 +124,13 @@ public class StorefrontActivity extends Activity {
     protected void onStart() {
         super.onStart();
     }
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+		
+		StorefrontController.getInstance().storefrontVisible();
+    }	
 
     /**
      * Called when this activity is destroyed.

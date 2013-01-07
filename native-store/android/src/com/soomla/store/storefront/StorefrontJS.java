@@ -195,6 +195,16 @@ public class StorefrontJS{
             Log.e(TAG, "Couldn't play pop. error: " + e.getMessage());
         }
     }
+	
+    public void requestEarnedCurrency(String provider) {
+        if (StoreConfig.debug) {
+            Log.d(TAG, "requestEarnedCurrency");
+        }
+
+		// if (provider.equals("tapjoy")) {
+		// 	SoomlaTapjoy.getInstance().showOfferWall();
+		// }
+    }
 
     /**
      * Sends the virtual currency and virtual goods updated data to the webview's JS.

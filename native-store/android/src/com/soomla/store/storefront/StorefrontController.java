@@ -62,6 +62,10 @@ public class StorefrontController implements IStoreEventHandler {
 
         StoreEventHandlers.getInstance().addEventHandler(this);
     }
+	
+	public void storefrontVisible() {
+		// SoomlaTapjoy.getInstance().update();
+	}
 
     public void registerStorefrontActivity(StorefrontActivity storefrontActivity){
         this.mActivity = storefrontActivity;
@@ -155,10 +159,35 @@ public class StorefrontController implements IStoreEventHandler {
 
         }
     }
+	
+    /** Singleton **/
+
+    private static StorefrontController sInstance = null;
+
+    public static StorefrontController getInstance(){
+        if (sInstance == null){
+            sInstance = new StorefrontController();
+        }
+
+        return sInstance;
+    }
+
+    private StorefrontController() {
+    }
+
+    /** Private Members**/
+
+    private static final String TAG = "SOOMLA StorefrontController";
+
+    private StorefrontActivity mActivity;
+	
+	
+	
+	/** Implementation of IStoreAssers **/
 
     @Override
     public void onMarketPurchase(GoogleMarketItem googleMarketItem) {
-         //To change body of implemented methods use File | Settings | File Templates.
+         updateSingleGoogleMarketItemOnScreen(googleMarketItem.getProductId());
     }
 
     @Override
@@ -173,12 +202,12 @@ public class StorefrontController implements IStoreEventHandler {
 
     @Override
     public void onVirtualGoodEquipped(VirtualGood good) {
-        mActivity.getStoreJS().updateContentInJS();
+        updateGoodsBalanceOnScreen();
     }
 
     @Override
     public void onVirtualGoodUnequipped(VirtualGood good) {
-        mActivity.getStoreJS().updateContentInJS();
+        updateGoodsBalanceOnScreen();
     }
 
     @Override
@@ -217,38 +246,18 @@ public class StorefrontController implements IStoreEventHandler {
     }
 	
     @Override
-    public void currencyBalanceChanged(VirtualCurrency currency, int balance) {
-        mActivity.getStoreJS().updateContentInJS();
+    public void onCurrencyBalanceChanged(VirtualCurrency currency, int balance) {
+        updateCurrenciesBalanceOnScreen();
     }
 
     @Override
-    public void goodBalanceChanged(VirtualGood good, int balance) {
-        mActivity.getStoreJS().updateContentInJS();
+    public void onGoodBalanceChanged(VirtualGood good, int balance) {
+        updateGoodsBalanceOnScreen();
     }
 
 /*    @Override
     public void onEarnedCurrencyRequested(String provider) {
         //To change body of implemented methods use File | Settings | File Templates.
     }*/
-
-    /** Singleton **/
-
-    private static StorefrontController sInstance = null;
-
-    public static StorefrontController getInstance(){
-        if (sInstance == null){
-            sInstance = new StorefrontController();
-        }
-
-        return sInstance;
-    }
-
-    private StorefrontController() {
-    }
-
-    /** Private Members**/
-
-    private static final String TAG = "SOOMLA StorefrontController";
-
-    private StorefrontActivity mActivity;
+	
 }
