@@ -15,7 +15,7 @@ define(["backboneRelational"], function() {
     });
 
     var NonConsumable = Backbone.RelationalModel.extend({
-        idAttribute : "productId"
+        idAttribute : "itemId"
     });
 
 
