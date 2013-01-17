@@ -57,7 +57,36 @@ define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
                 });
             }
             return Handlebars.templates[name];
+        },
+        getPartial : function (path, name) {
+            // Normalize arguments
+            if (!name) {
+                name = path;
+                path = this._templatePath;
+            }
+
+            if (Handlebars.partials === undefined || Handlebars.partials[name] === undefined) {
+                $.ajax({
+                    url : path + "/" + name + '.handlebars',
+                    success : function (data) {
+                        if (Handlebars.partials === undefined) {
+                            Handlebars.partials = {};
+                        }
+                        Handlebars.registerPartial(name, Handlebars.compile(data));
+                    },
+                    async : false
+                });
+            }
+            return Handlebars.templates[name];
         }
     });
 
+
+    // Register more helpers
+    Handlebars.registerHelper('textOrImage', function(context) {
+        var res = Handlebars.partials[context.type](context);
+        return new Handlebars.SafeString(res);
+    });
+    Handlebars.registerPartial("image", Handlebars.compile('<img class="title-image" src="{{src}}">'));
+    Handlebars.registerPartial("text", Handlebars.compile('<div class="title-image">{{text}}</div>'));
 });
