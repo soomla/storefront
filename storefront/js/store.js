@@ -1,12 +1,13 @@
 define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos) {
 
-    // If pointing devices are enable (i.e. in the desktop generator \ mobile preview),
-    // extend the views to capture their events.
-    var addPointingDeviceEvents = function(target, events) {
-        if (top.enablePointingDeviceEvents) {
-            (target) || (target = {});
-            _.extend(target, events);
-        }
+    // Checks if we're hosted in a parent frame.
+    // If so, notify it of the given event.
+    var triggerEventOnFrame = function(eventName) {
+        try {
+            if (frameElement && frameElement.ownerDocument.defaultView != window && frameElement.ownerDocument.defaultView.$) {
+                frameElement.ownerDocument.defaultView.$(frameElement).trigger(eventName);
+            }
+        } catch(e) {}
     };
 
     $(function() {
@@ -96,7 +97,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     $this.Models = Models;
 
                     if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-
+                    triggerEventOnFrame("store:initialized");
                 });
 
                 return this.store;
@@ -114,6 +115,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
         if (SoomlaNative && SoomlaNative.uiReady) {
             SoomlaNative.uiReady();
         }
-
+        triggerEventOnFrame("store:uiReady");
     });
 });
