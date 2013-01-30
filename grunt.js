@@ -75,7 +75,6 @@ module.exports = function (grunt) {
 
         // Add the pointing devices javascript
         var pointingDeviceJs = "/soomla/backyard-production/current/app/assets/javascripts/design/utils/pointing-device-support.js";
-        pointingDeviceJs = "/home/gurdotan/source/backyard/app/assets/javascripts/design/utils/pointing-device-support.js";
         if (test("-e", pointingDeviceJs)) {
             cp(pointingDeviceJs, distFolder + "/js")
         }
