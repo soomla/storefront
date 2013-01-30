@@ -64,6 +64,26 @@ module.exports = function (grunt) {
         rm("-rf", distFolder);
     });
 
+    grunt.registerTask('production', function() {
+
+        // Add an external local copy of jquery
+        mkdir("-p", distFolder + "/js/libs/jquery");
+        cp("storefront/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
+
+        // Add mobile preview HTML
+        cp("storefront/mobile-preview.html", distFolder);
+
+        // Add the pointing devices javascript
+        var pointingDeviceJs = "/soomla/backyard-production/current/app/assets/javascripts/design/utils/pointing-device-support.js";
+        pointingDeviceJs = "/home/gurdotan/source/backyard/app/assets/javascripts/design/utils/pointing-device-support.js";
+        if (test("-e", pointingDeviceJs)) {
+            cp(pointingDeviceJs, distFolder + "/js")
+        }
+
+        // Add symlink to themes
+        exec("ln -s ../../storefront-themes/themes " + distFolder + "/themes")
+    });
+
     // Default task.
     grunt.registerTask('default', 'clean copy less requirejs');
 };
