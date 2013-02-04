@@ -11,6 +11,7 @@ require.config({
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.8.0.min",
         "jquery.imagesloaded"   : "libs/jquery/jquery.imagesloaded",
+        fastclick               : "libs/fastclick",
         less                	: "libs/less-1.3.0.min",
         underscore          	: "libs/underscore-min",
         backbone            	: "libs/backbone/backbone",

@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded"], function($, Backbone, ViewMixins, Marionette) {
+define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded"], function($, Backbone, ViewMixins, Marionette, FastClick) {
 
     var BaseView = Marionette.ItemView;
 
@@ -30,11 +30,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             this.model.on("change:balance change:priceModel", this.render);
         },
         triggers : {
-            touchend : "selected"
+            click : "selected"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
             if (css) this.$el.css(css);
+        },
+        onRender : function() {
+            new FastClick(this.el);
         }
     });
 
@@ -45,7 +48,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             this.model.on("change:owned", this.disable, this);
         },
         triggers : {
-            "touchend" : "buy"
+            "click" : "buy"
         },
         disable : function() {
             if (this.model.get("owned") === true) this.undelegateEvents();
@@ -110,10 +113,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
         },
         events : {
-            "touchend"      : "onSelect"
+            "click"      : "onSelect"
         },
         triggers : {
-            "touchend .buy" : "buy"
+            "click .buy" : "buy"
         },
         onSelect : function() {
             // "touchend" on Android is triggered several times (probably a bug).
