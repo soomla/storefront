@@ -73,12 +73,6 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                expect(new StoreView(attributes).theme).toEqual(attributes.theme);
             });
 
-            it("should have two item collection sub-views", function() {
-                storeView = new StoreView(attributes);
-                expect(storeView.virtualGoodsView).toBeInstanceOf(Components.BaseCollectionView);
-                expect(storeView.currencyPacksView).toBeInstanceOf(Components.BaseCollectionView);
-            });
-
             it("should render two item collection views when instantiated and rendered", function() {
                 // The empty theme has the same view type for both the virtual goods and the currency packs
                 var stub = sinon.stub(eval(attributes.theme.currencyPacksView.type).prototype, "render", function(){ return this; });

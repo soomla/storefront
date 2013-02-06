@@ -5,9 +5,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
         BaseView            = Components.BaseView,
         ListItemView        = Components.ListItemView,
         GridItemView        = Components.GridItemView,
-        BaseCollectionView  = Components.BaseCollectionView,
-        CollectionListView  = Components.CollectionListView,
-        CollectionGridView  = Components.CollectionGridView;
+        CollectionListView  = Components.CollectionListView;
 
     describe('Soomla Store Backbone Components', function () {
 
@@ -197,31 +195,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
             });
         });
 
-        describe("BaseCollectionView", function() {
-            it("should be defined", function() {
-                expect(BaseCollectionView).toBeDefined();
-            });
-
-            it("should be an instance of Backbone.View", function() {
-                expect(new BaseCollectionView()).toBeInstanceOf(Backbone.View);
-            });
-
-            it("should use an item view as specified in the initialization options if none is given in the prototype", function() {
-                var ItemView = Backbone.View;
-                expect(new BaseCollectionView({itemView : ItemView}).getItemView()).toEqual(ItemView);
-            });
-            it("should use an item view as specified in prototype if none is give in the initialization options", function() {
-                var ItemView = Backbone.View;
-                var CollectionView = BaseCollectionView.extend({itemView : ItemView});
-                expect(new CollectionView().getItemView()).toEqual(ItemView);
-            });
-            it("should use an item view as specified in initialization options first when specified both in the options and the prototype", function() {
-                var CollectionView = BaseCollectionView.extend({itemView : Backbone.View});
-                var ItemView = Backbone.View.extend({a:1});
-                expect(new CollectionView({itemView : ItemView}).getItemView()).toEqual(ItemView);
-            });
-        });
-
         describe("CollectionListView", function() {
 
             var view,attributes, stubType;
@@ -238,10 +211,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
             it("should be defined", function() {
                 expect(CollectionListView).toBeDefined();
-            });
-
-            it("should be an instance of BaseCollectionView", function() {
-                expect(view).toBeInstanceOf(BaseCollectionView);
             });
 
             it("should create a UL tag", function () {
@@ -287,51 +256,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
                 expect(spy.called).toBeTruthy();
                 expect(view.orientation).toEqual("horizontal");
                 spy.restore();
-            });
-
-        });
-
-        describe("CollectionGridView", function() {
-
-            var view, attributes, model, stubType;
-
-            beforeEach(function() {
-                model = new Backbone.Model();
-                stubType = BaseView.extend({render : sinon.spy(function() {return this;}), el : $("<div>")[0]});
-                attributes  = {
-                    collection : new Backbone.Collection([model]),
-                    templateProperties : {},
-                    type : stubType
-                };
-                view = new CollectionGridView(attributes);
-            });
-
-            it("should be defined", function() {
-                expect(CollectionGridView).toBeDefined();
-            });
-
-            it("should be an instance of BaseCollectionView", function() {
-                expect(view).toBeInstanceOf(BaseCollectionView);
-            });
-
-            it("should create a DIV tag", function () {
-                expect(view.el.nodeName).toEqual("DIV");
-            });
-
-            it("should create instances of subviews upon construction", function() {
-                expect(view.children.length).toEqual(1);
-            });
-
-            it("should adjust its items' width asynchronously when rendering", function() {
-                var stub = sinon.stub(CollectionGridView.prototype, "adjustWidth");
-                runs( function() {
-                    new CollectionGridView(_.extend({}, attributes, {collection : new Backbone.Collection()})).render();
-                });
-                waits(0);
-                runs(function() {
-                    expect(stub.called).toBeTruthy();
-                    stub.restore();
-                })
             });
 
         });

@@ -152,34 +152,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
 
     ////////////////////  Collection Views  /////////////////////
 
-    // TODO: Remove this and its specs once CollectionGridView stops extending it
-    var BaseCollectionView = BaseView.extend({
-        initialize : function(options) {
-            this.children = []; // expose sub views for testing purposes
-        },
-        // Retrieve the itemView type, either from `this.options.itemView`
-        // or from the `itemView` in the object definition. The "options"
-        // takes precedence.
-        getItemView : function(){
-            var itemView = this.options.itemView || this.itemView;
-
-            if (!itemView){
-                var err = new Error("An `itemView` must be specified");
-                err.name = "NoItemViewError";
-                throw err;
-            }
-            return itemView;
-        },
-        buildChildViews : function() {
-            var $this = this;
-            this.collection.each(function(item) {
-                var ItemView = $this.getItemView();
-                var view = new ItemView({model : item}).bubbleEventsTo($this);
-                $this.children.push(view);
-            });
-        }
-    });
-
     var CollectionListView = Marionette.CollectionView.extend({
         tagName : "ul",
         initialize : function(options) {
@@ -192,47 +164,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
             // and multiply it by the number of elements.  The product will be the scrollable container's width
             var elementWidth = this.$(".item:first").outerWidth(true);
             this.$el.css("width", this.collection.length * elementWidth);
-        }
-    });
-
-    var CollectionGridView = BaseCollectionView.extend({
-        constructor : function(options) {
-            BaseCollectionView.prototype.constructor.apply(this, arguments);
-            _.bindAll(this, "adjustWidth");
-            this.buildChildViews();
-        },
-        itemView : GridItemView,
-        adjustWidth : function() {
-
-            // Amend element width to create a grid with a variable number of columns, but a uniform width for them.
-            // CSS flex box doesn't support a perfect grid like this when elements contain excessive text.
-            // Calculation: (container width) / (# of columns) - ( (item width + padding + border + margin) - (item width) )
-            // This assumes that the container has no margin, border or padding.
-
-            var subject             = this.children[0].$el,
-                trueElementWidth    = (this.$el.width() / this.options.columns) - (subject.outerWidth(true) - subject.width());
-
-            _.each(this.children, function(view) {
-                view.$el.css("width", trueElementWidth);
-            });
-        },
-        render : function() {
-            var columns  = this.options.columns,
-                $this    = this;
-
-            // Render each item and append it
-            var currentRow;
-            _.each(this.children, function(view, i) {
-                if (i % columns == 0) {
-                    currentRow = $("<div>", {class : "row"});
-                    $this.$el.append(currentRow);
-                }
-                currentRow.append(view.render().el);
-            });
-
-            // NOTE: Must set timeout 0 to return to event loop, otherwise the styles aren't applied yet and the calculation yields 0
-            setTimeout(this.adjustWidth, 0);
-            return this;
         }
     });
 
@@ -375,9 +306,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
         ExpandableListItemView  : ExpandableListItemView,
         GridItemView            : GridItemView,
         ModalDialog             : ModalDialog,
-        BaseCollectionView      : BaseCollectionView,
         CollectionListView      : CollectionListView,
-        CollectionGridView      : CollectionGridView,
         CarouselView            : CarouselView,
         BaseStoreView           : BaseStoreView
     };
