@@ -18,7 +18,9 @@ require.config({
         underscore          	: "libs/underscore-min",
         backbone            	: "libs/backbone/backbone-0.9.10",
         backboneRelational  	: "libs/backbone/backbone-relational-0.7.1",
-        marionette          	: "libs/backbone/backbone.marionette",
+        marionette          	: "libs/backbone/backbone.marionette.core-1.0.0-rc5",
+        "backbone.babysitter"   : "libs/backbone/backbone.babysitter",
+        "backbone.wreqr"        : "libs/backbone/backbone.wreqr",
         handlebars          	: "libs/handlebars-1.0.rc.2"
     },
     shim: {
