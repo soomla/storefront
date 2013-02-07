@@ -107,7 +107,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
                     if (this.model.get("balance") > 0)
                         this.collapse();
                 }
-            }, this);
+            });
 
             this.expanded = false;
             this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
