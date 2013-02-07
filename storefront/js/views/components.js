@@ -140,14 +140,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
         expand : function() {
             this.expanded = true;
             this.$el.addClass("expanded");
-            if (this.onExpand) this.onExpand();
-            this.trigger("expanded");
+            this.triggerMethod("expand");
         },
         collapse : function() {
             this.expanded = false;
             this.$el.removeClass("expanded");
-            if (this.onCollapse) this.onCollapse();
-            this.trigger("collapsed");
+            this.triggerMethod("collapse");
         },
         eventInterval : 500
     });
