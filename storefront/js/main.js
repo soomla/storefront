@@ -4,6 +4,7 @@ require.config({
         components              : "views/components",
         viewMixins          	: "views/view-mixins",
         marionetteExtensions    : "views/marionette-extensions",
+        cssUtils                : "views/css-utils",
         templates           	: "views/templates",
         backboneAddons      	: "views/backbone-addons",
         pointingDeviceSupport   : "pointing-device-support",
@@ -11,7 +12,9 @@ require.config({
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.8.0.min",
         "jquery.imagesloaded"   : "libs/jquery/jquery.imagesloaded",
+        modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.0.min",
+        iscroll                 : "libs/iscroll",
         underscore          	: "libs/underscore-min",
         backbone            	: "libs/backbone/backbone",
         backboneRelational  	: "libs/backbone/backbone-relational",

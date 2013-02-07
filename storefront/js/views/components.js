@@ -1,4 +1,7 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded"], function($, Backbone, ViewMixins, Marionette) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
+
+
+    var transitionendEvent = CssUtils.getTransitionendEvent();
 
     var BaseView = Marionette.ItemView;
 
@@ -135,16 +138,22 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
         },
         expand : function() {
             this.expanded = true;
+            this.$el.addClass("expanded");
             if (this.onExpand) this.onExpand();
             this.trigger("expanded");
         },
         collapse : function() {
             this.expanded = false;
+            this.$el.removeClass("expanded");
             if (this.onCollapse) this.onCollapse();
             this.trigger("collapsed");
         },
         eventInterval : 500
     });
+
+    // Add the vendor prefixed transitionend event dynamically
+    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend"
+
 
 
     ////////////////////  Collection Views  /////////////////////
@@ -161,6 +170,29 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
             // and multiply it by the number of elements.  The product will be the scrollable container's width
             var elementWidth = this.$(".item:first").outerWidth(true);
             this.$el.css("width", this.collection.length * elementWidth);
+        }
+    });
+
+
+    var IScrollCollectionListView = Marionette.CompositeView.extend({
+        tagName : "div",
+        itemView : ListItemView,
+        itemViewContainer : "[data-iscroll='true']",
+        onRender : function() {
+            this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false});
+        },
+        refreshIScroll : function() {
+            this.iscroll.refresh();
+        },
+        getIScrollWrapper : function() {
+            return this.options.iscrollWrapper || this.iscrollWrapper || this.el;
+        }
+    });
+
+    var ExpandableIScrollCollectionListView = IScrollCollectionListView.extend({
+        itemView : ExpandableListItemView,
+        onItemviewExpandCollapseTransitionend : function() {
+            this.iscroll.refresh();
         }
     });
 
@@ -296,15 +328,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "backboneAddons", "mar
     _.extend(BaseStoreView.prototype, ViewMixins);
 
     return {
-        BaseView                : BaseView,
-        ListItemView            : ListItemView,
-        BuyOnceItemView         : BuyOnceItemView,
-        EquippableListItemView  : EquippableListItemView,
-        ExpandableListItemView  : ExpandableListItemView,
-        GridItemView            : GridItemView,
-        ModalDialog             : ModalDialog,
-        CollectionListView      : CollectionListView,
-        CarouselView            : CarouselView,
-        BaseStoreView           : BaseStoreView
+        BaseView                            : BaseView,
+        ListItemView                        : ListItemView,
+        BuyOnceItemView                     : BuyOnceItemView,
+        EquippableListItemView              : EquippableListItemView,
+        ExpandableListItemView              : ExpandableListItemView,
+        GridItemView                        : GridItemView,
+        ModalDialog                         : ModalDialog,
+        CollectionListView                  : CollectionListView,
+        IScrollCollectionListView           : IScrollCollectionListView,
+        ExpandableIScrollCollectionListView : ExpandableIScrollCollectionListView,
+        CarouselView                        : CarouselView,
+        BaseStoreView                       : BaseStoreView
     };
 });
