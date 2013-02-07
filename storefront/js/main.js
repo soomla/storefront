@@ -16,8 +16,8 @@ require.config({
         less                	: "libs/less-1.3.0.min",
         iscroll                 : "libs/iscroll",
         underscore          	: "libs/underscore-min",
-        backbone            	: "libs/backbone/backbone",
-        backboneRelational  	: "libs/backbone/backbone-relational",
+        backbone            	: "libs/backbone/backbone-0.9.10",
+        backboneRelational  	: "libs/backbone/backbone-relational-0.7.1",
         marionette          	: "libs/backbone/backbone.marionette",
         handlebars          	: "libs/handlebars-1.0.rc.2"
     },
