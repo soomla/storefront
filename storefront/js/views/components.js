@@ -113,8 +113,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
             this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
         },
         events : {
-            "touchend"      : "onSelect"
+            "click"         : "onSelect"
         },
+        // TODO: Change to click or use FastClick button
         triggers : {
             "touchend .buy" : "buy"
         },
