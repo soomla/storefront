@@ -53,7 +53,18 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
         close: function(){
             if (this.isClosed) { return; }
 
-            this.triggerMethod("before:close");
+            // allow the close to be stopped by returning `false`
+            // from the `onBeforeClose` method
+            var shouldClose = this.triggerMethod("before:close");
+            if (shouldClose === false){
+                return;
+            }
+
+            // mark as closed before doing the actual close, to
+            // prevent infinite loops within "close" event handlers
+            // that are trying to close other views
+            this.isClosed = true;
+            this.triggerMethod("close");
 
             // Allow the DOM node not to be removed but just unbound from events
             if (this.noRemove || this.options.noRemove) {
@@ -61,10 +72,7 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
             } else {
                 this.remove();
             }
-            this.unbindAll();
-
-            this.triggerMethod("close");
-            this.isClosed = true;
+            this.stopListening();
         }
     });
 
