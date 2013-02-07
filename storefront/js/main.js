@@ -10,7 +10,7 @@ require.config({
         pointingDeviceSupport   : "pointing-device-support",
 
         // 3rd party modules
-        jquery              	: "libs/jquery/jquery-1.8.0.min",
+        jquery              	: "libs/jquery/jquery-1.9.1.min",
         "jquery.imagesloaded"   : "libs/jquery/jquery.imagesloaded",
         modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.0.min",
