@@ -1,4 +1,7 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded"], function($, Backbone, ViewMixins, Marionette, FastClick) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, FastClick) {
+
+
+    var transitionendEvent = CssUtils.getTransitionendEvent();
 
     var BaseView = Marionette.ItemView;
 
@@ -107,7 +110,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
                     if (this.model.get("balance") > 0)
                         this.collapse();
                 }
-            }, this);
+            });
 
             this.expanded = false;
             this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
@@ -115,6 +118,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
         events : {
             "click"      : "onSelect"
         },
+        // TODO: Change to click or use FastClick button
         triggers : {
             "click .buy" : "buy"
         },
@@ -138,16 +142,20 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
         },
         expand : function() {
             this.expanded = true;
-            if (this.onExpand) this.onExpand();
-            this.trigger("expanded");
+            this.$el.addClass("expanded");
+            this.triggerMethod("expand");
         },
         collapse : function() {
             this.expanded = false;
-            if (this.onCollapse) this.onCollapse();
-            this.trigger("collapsed");
+            this.$el.removeClass("expanded");
+            this.triggerMethod("collapse");
         },
         eventInterval : 500
     });
+
+    // Add the vendor prefixed transitionend event dynamically
+    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend"
+
 
 
     ////////////////////  Collection Views  /////////////////////
@@ -164,6 +172,29 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
             // and multiply it by the number of elements.  The product will be the scrollable container's width
             var elementWidth = this.$(".item:first").outerWidth(true);
             this.$el.css("width", this.collection.length * elementWidth);
+        }
+    });
+
+
+    var IScrollCollectionListView = Marionette.CompositeView.extend({
+        tagName : "div",
+        itemView : ListItemView,
+        itemViewContainer : "[data-iscroll='true']",
+        onRender : function() {
+            this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false});
+        },
+        refreshIScroll : function() {
+            this.iscroll.refresh();
+        },
+        getIScrollWrapper : function() {
+            return this.options.iscrollWrapper || this.iscrollWrapper || this.el;
+        }
+    });
+
+    var ExpandableIScrollCollectionListView = IScrollCollectionListView.extend({
+        itemView : ExpandableListItemView,
+        onItemviewExpandCollapseTransitionend : function() {
+            this.iscroll.refresh();
         }
     });
 
@@ -299,15 +330,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "fastclick", "backbone
     _.extend(BaseStoreView.prototype, ViewMixins);
 
     return {
-        BaseView                : BaseView,
-        ListItemView            : ListItemView,
-        BuyOnceItemView         : BuyOnceItemView,
-        EquippableListItemView  : EquippableListItemView,
-        ExpandableListItemView  : ExpandableListItemView,
-        GridItemView            : GridItemView,
-        ModalDialog             : ModalDialog,
-        CollectionListView      : CollectionListView,
-        CarouselView            : CarouselView,
-        BaseStoreView           : BaseStoreView
+        BaseView                            : BaseView,
+        ListItemView                        : ListItemView,
+        BuyOnceItemView                     : BuyOnceItemView,
+        EquippableListItemView              : EquippableListItemView,
+        ExpandableListItemView              : ExpandableListItemView,
+        GridItemView                        : GridItemView,
+        ModalDialog                         : ModalDialog,
+        CollectionListView                  : CollectionListView,
+        IScrollCollectionListView           : IScrollCollectionListView,
+        ExpandableIScrollCollectionListView : ExpandableIScrollCollectionListView,
+        CarouselView                        : CarouselView,
+        BaseStoreView                       : BaseStoreView
     };
 });

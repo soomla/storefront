@@ -56,7 +56,7 @@ module.exports = function (grunt) {
         // in a browser after it was built
         // ===================================================================
         // mkdir("-p", distFolder + "/js/libs/jquery");
-        // cp("js/libs/jquery/jquery-1.8.0.min.js", distFolder + "/js/libs/jquery");
+        // cp("js/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/libs/jquery");
         // cp("mobile-preview.html", distFolder + "/");
     });
 
