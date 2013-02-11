@@ -31,16 +31,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         initialize : function() {
             _.bindAll(this, "onBeforeRender");
             this.model.on("change:balance change:priceModel", this.render);
+            new FastClick(this.el);
         },
-        triggers : {
+        timedTriggers : {
             click : "selected"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
             if (css) this.$el.css(css);
-        },
-        onRender : function() {
-            new FastClick(this.el);
         }
     });
 
@@ -113,20 +111,16 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             });
 
             this.expanded = false;
-            this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
+            new FastClick(this.el);
         },
-        events : {
+        timedEvents : {
             "click"      : "onSelect"
         },
         // TODO: Change to click or use FastClick button
-        triggers : {
+        timedTriggers : {
             "click .buy" : "buy"
         },
         onSelect : function() {
-            // "touchend" on Android is triggered several times (probably a bug).
-            // Protect by setting a minimum interval between events
-            var currentTime = new Date().getTime();
-            if ((currentTime - this.lastEventTime) < this.eventInterval) return;
 
             // If the product was already purchase it, now toggle between equipping or not equipping
             if (this.model.get("balance") == 1) {
@@ -136,9 +130,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
             // Decide whether to expand or collapse
             this.expanded ? this.collapse() : this.expand();
-
-            // If the event handler was executed, update the time the event was triggered.
-            this.lastEventTime = currentTime;
         },
         expand : function() {
             this.expanded = true;
@@ -149,12 +140,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             this.expanded = false;
             this.$el.removeClass("expanded");
             this.triggerMethod("collapse");
-        },
-        eventInterval : 500
+        }
     });
 
     // Add the vendor prefixed transitionend event dynamically
-    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend"
+    ExpandableListItemView.prototype.timedTriggers[transitionendEvent] = "expandCollapseTransitionend"
 
 
 
