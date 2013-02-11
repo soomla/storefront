@@ -47,8 +47,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             _.bindAll(this, "onBeforeRender");
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
+            new FastClick(this.el);
         },
-        triggers : {
+        timedTriggers : {
             "click" : "buy"
         },
         disable : function() {
@@ -67,9 +68,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             this.model.on("change:balance", this.bought);
             this.model.on("change:equipped", this.equipped);
         },
-        triggers : {
-            "touchend .buy"    : "buy",
-            "touchend .equip"  : "equip"
+        timedTriggers : {
+            "click .buy"    : "buy",
+            "click .equip"  : "equip"
         },
         ui : {
             "buy"       : ".buy",
@@ -90,6 +91,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
                 this.ui.active.hide();
                 this.ui.equip.show();
             }
+        },
+        onRender : function() {
+            new FastClick(this.ui.buy[0]);
+            new FastClick(this.ui.equip[0]);
         }
     });
 
