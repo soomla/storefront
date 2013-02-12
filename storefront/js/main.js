@@ -6,7 +6,6 @@ require.config({
         marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
-        backboneAddons      	: "views/backbone-addons",
         pointingDeviceSupport   : "pointing-device-support",
 
         // 3rd party modules
@@ -36,9 +35,6 @@ require.config({
             exports: 'Backbone'
         },
         backboneRelational : {
-            deps: ['backbone']
-        },
-        backboneAddons : {
             deps: ['backbone']
         },
         marionette : {

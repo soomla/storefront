@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, FastClick) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, FastClick) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
