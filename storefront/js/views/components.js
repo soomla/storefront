@@ -150,7 +150,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
     });
 
     // Add the vendor prefixed transitionend event dynamically
-    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend"
+    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
 
@@ -158,7 +158,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
     var CollectionListView = Marionette.CollectionView.extend({
         tagName : "ul",
-        initialize : function(options) {
+        initialize : function() {
             _.bindAll(this, "adjustWidth");
             this.orientation = this.options.orientation || "vertical";
         },
@@ -236,15 +236,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
 
     // TODO: Write unit test for this component
-    var BaseStoreView = Backbone.View.extend({
-        constructor : function(options){
+    var BaseStoreView = BaseView.extend({
+        constructor : function(options) {
 
-            if (options && (!options.model || !options.model.get("theme"))) {
+            if (!(options.model && options.model.get("theme"))) {
                 var err = new Error("You must initialize the store with a model and make sure it has a theme");
                 err.name = "InvalidInitializationError";
                 throw err;
             }
-
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
@@ -253,8 +252,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");
 
+            // Wrap onRender function if it exists
+            if (this.onRender && _.isFunction(this.onRender)) {
+                var originalOnRender = this.onRender;
+                this.onRender = _.bind(function() {
+                    originalOnRender.call(this);
+                    this.finalizeRendering();
+                }, this);
+            }
+
             // Apply original Backbone.View constructor
-            Backbone.View.prototype.constructor.apply(this, arguments);
+            BaseView.prototype.constructor.apply(this, arguments);
 
             // Balance currency balance changes
             this.model.get("virtualCurrencies").on("change:balance", this.updateBalance, this);
@@ -281,18 +289,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         updateBalance : function(model) {
             this.$("#balance-container label").html(model.get("balance"));
         },
-        render : function() {
-            var context = this.serializeData();
-            this.$el.html(this.options.template(context));
-
-            // Render child views (items in goods store and currency store)
-            if (this.children) {
-                _.each(this.children, function(view, selector) {
-                    this.$(selector).html(view.render().el);
-                });
-            }
-            if (this.onRender) this.onRender();
-
+        finalizeRendering : function() {
             // When all store images are loaded, trigger an event
             // TODO: Preload images that aren't visible at first
             var $this = this;
@@ -310,7 +307,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
                 var $this = this;
                 var adjustBodySize = function() {
                     var zoomFactor      = $this.zoomFunction(),
-                        zoomPercentage  = (zoomFactor * 100) + "%";
+                    zoomPercentage  = (zoomFactor * 100) + "%";
                     $("body").css({
                         "zoom"                      : zoomFactor,
                         "-ms-text-size-adjust"      : zoomPercentage,
