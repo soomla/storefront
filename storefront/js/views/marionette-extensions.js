@@ -1,12 +1,6 @@
 define(["backbone", "marionette"], function(Backbone, Marionette) {
 
     _.extend(Marionette.View.prototype, {
-        bubbleEventsTo : function(targetView) {
-            this.on("all", function() {
-                Marionette.View.prototype.trigger.apply(targetView, arguments);
-            });
-            return this;
-        },
 
         // Mix in template helper methods. Looks for a
         // `templateHelpers` in view options or as attribute, which can either be an
