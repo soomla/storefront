@@ -125,6 +125,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         timedTriggers : {
             "click .buy" : "buy"
         },
+        triggers : {}, // Will be filled dynamically with vendor prefixed events
         onSelect : function() {
 
             // If the product was already purchase it, now toggle between equipping or not equipping
@@ -149,7 +150,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
     });
 
     // Add the vendor prefixed transitionend event dynamically
-    ExpandableListItemView.prototype.timedTriggers[transitionendEvent] = "expandCollapseTransitionend"
+    ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend"
 
 
 
