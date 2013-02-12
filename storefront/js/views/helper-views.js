@@ -1,11 +1,11 @@
-define(["marionette"], function(Marionette) {
+define(["marionette", "marionetteExtensions", "fastclick"], function(Marionette) {
 
     var HeaderView = Marionette.View.extend({
         initialize : function() {
             _.bindAll(this, "switchHeader");
             this.state = "menu";
         },
-        events : {
+        timedEvents : {
             "click .back" : function() {
                 this.trigger(this.state == "menu" ? "quit" : "back");
             }
@@ -24,6 +24,10 @@ define(["marionette"], function(Marionette) {
                 this.ui.quitButton.hide();
                 this.ui.backButton.show();
             }
+        },
+        render : function() {
+            new FastClick(this.$(".back")[0]);
+            return this;
         }
     });
 
