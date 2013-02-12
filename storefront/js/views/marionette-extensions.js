@@ -21,33 +21,6 @@ define(["backbone", "marionette"], function(Backbone, Marionette) {
             }
             return _.extend(target, templateHelpers);
         },
-        // Override Marionette's original "configureTriggers" so that
-        // the events are triggered with the source view as an argument
-        configureTriggers: function(){
-            if (!this.triggers) { return; }
-
-            var that = this;
-            var triggerEvents = {};
-
-            // Allow `triggers` to be configured as a function
-            var triggers = _.result(this, "triggers");
-
-            // Configure the triggers, prevent default
-            // action and stop propagation of DOM events
-            _.each(triggers, function(value, key){
-
-                triggerEvents[key] = function(e){
-                    if (e && e.preventDefault){ e.preventDefault(); }
-                    if (e && e.stopPropagation){ e.stopPropagation(); }
-
-                    // Add the source view as the argument
-                    that.trigger(value, that.model);
-                };
-
-            });
-
-            return triggerEvents;
-        },
         // internal method to delegate DOM events and triggers
         _delegateDOMEvents: function(events){
             events = events || this.events;
