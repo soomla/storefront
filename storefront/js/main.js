@@ -2,6 +2,7 @@ require.config({
     baseUrl : "js",
     paths: {
         components              : "views/components",
+        helperViews             : "views/helper-views",
         viewMixins          	: "views/view-mixins",
         marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
