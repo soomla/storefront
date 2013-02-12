@@ -5,19 +5,26 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
     var BaseView = Marionette.ItemView;
 
+    // TODO: Separate into several views that are template specific
     var ModalDialog = BaseView.extend({
         className : "modal-container",
         initialize : function() {
             _.bindAll(this, "close");
         },
-        triggers : {
-            "touchend .close"    : "cancel",
-            "touchend .modal"    : "cancel",
-            "touchend .buy-more" : "buyMore",
-            "touchend .cancel"   : "cancel"
+        timedTriggers : {
+            "click .close"    : "cancel",
+            "click .modal"    : "cancel",
+            "click .buy-more" : "buyMore",
+            "click .cancel"   : "cancel"
         },
         onRender : function() {
             this.options.parent.append(this.$el);
+
+            var $this = this;
+            _.each([".close", ".modal", ".buy-more", ".cancel"], function(selector) {
+                var layer = $this.$(selector)[0];
+                if (layer) new FastClick(layer);
+            });
         },
         // The modal dialog model is a simple object, not a Backbone model
         serializeData : function() {
