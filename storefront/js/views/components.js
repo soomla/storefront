@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick", "backboneAddons", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, FastClick) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
@@ -31,9 +31,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
         initialize : function() {
             _.bindAll(this, "onBeforeRender");
             this.model.on("change:balance change:priceModel", this.render);
+            new FastClick(this.el);
         },
-        triggers : {
-            touchend : "selected"
+        timedTriggers : {
+            click : "selected"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
@@ -46,9 +47,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
             _.bindAll(this, "onBeforeRender");
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
+            new FastClick(this.el);
         },
-        triggers : {
-            "touchend" : "buy"
+        timedTriggers : {
+            "click" : "buy"
         },
         disable : function() {
             if (this.model.get("owned") === true) this.undelegateEvents();
@@ -66,9 +68,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
             this.model.on("change:balance", this.bought);
             this.model.on("change:equipped", this.equipped);
         },
-        triggers : {
-            "touchend .buy"    : "buy",
-            "touchend .equip"  : "equip"
+        timedTriggers : {
+            "click .buy"    : "buy",
+            "click .equip"  : "equip"
         },
         ui : {
             "buy"       : ".buy",
@@ -89,6 +91,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
                 this.ui.active.hide();
                 this.ui.equip.show();
             }
+        },
+        onRender : function() {
+            new FastClick(this.ui.buy[0]);
+            new FastClick(this.ui.equip[0]);
         }
     });
 
@@ -110,20 +116,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
             });
 
             this.expanded = false;
-            this.lastEventTime = -(this.eventInterval * 10); // Initial value for allowing first expand
+            new FastClick(this.el);
         },
-        events : {
-            "click"         : "onSelect"
+        timedEvents : {
+            "click"      : "onSelect"
         },
         // TODO: Change to click or use FastClick button
-        triggers : {
-            "touchend .buy" : "buy"
+        timedTriggers : {
+            "click .buy" : "buy"
         },
+        triggers : {}, // Will be filled dynamically with vendor prefixed events
         onSelect : function() {
-            // "touchend" on Android is triggered several times (probably a bug).
-            // Protect by setting a minimum interval between events
-            var currentTime = new Date().getTime();
-            if ((currentTime - this.lastEventTime) < this.eventInterval) return;
 
             // If the product was already purchase it, now toggle between equipping or not equipping
             if (this.model.get("balance") == 1) {
@@ -133,9 +136,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
 
             // Decide whether to expand or collapse
             this.expanded ? this.collapse() : this.expand();
-
-            // If the event handler was executed, update the time the event was triggered.
-            this.lastEventTime = currentTime;
         },
         expand : function() {
             this.expanded = true;
@@ -146,8 +146,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "backboneA
             this.expanded = false;
             this.$el.removeClass("expanded");
             this.triggerMethod("collapse");
-        },
-        eventInterval : 500
+        }
     });
 
     // Add the vendor prefixed transitionend event dynamically

@@ -12,6 +12,7 @@ require.config({
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.9.1.min",
         "jquery.imagesloaded"   : "libs/jquery/jquery.imagesloaded",
+        fastclick               : "libs/fastclick",
         modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.0.min",
         iscroll                 : "libs/iscroll",
