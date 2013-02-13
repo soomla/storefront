@@ -1,0 +1,43 @@
+/*==============  Layout  ==============*/
+.box(@orient: horizontal, @pack: start, @align: stretch) {
+    display: -webkit-box;
+    -webkit-box-orient: @orient;
+    -webkit-box-pack: @pack;
+    -webkit-box-align: @align;
+    display: -moz-box;
+    -moz-box-orient: @orient;
+    -moz-box-pack: @pack;
+    -moz-box-align: @align;
+    display: box;
+    box-orient: @orient;
+    box-pack: @pack;
+    box-align: @align;
+}
+
+.box-flex(@value: 0) {
+    -webkit-box-flex: @value;
+    -moz-box-flex: @value;
+    box-flex: @value;
+}
+
+.background-size(@value: 100%) {
+    -moz-background-size: @value;
+    -o-background-size: @value;
+    -webkit-background-size: @value;
+    background-size: @value;
+}
+.webkitScrollbar(@width: 0) {
+    ::-webkit-scrollbar {
+        width: @width;
+    }
+}
+// Optional hyphenation
+.hyphens(@mode: auto) {
+    word-wrap: break-word;
+    word-break: break-all;
+    -webkit-hyphens: @mode;
+    -moz-hyphens: @mode;
+    -ms-hyphens: @mode;
+    -o-hyphens: @mode;
+    hyphens: @mode;
+}
