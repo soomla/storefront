@@ -190,7 +190,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         itemView : ListItemView,
         itemViewContainer : "[data-iscroll='true']",
         onRender : function() {
-            this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false});
+            this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
         },
         refreshIScroll : refreshIScroll,
         getIScrollWrapper : function() {
