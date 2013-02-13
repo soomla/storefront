@@ -163,6 +163,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
     ////////////////////  Collection Views  /////////////////////
 
+    // Common function for mixing into views
+    var refreshIScroll = function() {
+        this.iscroll.refresh();
+    };
+
+
     var CollectionListView = Marionette.CollectionView.extend({
         tagName : "ul",
         initialize : function() {
@@ -186,9 +192,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false});
         },
-        refreshIScroll : function() {
-            this.iscroll.refresh();
-        },
+        refreshIScroll : refreshIScroll,
         getIScrollWrapper : function() {
             return this.options.iscrollWrapper || this.iscrollWrapper || this.el;
         }
@@ -196,9 +200,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
 
     var ExpandableIScrollCollectionListView = IScrollCollectionListView.extend({
         itemView : ExpandableListItemView,
-        onItemviewExpandCollapseTransitionend : function() {
-            this.iscroll.refresh();
-        }
+        onItemviewExpandCollapseTransitionend : refreshIScroll
     });
 
 
