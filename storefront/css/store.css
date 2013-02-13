@@ -494,6 +494,13 @@ html,
 body {
   height: 100%;
 }
+body {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 h1 {
   margin: 0;
   font-size: 30px;
