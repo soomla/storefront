@@ -49,7 +49,8 @@ module.exports = function (grunt) {
 
         // Copy HTML + Less
         cp("-R", srcFolder + "/store.html", distFolder + "/");
-        cp("-R", srcFolder + "/css/mixins/elements.less", distFolder + "/css/mixins/");
+        cp("-R", srcFolder + "/css/mixins/bootstrap", distFolder + "/css/mixins/");
+        cp("-R", srcFolder + "/css/mixins/layout.less", distFolder + "/css/mixins/");
 
         // Uncomment this block for deploying with mobile-preview.html.
         // This is helpful when you want to build your theme and test it
