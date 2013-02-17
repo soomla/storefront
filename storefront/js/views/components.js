@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, FastClick) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
@@ -11,20 +11,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         initialize : function() {
             _.bindAll(this, "close");
         },
-        timedTriggers : {
-            "click .close"    : "cancel",
-            "click .modal"    : "cancel",
-            "click .buy-more" : "buyMore",
-            "click .cancel"   : "cancel"
+        triggers : {
+            "fastclick .close"    : "cancel",
+            "fastclick .modal"    : "cancel",
+            "fastclick .buy-more" : "buyMore",
+            "fastclick .cancel"   : "cancel"
         },
         onRender : function() {
             this.options.parent.append(this.$el);
-
-            var $this = this;
-            _.each([".close", ".modal", ".buy-more", ".cancel"], function(selector) {
-                var layer = $this.$(selector)[0];
-                if (layer) new FastClick(layer);
-            });
         },
         // The modal dialog model is a simple object, not a Backbone model
         serializeData : function() {
@@ -38,10 +32,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
         initialize : function() {
             _.bindAll(this, "onBeforeRender");
             this.model.on("change:balance change:priceModel", this.render);
-            new FastClick(this.el);
         },
-        timedTriggers : {
-            click : "selected"
+        triggers : {
+            fastclick : "selected"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
@@ -54,10 +47,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             _.bindAll(this, "onBeforeRender");
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
-            new FastClick(this.el);
         },
-        timedTriggers : {
-            "click" : "buy"
+        triggers : {
+            "fastclick" : "buy"
         },
         disable : function() {
             if (this.model.get("owned") === true) this.undelegateEvents();
@@ -75,9 +67,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             this.model.on("change:balance", this.bought);
             this.model.on("change:equipped", this.equipped);
         },
-        timedTriggers : {
-            "click .buy"    : "buy",
-            "click .equip"  : "equip"
+        triggers : {
+            "fastclick .buy"    : "buy",
+            "fastclick .equip"  : "equip"
         },
         ui : {
             "buy"       : ".buy",
@@ -98,10 +90,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
                 this.ui.active.hide();
                 this.ui.equip.show();
             }
-        },
-        onRender : function() {
-            new FastClick(this.ui.buy[0]);
-            new FastClick(this.ui.equip[0]);
         }
     });
 
@@ -123,16 +111,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "fastclick
             });
 
             this.expanded = false;
-            new FastClick(this.el);
         },
-        timedEvents : {
-            "click"      : "onSelect"
+        triggers : {
+            "fastclick .buy" : "buy"
         },
-        // TODO: Change to click or use FastClick button
-        timedTriggers : {
-            "click .buy" : "buy"
+        events : {
+            fastclick : "onSelect"
         },
-        triggers : {}, // Will be filled dynamically with vendor prefixed events
         onSelect : function() {
 
             // If the product was already purchase it, now toggle between equipping or not equipping

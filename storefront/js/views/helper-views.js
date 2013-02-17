@@ -1,12 +1,12 @@
-define(["marionette", "marionetteExtensions", "fastclick"], function(Marionette) {
+define(["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Marionette) {
 
     var HeaderView = Marionette.View.extend({
         initialize : function() {
             _.bindAll(this, "switchHeader");
             this.state = "menu";
         },
-        timedEvents : {
-            "click .back" : function() {
+        events : {
+            "fastclick .back" : function() {
                 this.trigger(this.state == "menu" ? "quit" : "back");
             }
         },
@@ -24,10 +24,6 @@ define(["marionette", "marionetteExtensions", "fastclick"], function(Marionette)
                 this.ui.quitButton.hide();
                 this.ui.backButton.show();
             }
-        },
-        render : function() {
-            new FastClick(this.$(".back")[0]);
-            return this;
         }
     });
 
