@@ -68,9 +68,15 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         }
     };
 
-    // Stub this function so it won't show up in the console and block the rest of execution of native calls
-    SoomlaNative = {
-        playPop : function() {}
+    // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
+    window.SoomlaNative = {
+        playPop : function() {},
+        storeInitialized : function() {
+            require(["native-api-stubs"], function(NativeApiStubs) {
+                // Inject Native API stubs
+                _.extend(SoomlaJS.storeView, NativeApiStubs);
+            });
+        }
     };
 
 
