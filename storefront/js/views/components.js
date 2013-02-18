@@ -30,7 +30,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item",
         tagName : "li",
         initialize : function() {
-            _.bindAll(this, "onBeforeRender");
             this.model.on("change:balance change:priceModel", this.render);
         },
         triggers : {
@@ -44,7 +43,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
     var BuyOnceItemView = ListItemView.extend({
         initialize : function() {
-            _.bindAll(this, "onBeforeRender");
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
         },
@@ -62,10 +60,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
      */
     var EquippableListItemView = ListItemView.extend({
         initialize : function() {
-            _.bindAll(this, "onBeforeRender", "bought", "equipped");
-            this.model.on("change:priceModel", this.render);
-            this.model.on("change:balance", this.bought);
-            this.model.on("change:equipped", this.equipped);
+            this.model.on({
+                "change:priceModel" : this.render,
+                "change:balance"    : this.bought,
+                "change:equipped"   : this.equip
+            }, this);
         },
         triggers : {
             "fastclick .buy"    : "buy",
@@ -80,12 +79,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.ui.buy.hide();
             this.ui.equip.show();
         },
-        equipped : function() {
+        equip : function() {
             var equipped = this.model.get("equipped");
             if (equipped) {
                 this.ui.equip.hide();
                 this.ui.active.show();
-                this.trigger("equipped");
+                this.trigger("equip");
             } else {
                 this.ui.active.hide();
                 this.ui.equip.show();
