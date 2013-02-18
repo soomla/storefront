@@ -59,6 +59,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
      * different UI states - regular, bought and equipped
      */
     var EquippableListItemView = ListItemView.extend({
+        className : "item equippable",
         initialize : function() {
             this.model.on({
                 "change:priceModel" : this.render,
