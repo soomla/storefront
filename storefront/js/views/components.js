@@ -101,7 +101,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var ExpandableListItemView = ListItemView.extend({
         constructor : function(options) {
             ListItemView.prototype.constructor.apply(this, arguments);
-            _.bindAll(this, "onSelect");
             this.model.on({
                 "change:equipped" : this.render,
                 "change:balance"  : function() {
@@ -116,18 +115,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             "fastclick .buy" : "buy"
         },
         events : {
-            fastclick : "onSelect"
+            fastclick                   : "onSelect",
+            "fastclick .toggle-equip"   : "toggleEquip"
         },
         onSelect : function() {
 
-            // If the product was already purchase it, now toggle between equipping or not equipping
-            if (this.model.get("balance") == 1) {
-                this.trigger(this.model.get("equipped") ? "unequipped" : "equipped", this.model);
-                return;
-            }
-
             // Decide whether to expand or collapse
             this.expanded ? this.collapse() : this.expand();
+        },
+        toggleEquip : function(event) {
+            event.stopPropagation();
+            this.trigger(this.model.get("equipped") ? "unequipped" : "equipped", this.model);
         },
         expand : function() {
             this.expanded = true;
