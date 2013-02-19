@@ -4,7 +4,12 @@ require('shelljs/global');
 
 module.exports = function (grunt) {
 
-    var distFolder = "dist", srcFolder = "storefront", lessFiles = {};
+    // Define folders
+    var distFolder      = "dist",
+        srcFolder       = ".",
+        themesFolder    = "storefront-themes/themes",
+        lessFiles       = {};
+
     lessFiles[distFolder + "/css/store.css"] = srcFolder + "/css/store.less";
 
     // Project configuration.
@@ -69,13 +74,13 @@ module.exports = function (grunt) {
 
         // Add an external local copy of jquery
         mkdir("-p", distFolder + "/js/libs/jquery");
-        cp("storefront/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
+        cp(srcFolder + "/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
 
         // Add mobile preview HTML
-        cp("storefront/mobile-preview.html", distFolder);
+        cp(srcFolder + "/mobile-preview.html", distFolder);
 
         // Add symlink to themes
-        exec("ln -s ../../storefront-themes/themes " + distFolder + "/themes")
+        exec("ln -s ../../" + themesFolder +  " " + distFolder + "/themes")
     });
 
     // Default task.
