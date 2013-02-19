@@ -48,7 +48,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 <!-- scripts concatenated and minified via build script -->
 <script>
-    enablePointingDeviceEvents = true;
 
     var isMobile = {
         Android: function() {
@@ -118,28 +117,26 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            require(["pointingDeviceSupport"], function(PointingDeviceSupport) {
+            // Replace paths with
+            var model = modelData[0], theme = themeData[0];
+            updateJsonPaths(theme);
+            var data = _.extend({}, model, theme);
 
-                // Replace paths with
-                var model = modelData[0], theme = themeData[0];
-                updateJsonPaths(theme);
-                var data = _.extend({}, model, theme);
+            // Initialize store
+            SoomlaJS.initialize(data);
 
-                // Initialize store
-                SoomlaJS.initialize(data);
-
-                // Inject prices and balances
-                var goods = {};
-                _.each(data.categories, function(category) {
-                    _.each(category.goods, function(good) {
-                        goods[good.itemId] = {
-                            balance : 0,
-                            price : good.priceModel.values
-                        };
-                    });
+            // Inject prices and balances
+            var goods = {};
+            _.each(data.categories, function(category) {
+                _.each(category.goods, function(good) {
+                    goods[good.itemId] = {
+                        balance : 0,
+                        price : good.priceModel.values
+                    };
                 });
-                SoomlaJS.goodsUpdated(goods);
             });
+            SoomlaJS.goodsUpdated(goods);
+
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
         });

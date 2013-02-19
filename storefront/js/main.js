@@ -7,7 +7,6 @@ require.config({
         marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
-        pointingDeviceSupport   : "pointing-device-support",
 
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.9.1.min",

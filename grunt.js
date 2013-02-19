@@ -74,12 +74,6 @@ module.exports = function (grunt) {
         // Add mobile preview HTML
         cp("storefront/mobile-preview.html", distFolder);
 
-        // Add the pointing devices javascript
-        var pointingDeviceJs = "/soomla/backyard-production/current/app/assets/javascripts/design/utils/pointing-device-support.js";
-        if (test("-e", pointingDeviceJs)) {
-            cp(pointingDeviceJs, distFolder + "/js")
-        }
-
         // Add symlink to themes
         exec("ln -s ../../storefront-themes/themes " + distFolder + "/themes")
     });
