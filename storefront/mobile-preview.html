@@ -81,8 +81,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
     $(window).load(function() {
 
-        // Get the "?store_def=XXX" value from the URL to determine which JSON to load
-        // Fallback to the default store_def.json
+        // Get the "?theme=XXX" value from the URL to determine which JSON to load
+        // Fallback to the default theme.json
         var getParameterByName = function(name) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -94,12 +94,14 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
-        var modelDefinition = getParameterByName("store_def"),
-            themeDefinition = modelDefinition.replace(/theme\/.*json$/, "theme.json"),
-            themePath       = modelDefinition.match(/themes\/.+\/theme/)[0],
+        var themesFolder 	= "../../storefront-themes/themes",// TODO: Change when storefront/storefront path is squashed
+			themeName 		= getParameterByName("theme"),
+            themePath       = themesFolder + "/" + themeName +  "/theme",
             regexp          = /\.\.\/theme/,
-            modelAjax       = $.ajax({url : modelDefinition, dataType : "json"}),
-            themeAjax       = $.ajax({url : themeDefinition, dataType : "json"});
+            modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
+			themeUrl 		= themesFolder + "/" + themeName +  "/theme.json",
+            modelAjax       = $.ajax({url : modelUrl, dataType : "json"}),
+            themeAjax       = $.ajax({url : themeUrl, dataType : "json"});
 
 
         var updateJsonPaths = function(json) {

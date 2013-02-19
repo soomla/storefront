@@ -29,9 +29,14 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
+                var cssFiles            = json.template.cssFiles,
+                    jsFiles             = json.template.jsFiles,
+                    htmlTemplatesPath   = json.template.htmlTemplatesPath;
+
+
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
-                _.each(json.template.cssFiles, function(file) {
+                _.each(cssFiles, function(file) {
                     var isLess  = file.match(/\.less$/),
                         type    = isLess ? "text/less" : "text/css",
                         link    = $("<style>").appendTo($("head"));
@@ -44,7 +49,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
 
 
                 // Set template base path
-                Handlebars.setTemplatePath(json.template.htmlTemplatesPath);
+                Handlebars.setTemplatePath(htmlTemplatesPath);
 
 
                 // In case we're in the old model without a category => goods relationship, normalize.
@@ -74,7 +79,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 this.store = new Models.Store(json);
                 var $this = this;
 
-                require(json.template.jsFiles, function(ThemeViews) {
+                require(jsFiles, function(ThemeViews) {
 
                     // Call template load callback if provided
                     if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(ThemeViews, Components);
