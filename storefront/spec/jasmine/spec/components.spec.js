@@ -149,14 +149,14 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
             it("should trigger a 'selected' event on itself with its model when tapped", function() {
                 var spy = sinon.spy();
                 view = new ListItemView(attributes);
-                view.on("selected", spy).$el.trigger(touchendEvent);
+                view.on("select", spy).$el.trigger(touchendEvent);
                 expect(spy.calledWith(model)).toBeTruthy();
             });
 
             it("should trigger a 'selected' event on itself with its model when clicked", function () {
                 var spy = sinon.spy();
-                _.extend(ListItemView.prototype.triggers, { click : "selected" });
-                new ListItemView(attributes).on("selected", spy).$el.click();
+                _.extend(ListItemView.prototype.triggers, { click : "select" });
+                new ListItemView(attributes).on("select", spy).$el.click();
                 expect(spy.calledWith(model)).toBeTruthy();
                 delete ListItemView.prototype.triggers.click;
             });
@@ -231,7 +231,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
                     model   = new Backbone.Model();
 
                 // Fake a view that can fire the event
-                var type        = BaseView.extend({model : model, triggerTapEvent : function(){ this.trigger("selected", this.model) }});
+                var type        = BaseView.extend({model : model, triggerTapEvent : function(){ this.trigger("select", this.model) }});
                 view = new CollectionListView({
                     collection          : new Backbone.Collection([model]),
                     itemView            : type,

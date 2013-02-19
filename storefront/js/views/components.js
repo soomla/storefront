@@ -33,7 +33,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.model.on("change:balance change:priceModel", this.render);
         },
         triggers : {
-            fastclick : "selected"
+            fastclick : "select"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
