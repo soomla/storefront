@@ -6,7 +6,7 @@ module.exports = function (grunt) {
 
     // Define folders
     var distFolder      = "dist",
-        srcFolder       = ".",
+        srcFolder       = "./src/",
         themesFolder    = "storefront-themes/themes",
         lessFiles       = {};
 
