@@ -10,6 +10,7 @@
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
+    <base href="src/">
     <meta charset="utf-8">
 
     <!-- Use the .htaccess and remove these lines to avoid edge case issues.
@@ -94,9 +95,9 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
-        var modelDefinition = getParameterByName("store_def"),
-            themeDefinition = modelDefinition.replace(/theme\/.*json$/, "theme.json"),
-            themePath       = modelDefinition.match(/themes\/.+\/theme/)[0],
+        var themesFolder 	= "../../storefront-themes/themes",
+			themeName 		= getParameterByName("theme"),
+            themePath       = themesFolder + "/" + themeName +  "/theme",
             regexp          = /\.\.\/theme/,
             modelAjax       = $.ajax({url : modelDefinition, dataType : "json"}),
             themeAjax       = $.ajax({url : themeDefinition, dataType : "json"});
