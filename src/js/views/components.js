@@ -71,24 +71,16 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             "fastclick .buy"    : "buy",
             "fastclick .equip"  : "equip"
         },
-        ui : {
-            "buy"       : ".buy",
-            "equip"     : ".equip",
-            "active"    : ".active"
-        },
         bought : function() {
-            this.ui.buy.hide();
-            this.ui.equip.show();
+            this.$el.addClass("owned");
         },
         equip : function() {
             var equipped = this.model.get("equipped");
             if (equipped) {
-                this.ui.equip.hide();
-                this.ui.active.show();
+                this.$el.addClass("equipped");
                 this.trigger("equip");
             } else {
-                this.ui.active.hide();
-                this.ui.equip.show();
+                this.$el.removeClass("equipped");
             }
         }
     });
