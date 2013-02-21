@@ -30,6 +30,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item",
         tagName : "li",
         initialize : function() {
+            // TODO: Remove change:balance => this.render
             this.model.on("change:balance change:priceModel", this.render);
         },
         triggers : {
@@ -91,33 +92,44 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
     // TODO: Write unit test for this component
     var ExpandableListItemView = ListItemView.extend({
+        className : "item equippable",
         constructor : function(options) {
             ListItemView.prototype.constructor.apply(this, arguments);
             this.model.on({
-                "change:equipped" : this.render,
-                "change:balance"  : function() {
-                    if (this.model.get("balance") > 0)
-                        this.collapse();
-                }
-            });
+                "change:equipped" : this.onEquippingChange,
+                "change:balance"  : this.onBalanceChange
+            }, this);
 
             this.expanded = false;
         },
         triggers : {
-            "fastclick .buy" : "buy"
+            "fastclick .buy"    : "buy",
+            "fastclick .equip"  : "equip"
         },
         events : {
-            fastclick                   : "onSelect",
-            "fastclick .toggle-equip"   : "toggleEquip"
+            fastclick : "onClick"
         },
-        onSelect : function() {
+        onClick : function() {
 
             // Decide whether to expand or collapse
             this.expanded ? this.collapse() : this.expand();
         },
-        toggleEquip : function(event) {
-            event.stopPropagation();
-            this.trigger(this.model.get("equipped") ? "unequipped" : "equipped", this.model);
+        onBalanceChange : function() {
+            if (this.model.get("balance") >  0) {
+                this.$el.addClass("owned");
+                if (this.expanded) this.collapse();
+            } else {
+                this.$el.removeClass("owned");
+            }
+        },
+        onEquippingChange : function() {
+            if (this.model.get("equipped")) {
+                this.$el.addClass("equipped");
+                this.trigger("unequipped", this.model);
+            } else {
+                this.$el.removeClass("equipped");
+                this.trigger("unequipped", this.model);
+            }
         },
         expand : function() {
             this.expanded = true;
@@ -143,9 +155,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             "fastclick .buy" : "buy"
         },
         events : {
-            fastclick : "onSelect"
+            fastclick : "onClick"
         },
-        onSelect : function() {
+        onClick : function() {
 
             // Decide whether to expand or collapse
             this.expanded ? this.collapse() : this.expand();
