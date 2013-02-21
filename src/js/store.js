@@ -24,14 +24,17 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 _.each(attributes, function(attribute) {
                     if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
                 });
-                var templateAttributes = ["cssFiles", "jsFiles", "htmlTemplatesPath"];
+                var templateAttributes = ["name", "orientation"];
                 _.each(templateAttributes, function(attribute) {
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
-                var cssFiles            = json.template.cssFiles,
-                    jsFiles             = json.template.jsFiles,
-                    htmlTemplatesPath   = json.template.htmlTemplatesPath;
+                // Define which CSS, JS and Handlebars files need to be fetched
+                var templatesFolder     = "/storefront-themes/templates",
+                    templateName        = json.template.name,
+                    cssFiles            = [templatesFolder + "/" + templateName + "/less/" + templateName + ".less"],
+                    jsFiles             = [templatesFolder + "/" + templateName + "/js/" + templateName + "Views.js"],
+                    htmlTemplatesPath   = templatesFolder + "/" + templateName + "/templates";
 
 
                 // Append appropriate stylesheet
