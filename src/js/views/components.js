@@ -139,6 +139,37 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         }
     });
 
+    // TODO: Refactore with ExpandableListItemView
+    var ExpandableSingleUseListItemView = ListItemView.extend({
+        className : "item single-use",
+        constructor : function(options) {
+            ListItemView.prototype.constructor.apply(this, arguments);
+            this.model.on("change:balance", this.render);
+            this.expanded = false;
+        },
+        triggers : {
+            "fastclick .buy" : "buy"
+        },
+        events : {
+            fastclick : "onSelect"
+        },
+        onSelect : function() {
+
+            // Decide whether to expand or collapse
+            this.expanded ? this.collapse() : this.expand();
+        },
+        expand : function() {
+            this.expanded = true;
+            this.$el.addClass("expanded");
+            this.triggerMethod("expand");
+        },
+        collapse : function() {
+            this.expanded = false;
+            this.$el.removeClass("expanded");
+            this.triggerMethod("collapse");
+        }
+    });
+
     // Add the vendor prefixed transitionend event dynamically
     ExpandableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
@@ -320,6 +351,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         BuyOnceItemView                     : BuyOnceItemView,
         EquippableListItemView              : EquippableListItemView,
         ExpandableListItemView              : ExpandableListItemView,
+        ExpandableSingleUseListItemView     : ExpandableSingleUseListItemView,
         GridItemView                        : GridItemView,
         ModalDialog                         : ModalDialog,
         CollectionListView                  : CollectionListView,
