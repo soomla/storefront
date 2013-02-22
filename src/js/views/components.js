@@ -56,7 +56,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var ListItemView = BaseView.extend({
+    var ItemView = BaseView.extend({
         className : "item",
         tagName : "li",
         initialize : function() {
@@ -73,7 +73,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var BuyOnceItemView = ListItemView.extend({
+    var BuyOnceItemView = ItemView.extend({
         initialize : function() {
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
@@ -91,7 +91,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
      * A variation of the regular item view which has
      * different UI states - regular, owned and equipped
      */
-    var EquippableListItemView = ListItemView.extend({
+    var EquippableItemView = ItemView.extend({
         className : "item equippable",
         initialize : function() {
             this.model.on({
@@ -113,7 +113,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableEquipppableListItemView = EquippableListItemView.extend({
+    var ExpandableEquipppableItemView = EquippableItemView.extend({
         onBalanceChange : function() {
             if (this.model.get("balance") >  0) {
                 this.$el.addClass("owned");
@@ -126,14 +126,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
 
     // Extend functionality with expandable module and vendor prefixed transitionend event
-    ExpandableEquipppableListItemView.mixin(ExpandableModule);
-    ExpandableEquipppableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
+    ExpandableEquipppableItemView.mixin(ExpandableModule);
+    ExpandableEquipppableItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
-    var ExpandableSingleUseListItemView = ListItemView.extend({
+    var ExpandableSingleUseItemView = ItemView.extend({
         className : "item single-use",
         constructor : function(options) {
-            ListItemView.prototype.constructor.apply(this, arguments);
+            ItemView.prototype.constructor.apply(this, arguments);
             this.model.on("change:balance", this.render);
         },
         triggers : {
@@ -142,8 +142,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
     // Extend functionality with expandable module and vendor prefixed transitionend event
-    ExpandableSingleUseListItemView.mixin(ExpandableModule);
-    ExpandableSingleUseListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
+    ExpandableSingleUseItemView.mixin(ExpandableModule);
+    ExpandableSingleUseItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
 
@@ -155,14 +155,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     };
 
 
-    var CollectionListView = Marionette.CollectionView.extend({
+    var CollectionView = Marionette.CollectionView.extend({
         tagName : "ul",
-        itemView : ListItemView
+        itemView : ItemView
     });
 
 
-    var IScrollCollectionListView = Marionette.CompositeView.extend({
-        itemView : ListItemView,
+    var IScrollCollectionView = Marionette.CompositeView.extend({
+        itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
@@ -174,8 +174,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableIScrollCollectionListView = IScrollCollectionListView.extend({
-        itemView : ExpandableEquipppableListItemView,
+    var ExpandableIScrollCollectionView = IScrollCollectionView.extend({
+        itemView : ExpandableEquipppableItemView,
         onItemviewExpand : function(view) {
             if (this.expandedChild) this.expandedChild.collapse();
             this.expandedChild = view;
@@ -316,17 +316,17 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
 
     return {
-        BaseView                            : BaseView,
-        ListItemView                        : ListItemView,
-        BuyOnceItemView                     : BuyOnceItemView,
-        EquippableListItemView              : EquippableListItemView,
-        ExpandableEquipppableListItemView   : ExpandableEquipppableListItemView,
-        ExpandableSingleUseListItemView     : ExpandableSingleUseListItemView,
-        ModalDialog                         : ModalDialog,
-        CollectionListView                  : CollectionListView,
-        IScrollCollectionListView           : IScrollCollectionListView,
-        ExpandableIScrollCollectionListView : ExpandableIScrollCollectionListView,
-        CarouselView                        : CarouselView,
-        BaseStoreView                       : BaseStoreView
+        BaseView                        : BaseView,
+        ItemView                        : ItemView,
+        BuyOnceItemView                 : BuyOnceItemView,
+        EquippableItemView              : EquippableItemView,
+        ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
+        ExpandableSingleUseItemView     : ExpandableSingleUseItemView,
+        ModalDialog                     : ModalDialog,
+        CollectionView                  : CollectionView,
+        IScrollCollectionView           : IScrollCollectionView,
+        ExpandableIScrollCollectionView : ExpandableIScrollCollectionView,
+        CarouselView                    : CarouselView,
+        BaseStoreView                   : BaseStoreView
     };
 });

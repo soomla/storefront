@@ -1,8 +1,8 @@
 define("storeView.spec", ["storeViews", "models", "components"], function (StoreViews, Models, Components) {
 
     // Assign to local variables for spec brevity
-    var StoreView           = StoreViews.StoreView,
-        CollectionListView  = Components.CollectionListView;
+    var StoreView       = StoreViews.StoreView,
+        CollectionView  = Components.CollectionView;
 
 
     describe('Soomla Store Master Views', function () {
@@ -22,16 +22,16 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                     name : "empty",
                         template : sinon.stub(),
                         virtualGoodsView: {
-                        type : "Components.CollectionListView",
+                        type : "Components.CollectionView",
                         item : {
-                            type : "Components.ListItemView",
+                            type : "Components.ItemView",
                             template : sinon.stub()
                         }
                     },
                     currencyPacksView: {
-                        type : "Components.CollectionListView",
+                        type : "Components.CollectionView",
                         item : {
-                            type : "Components.ListItemView",
+                            type : "Components.ItemView",
                             template : sinon.stub()
                         }
                     },
@@ -176,14 +176,14 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                             virtualGoodsView: {
                                 type : ViewStub,
                                 item : {
-                                    type : "Components.ListItemView",
+                                    type : "Components.ItemView",
                                     template : sinon.stub()
                                 }
                             },
                             currencyPacksView: {
                                 type : ViewStub,
                                 item : {
-                                    type : "Components.ListItemView",
+                                    type : "Components.ItemView",
                                     template : sinon.stub()
                                 }
                             },
