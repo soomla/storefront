@@ -4,7 +4,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
     var ModalDialog         = Components.ModalDialog,
         BaseView            = Components.BaseView,
         ListItemView        = Components.ListItemView,
-        GridItemView        = Components.GridItemView,
         CollectionListView  = Components.CollectionListView;
 
     describe('Soomla Store Backbone Components', function () {
@@ -173,28 +172,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
         });
 
-        describe("GridItemView", function() {
-
-            var view, attributes;
-
-            beforeEach(function() {
-                attributes  = { model : new Backbone.Model() };
-                view        = new GridItemView(attributes);
-            });
-
-            it("should be defined", function() {
-                expect(GridItemView).toBeDefined();
-            });
-
-            it("should be an instance of a Backbone view", function() {
-                expect(view).toBeInstanceOf(Backbone.View);
-            });
-
-            it("should create a div", function() {
-                expect(view.el.nodeName).toEqual("DIV");
-            });
-        });
-
         describe("CollectionListView", function() {
 
             var view,attributes, stubType;
@@ -240,22 +217,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
                 view.children[0].triggerTapEvent();
                 expect(spy.calledWith(model)).toBeTruthy();
-            });
-
-            it("should by default render the list vertically", function() {
-                var spy = sinon.spy(CollectionListView.prototype, "adjustWidth");
-                view = new CollectionListView(attributes).render();
-                expect(spy.called).toBeFalsy();
-                expect(view.orientation).toEqual("vertical");
-                spy.restore();
-            });
-
-            it("should adjust its width if its orientation is horizontal", function() {
-                var spy = sinon.spy(CollectionListView.prototype, "adjustWidth");
-                view = new CollectionListView(_.extend(attributes, {orientation : "horizontal"})).render();
-                expect(spy.called).toBeTruthy();
-                expect(view.orientation).toEqual("horizontal");
-                spy.restore();
             });
 
         });

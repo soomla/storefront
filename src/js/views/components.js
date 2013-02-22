@@ -33,6 +33,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
     var BaseView = Marionette.ItemView;
 
+
     // TODO: Separate into several views that are template specific
     var ModalDialog = BaseView.extend({
         className : "modal-container",
@@ -54,6 +55,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         }
     });
 
+
     var ListItemView = BaseView.extend({
         className : "item",
         tagName : "li",
@@ -70,6 +72,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         }
     });
 
+
     var BuyOnceItemView = ListItemView.extend({
         initialize : function() {
             this.model.on("change", this.render, this);
@@ -82,6 +85,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             if (this.model.get("owned") === true) this.undelegateEvents();
         }
     });
+
 
     /**
      * A variation of the regular item view which has
@@ -108,9 +112,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         }
     });
 
-    var GridItemView = ListItemView.extend({
-        tagName : "div"
-    });
 
     var ExpandableEquipppableListItemView = EquippableListItemView.extend({
         onBalanceChange : function() {
@@ -156,22 +157,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
     var CollectionListView = Marionette.CollectionView.extend({
         tagName : "ul",
-        initialize : function() {
-            _.bindAll(this, "adjustWidth");
-            this.orientation = this.options.orientation || "vertical";
-        },
-        itemView : ListItemView,
-        adjustWidth : function() {
-            // Assuming that all elements are the same width, take the full width of the first element
-            // and multiply it by the number of elements.  The product will be the scrollable container's width
-            var elementWidth = this.$(".item:first").outerWidth(true);
-            this.$el.css("width", this.collection.length * elementWidth);
-        }
+        itemView : ListItemView
     });
 
 
     var IScrollCollectionListView = Marionette.CompositeView.extend({
-        tagName : "div",
         itemView : ListItemView,
         itemViewContainer : "[data-iscroll='true']",
         onRender : function() {
@@ -179,9 +169,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         refreshIScroll : refreshIScroll,
         getIScrollWrapper : function() {
-            return this.options.iscrollWrapper || this.iscrollWrapper || this.el;
+            return Marionette.getOption(this, "iscrollWrapper") || this.el;
         }
     });
+
 
     var ExpandableIScrollCollectionListView = IScrollCollectionListView.extend({
         itemView : ExpandableEquipppableListItemView,
@@ -323,6 +314,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
 
+
     return {
         BaseView                            : BaseView,
         ListItemView                        : ListItemView,
@@ -330,7 +322,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         EquippableListItemView              : EquippableListItemView,
         ExpandableEquipppableListItemView   : ExpandableEquipppableListItemView,
         ExpandableSingleUseListItemView     : ExpandableSingleUseListItemView,
-        GridItemView                        : GridItemView,
         ModalDialog                         : ModalDialog,
         CollectionListView                  : CollectionListView,
         IScrollCollectionListView           : IScrollCollectionListView,
