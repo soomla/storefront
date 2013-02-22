@@ -1,7 +1,35 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
+define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "backboneExtensions", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
+
+    ///////////////////////   Modules   ///////////////////////
+
+    var ExpandableModule = {
+        expanded : false,
+        events : {
+            fastclick : "onClick"
+        },
+        onClick : function() {
+
+            // Decide whether to expand or collapse
+            this.expanded ? this.collapse() : this.expand();
+        },
+        expand : function() {
+            this.expanded = true;
+            this.$el.addClass("expanded");
+            this.triggerMethod("expand");
+        },
+        collapse : function() {
+            this.expanded = false;
+            this.$el.removeClass("expanded");
+            this.triggerMethod("collapse");
+        }
+    };
+
+
+
+    ///////////////////////   Views   ///////////////////////
 
     var BaseView = Marionette.ItemView;
 
@@ -56,33 +84,27 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
     /**
-     * A varitaion of the regular item view which has
-     * different UI states - regular, bought and equipped
+     * A variation of the regular item view which has
+     * different UI states - regular, owned and equipped
      */
     var EquippableListItemView = ListItemView.extend({
         className : "item equippable",
         initialize : function() {
             this.model.on({
                 "change:priceModel" : this.render,
-                "change:balance"    : this.bought,
-                "change:equipped"   : this.equip
+                "change:balance"    : this.onBalanceChange,
+                "change:equipped"   : this.onEquippingChange
             }, this);
         },
         triggers : {
             "fastclick .buy"    : "buy",
             "fastclick .equip"  : "equip"
         },
-        bought : function() {
-            this.$el.addClass("owned");
+        onBalanceChange : function() {
+            (this.model.get("balance") >  0) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
         },
-        equip : function() {
-            var equipped = this.model.get("equipped");
-            if (equipped) {
-                this.$el.addClass("equipped");
-                this.trigger("equip");
-            } else {
-                this.$el.removeClass("equipped");
-            }
+        onEquippingChange : function() {
+            this.model.get("equipped") ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
         }
     });
 
@@ -90,30 +112,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         tagName : "div"
     });
 
-    // TODO: Write unit test for this component
-    var ExpandableEquipppableListItemView = ListItemView.extend({
-        className : "item equippable",
-        constructor : function(options) {
-            ListItemView.prototype.constructor.apply(this, arguments);
-            this.model.on({
-                "change:equipped" : this.onEquippingChange,
-                "change:balance"  : this.onBalanceChange
-            }, this);
-
-            this.expanded = false;
-        },
-        triggers : {
-            "fastclick .buy"    : "buy",
-            "fastclick .equip"  : "equip"
-        },
-        events : {
-            fastclick : "onClick"
-        },
-        onClick : function() {
-
-            // Decide whether to expand or collapse
-            this.expanded ? this.collapse() : this.expand();
-        },
+    var ExpandableEquipppableListItemView = EquippableListItemView.extend({
         onBalanceChange : function() {
             if (this.model.get("balance") >  0) {
                 this.$el.addClass("owned");
@@ -121,62 +120,28 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             } else {
                 this.$el.removeClass("owned");
             }
-        },
-        onEquippingChange : function() {
-            if (this.model.get("equipped")) {
-                this.$el.addClass("equipped");
-                this.trigger("equipped", this.model);
-            } else {
-                this.$el.removeClass("equipped");
-            }
-        },
-        expand : function() {
-            this.expanded = true;
-            this.$el.addClass("expanded");
-            this.triggerMethod("expand");
-        },
-        collapse : function() {
-            this.expanded = false;
-            this.$el.removeClass("expanded");
-            this.triggerMethod("collapse");
         }
     });
 
-    // Add the vendor prefixed transitionend event dynamically
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableEquipppableListItemView.mixin(ExpandableModule);
     ExpandableEquipppableListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
-    // TODO: Refactore with ExpandableEquipppableListItemView
     var ExpandableSingleUseListItemView = ListItemView.extend({
         className : "item single-use",
         constructor : function(options) {
             ListItemView.prototype.constructor.apply(this, arguments);
             this.model.on("change:balance", this.render);
-            this.expanded = false;
         },
         triggers : {
             "fastclick .buy" : "buy"
-        },
-        events : {
-            fastclick : "onClick"
-        },
-        onClick : function() {
-
-            // Decide whether to expand or collapse
-            this.expanded ? this.collapse() : this.expand();
-        },
-        expand : function() {
-            this.expanded = true;
-            this.$el.addClass("expanded");
-            this.triggerMethod("expand");
-        },
-        collapse : function() {
-            this.expanded = false;
-            this.$el.removeClass("expanded");
-            this.triggerMethod("collapse");
         }
     });
-    // Add the vendor prefixed transitionend event dynamically
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableSingleUseListItemView.mixin(ExpandableModule);
     ExpandableSingleUseListItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 

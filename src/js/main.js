@@ -4,6 +4,7 @@ require.config({
         components              : "views/components",
         helperViews             : "views/helper-views",
         viewMixins          	: "views/view-mixins",
+        backboneExtensions      : "views/backbone-extensions",
         marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
