@@ -245,7 +245,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");
@@ -316,6 +316,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $(window).resize(adjustBodySize);
                 adjustBodySize();
             }
+        },
+        leaveStore : function() {
+            this.playSound().wantsToLeaveStore();
         }
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
