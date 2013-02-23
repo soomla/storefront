@@ -183,6 +183,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         onItemviewCollapse : function(view) {
             delete this.expandedChild;
         },
+        collapseExpandedChild : function() {
+            if (this.expandedChild) {
+                this.expandedChild.collapse();
+                delete this.expandedChild;
+            }
+        },
         onItemviewExpandCollapseTransitionend : refreshIScroll
     });
 
