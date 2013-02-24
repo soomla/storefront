@@ -1,11 +1,10 @@
 define("components.spec", ["components", "backbone", "handlebars"], function (Components, Backbone, Handlebars) {
 
     // Assign components to local variables for spec brevity
-    var ModalDialog         = Components.ModalDialog,
-        BaseView            = Components.BaseView,
-        ListItemView        = Components.ListItemView,
-        GridItemView        = Components.GridItemView,
-        CollectionListView  = Components.CollectionListView;
+    var ModalDialog     = Components.ModalDialog,
+        BaseView        = Components.BaseView,
+        ItemView        = Components.ItemView,
+        CollectionView  = Components.CollectionView;
 
     describe('Soomla Store Backbone Components', function () {
 
@@ -101,23 +100,23 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
         });
 
-        describe("ListItemView", function() {
+        describe("ItemView", function() {
 
             var view, attributes, model, touchendEvent;
 
             beforeEach(function() {
                 model = new Backbone.Model();
                 attributes      = { model : model };
-                view            = new ListItemView(attributes);
+                view            = new ItemView(attributes);
                 touchendEvent   = $.Event("touchend", {originalEvent : {touches : [1]}});
             });
 
             it("should be defined", function() {
-                expect(ListItemView).toBeDefined();
+                expect(ItemView).toBeDefined();
             });
 
             it("should be an instance of a Backbone view", function() {
-                expect(new ListItemView({model : new Backbone.Model()})).toBeInstanceOf(Backbone.View);
+                expect(new ItemView({model : new Backbone.Model()})).toBeInstanceOf(Backbone.View);
             });
 
             it("should create a div", function() {
@@ -134,7 +133,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
             it("should accept an itemType and use the relevant template", function() {
                 var spy = sinon.spy();
-                new ListItemView({
+                new ItemView({
                     model       : new Backbone.Model(),
                     template    : spy
                 }).render();
@@ -142,30 +141,30 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
             });
 
             it("should return itself from render for chaining", function() {
-                var view = new ListItemView(_.extend({template : sinon.stub()}, attributes));
+                var view = new ItemView(_.extend({template : sinon.stub()}, attributes));
                 expect(view.render()).toEqual(view);
             });
 
             it("should trigger a 'selected' event on itself with its model when tapped", function() {
                 var spy = sinon.spy();
-                view = new ListItemView(attributes);
+                view = new ItemView(attributes);
                 view.on("select", spy).$el.trigger(touchendEvent);
                 expect(spy.calledWith(model)).toBeTruthy();
             });
 
             it("should trigger a 'selected' event on itself with its model when clicked", function () {
                 var spy = sinon.spy();
-                _.extend(ListItemView.prototype.triggers, { click : "select" });
-                new ListItemView(attributes).on("select", spy).$el.click();
+                _.extend(ItemView.prototype.triggers, { click : "select" });
+                new ItemView(attributes).on("select", spy).$el.click();
                 expect(spy.calledWith(model)).toBeTruthy();
-                delete ListItemView.prototype.triggers.click;
+                delete ItemView.prototype.triggers.click;
             });
 
             it("should re-render on changes to the model attributes: currency, price, balance", function () {
                 _.each(["currency", "price", "balance"], function(attribute) {
-                    var stub    = sinon.stub(ListItemView.prototype, "render"),
+                    var stub    = sinon.stub(ItemView.prototype, "render"),
                         model   = new Backbone.Model();
-                    new ListItemView({ model : model}).model.set(attribute, "some value");
+                    new ItemView({ model : model}).model.set(attribute, "some value");
                     expect(stub.called).toBeTruthy();
                     stub.restore();
                 });
@@ -173,29 +172,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
         });
 
-        describe("GridItemView", function() {
-
-            var view, attributes;
-
-            beforeEach(function() {
-                attributes  = { model : new Backbone.Model() };
-                view        = new GridItemView(attributes);
-            });
-
-            it("should be defined", function() {
-                expect(GridItemView).toBeDefined();
-            });
-
-            it("should be an instance of a Backbone view", function() {
-                expect(view).toBeInstanceOf(Backbone.View);
-            });
-
-            it("should create a div", function() {
-                expect(view.el.nodeName).toEqual("DIV");
-            });
-        });
-
-        describe("CollectionListView", function() {
+        describe("CollectionView", function() {
 
             var view,attributes, stubType;
 
@@ -206,11 +183,11 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
                     templateProperties : {},
                     itemView : stubType
                 };
-                view        = new CollectionListView(attributes);
+                view        = new CollectionView(attributes);
             });
 
             it("should be defined", function() {
-                expect(CollectionListView).toBeDefined();
+                expect(CollectionView).toBeDefined();
             });
 
             it("should create a UL tag", function () {
@@ -218,7 +195,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
             });
 
             it("should create instances of subviews upon construction", function() {
-                expect(new CollectionListView(attributes).children.length).toEqual(1);
+                expect(new CollectionView(attributes).children.length).toEqual(1);
             });
 
             it("should call subviews' render function when rendering", function () {
@@ -232,7 +209,7 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
                 // Fake a view that can fire the event
                 var type        = BaseView.extend({model : model, triggerTapEvent : function(){ this.trigger("select", this.model) }});
-                view = new CollectionListView({
+                view = new CollectionView({
                     collection          : new Backbone.Collection([model]),
                     itemView            : type,
                     templateProperties  : {}
@@ -240,22 +217,6 @@ define("components.spec", ["components", "backbone", "handlebars"], function (Co
 
                 view.children[0].triggerTapEvent();
                 expect(spy.calledWith(model)).toBeTruthy();
-            });
-
-            it("should by default render the list vertically", function() {
-                var spy = sinon.spy(CollectionListView.prototype, "adjustWidth");
-                view = new CollectionListView(attributes).render();
-                expect(spy.called).toBeFalsy();
-                expect(view.orientation).toEqual("vertical");
-                spy.restore();
-            });
-
-            it("should adjust its width if its orientation is horizontal", function() {
-                var spy = sinon.spy(CollectionListView.prototype, "adjustWidth");
-                view = new CollectionListView(_.extend(attributes, {orientation : "horizontal"})).render();
-                expect(spy.called).toBeTruthy();
-                expect(view.orientation).toEqual("horizontal");
-                spy.restore();
             });
 
         });

@@ -1,29 +1,40 @@
 define(["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Marionette) {
 
     var HeaderView = Marionette.View.extend({
-        initialize : function() {
-            _.bindAll(this, "switchHeader");
-            this.state = "menu";
+        initialize : function(options) {
+            this.states = options.states;
+            this.initialState = options.initialState;
+            this.model = new Backbone.Model({state: this.initialState}).on("change:state", this.onStateChange, this);
         },
         events : {
             "fastclick .back" : function() {
-                this.trigger(this.state == "menu" ? "quit" : "back");
+
+                if (this.model.get("state") === this.initialState) {
+                    this.trigger("quit");
+                } else {
+                    this.changeStateTo(this.initialState);
+                    this.trigger("back");
+                }
             }
         },
         ui : {
             backButton : "#back-button",
             quitButton : "#quit-button"
         },
-        switchHeader : function(title) {
+        onStateChange : function(model, state) {
+            var title = this.states[state];
             this.$(".title-container h1").html(title);
 
-            if (this.state == "menu") {
+            if (state === this.initialState) {
                 this.ui.backButton.hide();
                 this.ui.quitButton.show();
             } else {
                 this.ui.quitButton.hide();
                 this.ui.backButton.show();
             }
+        },
+        changeStateTo : function(state) {
+            this.model.set("state", state);
         }
     });
 
