@@ -250,6 +250,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");
 
+            // Create an object to store all child views
+            this.children = new Backbone.ChildViewContainer();
+
             // Wrap onRender function if it exists
             if (this.onRender && _.isFunction(this.onRender)) {
                 var originalOnRender = this.onRender;
