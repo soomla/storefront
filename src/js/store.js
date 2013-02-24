@@ -34,7 +34,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     templateName        = json.template.name,
                     cssFiles            = [templatesFolder + "/" + templateName + "/less/" + templateName + ".less"],
                     jsFiles             = [templatesFolder + "/" + templateName + "/js/" + templateName + "Views.js"],
-                    htmlTemplatesPath   = templatesFolder + "/" + templateName + "/templates";
+                    htmlTemplatesPath   = templatesFolder  + "/" + templateName + "/templates",
+                    templateDefinition  = templatesFolder  + "/" + templateName + "/template.json";
 
 
                 // Append appropriate stylesheet
@@ -53,6 +54,43 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
 
                 // Set template base path
                 Handlebars.setTemplatePath(htmlTemplatesPath);
+
+                // A function that enumerates the template definition object and
+                // composes a CSS rule set.  Selectors are taken from the template definition
+                // and the actual CSS rules are taken from the theme object
+                var pickRecursive = function(templateObj, themeObj, picked) {
+                    _.each(templateObj, function(templateValue, templateKey) {
+                        var themeValue = themeObj[templateKey];
+                        if (_.isObject(templateValue)) {
+                            if (templateValue.type === "css") {
+                                picked.push({selector : templateValue.selector, rules: themeValue});
+                            } else if (templateValue.type === "backgroundImage") {
+                                picked.push({selector : templateValue.selector, rules: "background-image: url('" + themeValue + "');"});
+                            } else {
+                                pickRecursive(templateValue, themeValue, picked);
+                            }
+                        }
+                    });
+
+                };
+
+
+                var cssRequest 		= $.ajax({ url: "css.handlebars" }),
+                    templateRequest = $.ajax({ url: templateDefinition }),
+                	themeCss;
+
+                // Fetch the CSS template and the template definition, then compose a theme-specific rule set
+                // and add it the document head.
+                // TODO: Listen to css load event and add it as a deferred object to the rest of the initialization
+                $.when(cssRequest, templateRequest).then(function(cssResponse, templateResponse) {
+                    var cssTemplate = cssResponse[0],
+                        template    = templateResponse[0],
+                        picked      = [];
+
+                    pickRecursive(template.attributes, json.theme, picked);
+                    themeCss = Handlebars.compile(cssTemplate)(picked);
+                    $(themeCss).appendTo($("head"));
+                });
 
 
                 // In case we're in the old model without a category => goods relationship, normalize.
