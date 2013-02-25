@@ -80,6 +80,7 @@ define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
             return Handlebars.templates[name];
         }
     });
+    _.bindAll(Handlebars, "getTemplate", "getPartial");
 
 
     // Register more helpers
