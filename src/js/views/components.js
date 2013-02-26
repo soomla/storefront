@@ -56,15 +56,19 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var ItemView = BaseView.extend({
+    var LinkView = BaseView.extend({
         className : "item",
         tagName : "li",
+        triggers : {
+            fastclick : "select"
+        }
+    });
+
+
+    var ItemView = LinkView.extend({
         initialize : function() {
             // TODO: Remove change:balance => this.render
             this.model.on("change:balance change:priceModel", this.render);
-        },
-        triggers : {
-            fastclick : "select"
         },
         onBeforeRender : function() {
             var css = this.options.css || this.css;
@@ -269,7 +273,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.model.get("virtualCurrencies").on("change:balance", this.updateBalance, this);
         },
         serializeData : function() {
-            return _.extend({}, this.theme, {currencies : this.model.get("virtualCurrencies").toJSON()});
+            var currencies      = this.model.get("virtualCurrencies").toJSON(),
+                currencyImages  = this.model.get("modelAssets").virtualCurrencies;
+
+            _.each(currencies, function(currency) {
+                currency.imgFilePath = currencyImages[currency.itemId];
+            });
+            return _.extend({}, this.theme, {currencies : currencies});
         },
         openDialog : function() {
             var dialog = new ModalDialog({
@@ -287,8 +297,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             });
             return dialog.render();
         },
-        updateBalance : function(model) {
-            this.$("#balance-container label").html(model.get("balance"));
+        updateBalance : function(currency) {
+            this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
         },
         finalizeRendering : function() {
             // When all store images are loaded, trigger an event
@@ -330,6 +340,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     return {
         BaseView                        : BaseView,
         ItemView                        : ItemView,
+        LinkView                        : LinkView,
         BuyOnceItemView                 : BuyOnceItemView,
         EquippableItemView              : EquippableItemView,
         ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
