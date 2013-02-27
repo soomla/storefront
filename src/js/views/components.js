@@ -130,6 +130,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
 
     // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableEquipppableItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
     ExpandableEquipppableItemView.mixin(ExpandableModule);
     ExpandableEquipppableItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
@@ -146,6 +147,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
     // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableSingleUseItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
     ExpandableSingleUseItemView.mixin(ExpandableModule);
     ExpandableSingleUseItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 

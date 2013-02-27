@@ -53,7 +53,7 @@ module.exports = function (grunt) {
         cp(srcFolder + "/js/libs/require.js", distFolder + "/js/libs/");
 
         // Copy HTML + Less
-        cp("-R", srcFolder + "/store.html", distFolder + "/");
+        cp("-R", srcFolder + "/store.html", srcFolder + "/css.handlebars", distFolder + "/");
         cp("-R", srcFolder + "/css/mixins/bootstrap", distFolder + "/css/mixins/");
         cp("-R", srcFolder + "/css/mixins/layout.less", distFolder + "/css/mixins/");
 
