@@ -132,6 +132,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                         template : Handlebars.getTemplate("template")
                     }).on("imagesLoaded", function() {
 
+                        $("#preroll-cover").remove();
+
                         // Notify window when all images are loaded
                         var evt = document.createEvent('Event');
                         evt.initEvent('imagesLoaded', true, true);

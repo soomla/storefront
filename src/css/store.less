@@ -12,6 +12,14 @@ html,body {
     height: 100%;
 }
 
+body {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 h1 {
     margin: 0;
     font-size: 30px;
@@ -40,6 +48,16 @@ h1 {
 
 .box-horizontal {
     .box(horizontal, center, center);
+}
+
+#preroll-cover {
+    .box-horizontal;
+    position: fixed;
+    top: 0;
+    left:  0;
+    bottom: 0;
+    right:  0;
+    background: #fff;
 }
 
 // Add artificially "LESS"ed bootstrap buttons mixin
