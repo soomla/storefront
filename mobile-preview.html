@@ -124,6 +124,9 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             // Replace paths with
             var model = modelData[0], theme = themeData[0];
             updateJsonPaths(theme);
+
+            // Inject the base URL for loading template
+            theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
             var data = _.extend({}, model, theme);
 
             // Initialize store

@@ -30,12 +30,14 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 });
 
                 // Define which CSS, JS and Handlebars files need to be fetched
-                var templatesFolder     = "/storefront-themes/templates",
-                    templateName        = json.template.name,
-                    cssFiles            = [templatesFolder + "/" + templateName + "/less/" + templateName + ".less"],
-                    jsFiles             = [templatesFolder + "/" + templateName + "/js/" + templateName + "Views.js"],
-                    htmlTemplatesPath   = templatesFolder  + "/" + templateName + "/templates",
-                    templateDefinition  = templatesFolder  + "/" + templateName + "/template.json";
+                // The template folder is either overriden externally in the JSON or is hardcoded
+                // to the location of the template on the device
+                var templateName        = json.template.name,
+                    templatesFolder     = json.template.baseUrl || "../../template",
+                    cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
+                    jsFiles             = [templatesFolder + "/js/" + templateName + "Views.js"],
+                    htmlTemplatesPath   = templatesFolder  + "/templates",
+                    templateDefinition  = templatesFolder  + "/template.json";
 
 
                 // Append appropriate stylesheet
