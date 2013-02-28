@@ -13,6 +13,7 @@ require.config({
         jquery              	: "libs/jquery/jquery-1.9.1.min",
         "jquery.imagesloaded"   : "libs/jquery/jquery.imagesloaded",
         "jquery.fastbutton"     : "libs/jquery/jquery.google.fastbutton",
+        "jquery.preload"        : "libs/jquery/jquery.preload",
         fastbutton              : "libs/google.fastbutton",
         modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.0.min",
@@ -30,6 +31,9 @@ require.config({
             exports: '_'
         },
         "jquery.imagesloaded": {
+            deps: ['jquery']
+        },
+        "jquery.preload": {
             deps: ['jquery']
         },
         "jquery.fastbutton": {
