@@ -98,8 +98,10 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 };
 
 
+                // Add the data type for the template request since
+                // Android doesn't auto-convert the response to a javascript object
                 var cssRequest 		= $.ajax({ url: "css.handlebars" }),
-                    templateRequest = $.ajax({ url: templateDefinition }),
+                    templateRequest = $.ajax({ url: templateDefinition, dataType: "json" }),
                 	themeCss;
 
                 // Fetch the CSS template and the template definition, then compose a theme-specific rule set
