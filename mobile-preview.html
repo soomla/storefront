@@ -99,7 +99,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         var themesFolder 	= "../../storefront-themes/themes",
 			themeName 		= getParameterByName("theme"),
             themePath       = themesFolder + "/" + themeName +  "/theme",
-            regexp          = /\.\.\/theme/,
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
 			themeUrl 		= themesFolder + "/" + themeName +  "/theme.json",
             modelAjax       = $.ajax({url : modelUrl, dataType : "json"}),
@@ -111,38 +110,78 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 if (_.isObject(value)) {
                     // Recursive call
                     updateJsonPaths(value);
-                } else if (_.isString(value) && value.match(regexp)) {
+                } else if (_.isString(value)) {
                     // Replace the path
-                    json[key] = value.replace(regexp, themePath);
+                    json[key] = themePath + "/" + value;
                 }
             });
         };
 
+        var augmentImagePath = function(templateObj, themeObj) {
+            _.each(templateObj, function(templateValue, templateKey) {
+
+                var themeValue = themeObj[templateKey];
+                if (_.isObject(templateValue)) {
+                    switch (templateValue.type) {
+                        case "image":
+                            themeObj[templateKey] = themePath + "/" + themeValue;
+                            break;
+                        case "backgroundImage":
+                            themeObj[templateKey] = themePath + "/" + themeValue;
+                            break;
+                        case "font":
+                            themeObj[templateKey].url = themePath + "/" + themeValue.url;
+                            break;
+                        case "css":
+                            break;
+                        default:
+                            augmentImagePath(templateValue, themeValue);
+                    }
+                }
+            });
+
+        };
+
+
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            // Replace paths with
-            var model = modelData[0], theme = themeData[0];
-            updateJsonPaths(theme);
+            var model 			= modelData[0],
+                theme 			= themeData[0],
+            	templateUrl     = "../../storefront-themes/templates/" + theme.template.name + "/template.json",
+                templateAjax    = $.ajax({url : templateUrl, dataType : "json"});
 
-            // Inject the base URL for loading template
-            theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
-            var data = _.extend({}, model, theme);
 
-            // Initialize store
-            SoomlaJS.initialize(data);
+            $.when(templateAjax).done(function(template) {
 
-            // Inject prices and balances
-            var goods = {};
-            _.each(data.categories, function(category) {
-                _.each(category.goods, function(good) {
-                    goods[good.itemId] = {
-                        balance : 0,
-                        price : good.priceModel.values
-                    };
+                // Replace paths with
+                augmentImagePath(template.attributes, theme.theme);
+                updateJsonPaths(theme.modelAssets);
+
+                // Inject the base URL for loading template
+                theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
+
+                // Prevent storefront from augmenting image paths, since this page already does it
+                theme.imagePathsAugmented = true;
+
+                var data = _.extend({}, model, theme);
+
+                // Initialize store
+                SoomlaJS.initialize(data);
+
+                // Inject prices and balances
+                var goods = {};
+                _.each(data.categories, function(category) {
+                    _.each(category.goods, function(good) {
+                        goods[good.itemId] = {
+                            balance : 0,
+                            price : good.priceModel.values
+                        };
+                    });
                 });
+                SoomlaJS.goodsUpdated(goods);
+
             });
-            SoomlaJS.goodsUpdated(goods);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");

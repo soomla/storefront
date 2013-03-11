@@ -10,6 +10,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
         } catch(e) {}
     };
 
+    var themeRelativePath = "../theme";
+
     $(function() {
 
         window.SoomlaJS = _.extend({}, jsAPI, {
@@ -33,7 +35,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 // The template folder is either overriden externally in the JSON or is hardcoded
                 // to the location of the template on the device
                 var templateName        = json.template.name,
-                    templatesFolder     = json.template.baseUrl || "../../template",
+                    templatesFolder     = json.template.baseUrl || "../template",
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
                     jsFiles             = [templatesFolder + "/js/" + templateName + "Views.js"],
                     htmlTemplatesPath   = templatesFolder  + "/templates",
@@ -66,7 +68,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                             if (!callback(templateValue, themeValue, picked)) pickRecursive(templateValue, themeValue, picked, callback);
                         }
                     });
-
                 };
 
                 // A function that enumerates the template definition object and
@@ -97,6 +98,30 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     });
                 };
 
+                var augmentImagePath = function(templateObj, themeObj) {
+                    _.each(templateObj, function(templateValue, templateKey) {
+
+                        var themeValue = themeObj[templateKey];
+                        if (_.isObject(templateValue)) {
+                            switch (templateValue.type) {
+                                case "image":
+                                    themeObj[templateKey] = themeRelativePath + "/" + themeValue;
+                                    break;
+                                case "backgroundImage":
+                                    themeObj[templateKey] = themeRelativePath + "/" + themeValue;
+                                    break;
+                                case "font":
+                                    themeObj[templateKey].url = themeRelativePath + "/" + themeValue.url;
+                                    break;
+                                case "css":
+                                    break;
+                                default:
+                                    augmentImagePath(templateValue, themeValue);
+                            }
+                        }
+                    });
+
+                };
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
@@ -112,6 +137,9 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                         template            = templateResponse[0],
                         cssRuleSet          = [],
                         backgroundImages    = [];
+
+                    // Start by augmenting the flat paths of images to relative paths
+                    if (!json.imagePathsAugmented) augmentImagePath(template.attributes, json.theme);
 
                     // Append theme specific styles to head
                     pickCss(template.attributes, json.theme, cssRuleSet);
