@@ -117,32 +117,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             });
         };
 
-        var augmentImagePath = function(templateObj, themeObj) {
-            _.each(templateObj, function(templateValue, templateKey) {
-
-                var themeValue = themeObj[templateKey];
-                if (_.isObject(templateValue)) {
-                    switch (templateValue.type) {
-                        case "image":
-                            themeObj[templateKey] = themePath + "/" + themeValue;
-                            break;
-                        case "backgroundImage":
-                            themeObj[templateKey] = themePath + "/" + themeValue;
-                            break;
-                        case "font":
-                            themeObj[templateKey].url = themePath + "/" + themeValue.url;
-                            break;
-                        case "css":
-                            break;
-                        default:
-                            augmentImagePath(templateValue, themeValue);
-                    }
-                }
-            });
-
-        };
-
-
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
@@ -155,7 +129,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             $.when(templateAjax).done(function(template) {
 
                 // Replace paths with
-                augmentImagePath(template.attributes, theme.theme);
+                require("utils").augmentThemeUrls(template.attributes, theme.theme, themePath);
                 updateJsonPaths(theme.modelAssets);
 
                 // Inject the base URL for loading template

@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos) {
+define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos, Utils) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -98,31 +98,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     });
                 };
 
-                var augmentImagePath = function(templateObj, themeObj) {
-                    _.each(templateObj, function(templateValue, templateKey) {
-
-                        var themeValue = themeObj[templateKey];
-                        if (_.isObject(templateValue)) {
-                            switch (templateValue.type) {
-                                case "image":
-                                    themeObj[templateKey] = themeRelativePath + "/" + themeValue;
-                                    break;
-                                case "backgroundImage":
-                                    themeObj[templateKey] = themeRelativePath + "/" + themeValue;
-                                    break;
-                                case "font":
-                                    themeObj[templateKey].url = themeRelativePath + "/" + themeValue.url;
-                                    break;
-                                case "css":
-                                    break;
-                                default:
-                                    augmentImagePath(templateValue, themeValue);
-                            }
-                        }
-                    });
-
-                };
-
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
                 var cssRequest 		= $.ajax({ url: "css.handlebars" }),
@@ -139,7 +114,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                         backgroundImages    = [];
 
                     // Start by augmenting the flat paths of images to relative paths
-                    if (!json.imagePathsAugmented) augmentImagePath(template.attributes, json.theme);
+                    if (!json.imagePathsAugmented) Utils.augmentThemeUrls(template.attributes, json.theme, themeRelativePath);
 
                     // Append theme specific styles to head
                     pickCss(template.attributes, json.theme, cssRuleSet);
