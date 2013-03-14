@@ -105,18 +105,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             themeAjax       = $.ajax({url : themeUrl, dataType : "json"});
 
 
-        var updateJsonPaths = function(json) {
-            _.each(json, function(value, key) {
-                if (_.isObject(value)) {
-                    // Recursive call
-                    updateJsonPaths(value);
-                } else if (_.isString(value)) {
-                    // Replace the path
-                    json[key] = themePath + "/" + value;
-                }
-            });
-        };
-
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
@@ -126,36 +114,35 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 templateAjax    = $.ajax({url : templateUrl, dataType : "json"});
 
 
-            $.when(templateAjax).done(function(template) {
+			// Replace paths
+			var Utils = require("utils");
+			Utils.replaceStringAttributes(theme.modelAssets, /^img/, themePath + "/img");
+			Utils.replaceStringAttributes(theme.theme, /^img/, themePath + "/img");
+			Utils.replaceStringAttributes(theme.theme, /^fonts/, themePath + "/fonts");
 
-                // Replace paths with
-                require("utils").augmentThemeUrls(template.attributes, theme.theme, themePath);
-                updateJsonPaths(theme.modelAssets);
 
-                // Inject the base URL for loading template
-                theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
+			// Inject the base URL for loading template
+			theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
 
-                // Prevent storefront from augmenting image paths, since this page already does it
-                theme.imagePathsAugmented = true;
+			// Prevent storefront from augmenting image paths, since this page already does it
+			theme.imagePathsAugmented = true;
 
-                var data = _.extend({}, model, theme);
+			var data = _.extend({}, model, theme);
 
-                // Initialize store
-                SoomlaJS.initialize(data);
+			// Initialize store
+			SoomlaJS.initialize(data);
 
-                // Inject prices and balances
-                var goods = {};
-                _.each(data.categories, function(category) {
-                    _.each(category.goods, function(good) {
-                        goods[good.itemId] = {
-                            balance : 0,
-                            price : good.priceModel.values
-                        };
-                    });
-                });
-                SoomlaJS.goodsUpdated(goods);
-
-            });
+			// Inject prices and balances
+			var goods = {};
+			_.each(data.categories, function(category) {
+				_.each(category.goods, function(good) {
+					goods[good.itemId] = {
+						balance : 0,
+						price : good.priceModel.values
+					};
+				});
+			});
+			SoomlaJS.goodsUpdated(goods);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");

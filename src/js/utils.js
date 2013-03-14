@@ -1,5 +1,21 @@
 define(function() {
     return {
+        // Given an object, replaces all string attributes in the object (or deeply nested)
+        // that match the given regex with the given replacement string.
+        // Example:
+        // ( {a : "foo", {b: "foobar"} }, /foo/, "off" )  ==>  {a: "off", {b: "offbar"}}
+        replaceStringAttributes : function(obj, regex, replaceString) {
+            var $this = this;
+            _.each(obj, function(value, key) {
+                if (_.isObject(value)) {
+                    // Recursive call
+                    $this.replaceStringAttributes(value, regex, replaceString);
+                } else if (_.isString(value) && value.match(regex)) {
+                    // Replace the path
+                    obj[key] = value.replace(regex, replaceString);
+                }
+            });
+        },
         // Find all theme attributes with URLs by walking the template object.
         // Add a prefix to these URLs
         augmentThemeUrls : function(templateObj, themeObj, prefixPath) {

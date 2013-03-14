@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos, Utils) {
+define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -114,7 +114,11 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soom
                         backgroundImages    = [];
 
                     // Start by augmenting the flat paths of images to relative paths
-                    if (!json.imagePathsAugmented) Utils.augmentThemeUrls(template.attributes, json.theme, themeRelativePath);
+                    if (!json.imagePathsAugmented) {
+                        Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
+                        Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
+                        Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
+                    }
 
                     // Append theme specific styles to head
                     pickCss(template.attributes, json.theme, cssRuleSet);
