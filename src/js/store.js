@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, SoomlaIos) {
+define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -9,6 +9,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
             }
         } catch(e) {}
     };
+
+    var themeRelativePath = "../theme";
 
     $(function() {
 
@@ -33,7 +35,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                 // The template folder is either overriden externally in the JSON or is hardcoded
                 // to the location of the template on the device
                 var templateName        = json.template.name,
-                    templatesFolder     = json.template.baseUrl || "../../template",
+                    templatesFolder     = json.template.baseUrl || "../template",
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
                     jsFiles             = [templatesFolder + "/js/" + templateName + "Views.js"],
                     htmlTemplatesPath   = templatesFolder  + "/templates",
@@ -66,7 +68,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                             if (!callback(templateValue, themeValue, picked)) pickRecursive(templateValue, themeValue, picked, callback);
                         }
                     });
-
                 };
 
                 // A function that enumerates the template definition object and
@@ -97,7 +98,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                     });
                 };
 
-
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
                 var cssRequest 		= $.ajax({ url: "css.handlebars" }),
@@ -112,6 +112,13 @@ define(["jquery", "js-api", "models", "components", "handlebars", "soomla-ios", 
                         template            = templateResponse[0],
                         cssRuleSet          = [],
                         backgroundImages    = [];
+
+                    // Start by augmenting the flat paths of images to relative paths
+                    if (!json.imagePathsAugmented) {
+                        Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
+                        Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
+                        Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
+                    }
 
                     // Append theme specific styles to head
                     pickCss(template.attributes, json.theme, cssRuleSet);

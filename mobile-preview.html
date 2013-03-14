@@ -99,50 +99,50 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         var themesFolder 	= "../../storefront-themes/themes",
 			themeName 		= getParameterByName("theme"),
             themePath       = themesFolder + "/" + themeName +  "/theme",
-            regexp          = /\.\.\/theme/,
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
 			themeUrl 		= themesFolder + "/" + themeName +  "/theme.json",
             modelAjax       = $.ajax({url : modelUrl, dataType : "json"}),
             themeAjax       = $.ajax({url : themeUrl, dataType : "json"});
 
 
-        var updateJsonPaths = function(json) {
-            _.each(json, function(value, key) {
-                if (_.isObject(value)) {
-                    // Recursive call
-                    updateJsonPaths(value);
-                } else if (_.isString(value) && value.match(regexp)) {
-                    // Replace the path
-                    json[key] = value.replace(regexp, themePath);
-                }
-            });
-        };
-
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            // Replace paths with
-            var model = modelData[0], theme = themeData[0];
-            updateJsonPaths(theme);
+            var model 			= modelData[0],
+                theme 			= themeData[0],
+            	templateUrl     = "../../storefront-themes/templates/" + theme.template.name + "/template.json",
+                templateAjax    = $.ajax({url : templateUrl, dataType : "json"});
 
-            // Inject the base URL for loading template
-            theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
-            var data = _.extend({}, model, theme);
 
-            // Initialize store
-            SoomlaJS.initialize(data);
+			// Replace paths
+			var Utils = require("utils");
+			Utils.replaceStringAttributes(theme.modelAssets, /^img/, themePath + "/img");
+			Utils.replaceStringAttributes(theme.theme, /^img/, themePath + "/img");
+			Utils.replaceStringAttributes(theme.theme, /^fonts/, themePath + "/fonts");
 
-            // Inject prices and balances
-            var goods = {};
-            _.each(data.categories, function(category) {
-                _.each(category.goods, function(good) {
-                    goods[good.itemId] = {
-                        balance : 0,
-                        price : good.priceModel.values
-                    };
-                });
-            });
-            SoomlaJS.goodsUpdated(goods);
+
+			// Inject the base URL for loading template
+			theme.template.baseUrl = "/storefront-themes/templates/" + theme.template.name;
+
+			// Prevent storefront from augmenting image paths, since this page already does it
+			theme.imagePathsAugmented = true;
+
+			var data = _.extend({}, model, theme);
+
+			// Initialize store
+			SoomlaJS.initialize(data);
+
+			// Inject prices and balances
+			var goods = {};
+			_.each(data.categories, function(category) {
+				_.each(category.goods, function(good) {
+					goods[good.itemId] = {
+						balance : 0,
+						price : good.priceModel.values
+					};
+				});
+			});
+			SoomlaJS.goodsUpdated(goods);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
