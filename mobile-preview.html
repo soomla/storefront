@@ -51,24 +51,6 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 <!-- scripts concatenated and minified via build script -->
 <script>
 
-    var isMobile = {
-        Android: function() {
-            return navigator.userAgent.match(/Android/i) ? true : false;
-        },
-        BlackBerry: function() {
-            return navigator.userAgent.match(/BlackBerry/i) ? true : false;
-        },
-        iOS: function() {
-            return navigator.userAgent.match(/iPhone|iPad|iPod/i) ? true : false;
-        },
-        Windows: function() {
-            return navigator.userAgent.match(/IEMobile/i) ? true : false;
-        },
-        any: function() {
-            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Windows());
-        }
-    };
-
     // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
     window.SoomlaNative = {
         playPop : function() {},

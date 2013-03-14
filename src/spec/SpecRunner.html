@@ -16,25 +16,6 @@
     Modernizr enables HTML5 elements & feature detects for optimal performance.
     Create your own custom Modernizr build: www.modernizr.com/download/ -->
     <script src="../js/libs/modernizr-2.5.3.min.js"></script>
-    <script>
-        var isMobile = {
-            Android: function() {
-                return navigator.userAgent.match(/Android/i) ? true : false;
-            },
-            BlackBerry: function() {
-                return navigator.userAgent.match(/BlackBerry/i) ? true : false;
-            },
-            iOS: function() {
-                return navigator.userAgent.match(/iPhone|iPad|iPod/i) ? true : false;
-            },
-            Windows: function() {
-                return navigator.userAgent.match(/IEMobile/i) ? true : false;
-            },
-            any: function() {
-                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Windows());
-            }
-        };
-    </script>
 
 
     <!-- include spec files here... -->

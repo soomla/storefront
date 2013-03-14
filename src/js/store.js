@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, SoomlaIos) {
+define(["jquery", "js-api", "models", "components", "handlebars", "utils", "userAgent", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -194,7 +194,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "soom
 
         // Notify native code that we're initialized only if an interface exists
         // i.e. only when running in a device and not in the store builder.
-        if (isMobile.iOS()){
+        if (UserAgent.iOS()){
             window.SoomlaNative = SoomlaIos;
         }
 
