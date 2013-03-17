@@ -69,10 +69,6 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         initialize : function() {
             // TODO: Remove change:balance => this.render
             this.model.on("change:balance change:priceModel", this.render);
-        },
-        onBeforeRender : function() {
-            var css = this.options.css || this.css;
-            if (css) this.$el.css(css);
         }
     });
 
