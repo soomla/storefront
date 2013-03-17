@@ -57,6 +57,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
 
     var LinkView = BaseView.extend({
+        constructor : function(options) {
+            BaseView.prototype.constructor.apply(this, arguments);
+
+            // Allow extenders to add this function for applying more
+            // event callbacks on the view or its model
+            if (this.addEvents) this.addEvents();
+        },
         className : "item",
         tagName : "li",
         triggers : {

@@ -192,7 +192,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 return this.store;
             },
             // place modules on SoomlaJS namespace for the designer to use
-            Models : Models
+            Models : Models,
+            Components : Components
         });
 
         // Notify native code that we're initialized only if an interface exists
