@@ -1,5 +1,9 @@
 require.config({
     baseUrl : "js",
+
+    // Cancel timeout for really slow devices
+    waitSeconds : 0,
+
     paths: {
         components              : "views/components",
         helperViews             : "views/helper-views",

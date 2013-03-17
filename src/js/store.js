@@ -180,15 +180,13 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     }).render();
 
 
-                    // place modules on SoomlaJS namespace for the designer to use
-                    $this.Models = Models;
-
                     if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
                     triggerEventOnFrame("store:initialized");
                 });
 
                 return this.store;
             },
+            // place modules on SoomlaJS namespace for the designer to use
             Models : Models
         });
 
