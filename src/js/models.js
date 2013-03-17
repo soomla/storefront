@@ -11,6 +11,9 @@ define(["backboneRelational"], function() {
         },
         getCurrencyId : function() {
             return _.keys(this.get("priceModel").values)[0];
+        },
+        getPrice : function(currencyId) {
+            return this.get("priceModel").values[currencyId];
         }
     });
 

@@ -2,16 +2,74 @@
  * This set of functions is an API implemented by the native code and is provided for the Javascript code to invoke.
  * Since the native code should provide this interface, it is currently implemented with stubs.
  */
-define({
-    log : function() {
-        console.log(arguments);
-    },
-    wantsToBuyVirtualGoods          : function(model)   { this.log("wantsToBuyVirtualGoods", arguments);    },
-    wantsToBuyMarketItem            : function(model)   { this.log("wantsToBuyMarketItem", arguments);      },
-    wantsToEquipGoods               : function(model)   { this.log("wantsToEquipGoods", arguments);         },
-    wantsToUnequipGoods             : function(model)   { this.log("wantsToUnequipGoods", arguments);       },
-    storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
-    wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
-    requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },
-    playPop                         : function()        { this.log("playPop", arguments);                   }
+define(function(){
+    var _jsAPI;
+
+    var API = {
+        log : function() {
+            console.log(arguments);
+        },
+        wantsToBuyVirtualGoods : function(model) {
+            this.log("wantsToBuyVirtualGoods", arguments);
+            var goods       = {},
+                balances    = {},
+                currencyId  = model.getCurrencyId(),
+                newBalance  = SoomlaJS.store.getBalance(currencyId) - model.getPrice(currencyId);
+
+            // Check if there's enough balance for the purchase
+            if (newBalance < 0) {
+                _jsAPI.insufficientFunds(currencyId);
+                return;
+            }
+
+            // Increment good balance
+            goods[model.id] = {balance: model.get("balance") + 1};
+
+            // Update currency balance
+            balances[currencyId] = newBalance;
+
+            _jsAPI.goodsUpdated(goods);
+            _jsAPI.currencyBalanceChanged(balances);
+        },
+        wantsToBuyMarketItem : function(model) {
+            this.log("wantsToBuyMarketItem", arguments);
+
+            var balances    = {},
+                currencyId  = model.get("currency_itemId"),
+                newBalance  = SoomlaJS.store.getBalance(currencyId) + model.get("amount");
+
+            balances[currencyId] = newBalance;
+            _jsAPI.currencyBalanceChanged(balances);
+        },
+        wantsToEquipGoods : function(model) {
+            this.log("wantsToEquipGoods", arguments);
+            var goods = {};
+
+            // First unequip all other goods in category ("single" equipping enforcement)
+            var categoryId      = model.get("categoryId"),
+                categoryGoods   = SoomlaJS.store.get("categories").get(categoryId).get("goods");
+            console.dir(categoryGoods.toJSON());
+            categoryGoods.each(function(good) {
+                if (good.get("balance") > 0) goods[good.id] = {equipped: false};
+            });
+
+            // Then equip the given good
+            goods[model.id] = {equipped: !model.get("equipped")};
+            _jsAPI.goodsUpdated(goods);
+        },
+        wantsToUnequipGoods : function(model) {
+            this.log("wantsToUnequipGoods", arguments);
+            var goods = {};
+            goods[model.id] = {equipped: !model.get("equipped")};
+            _jsAPI.goodsUpdated(goods);
+        },
+        storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
+        wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
+        requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },
+        playPop                         : function()        { this.log("playPop", arguments);                   },
+        injectJsApi : function(jsAPI) {
+            _jsAPI = jsAPI;
+        }
+    };
+    return API;
 });

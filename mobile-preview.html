@@ -55,9 +55,10 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
     window.SoomlaNative = {
         playPop : function() {},
         storeInitialized : function() {
-            require(["native-api-stubs"], function(NativeApiStubs) {
+            require(["native-api-stubs", "js-api"], function(NativeApiStubs, jsAPI) {
                 // Inject Native API stubs
                 _.extend(SoomlaJS.storeView, NativeApiStubs);
+                NativeApiStubs.injectJsApi(jsAPI);
             });
         }
     };
@@ -115,7 +116,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 			SoomlaJS.initialize(data);
 
 			// Inject prices and balances
-			var goods = {};
+			var goods = {}, balances = {};
 			_.each(data.categories, function(category) {
 				_.each(category.goods, function(good) {
 					goods[good.itemId] = {
@@ -124,7 +125,12 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 					};
 				});
 			});
+            SoomlaJS.store.get("virtualCurrencies").each(function(currency) {
+                balances[currency.id] = 10000
+            });
+
 			SoomlaJS.goodsUpdated(goods);
+            SoomlaJS.currencyBalanceChanged(balances);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
