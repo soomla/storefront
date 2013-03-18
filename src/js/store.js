@@ -10,6 +10,47 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
         } catch(e) {}
     };
 
+    // Utility function to recursively traverse the template and theme trees
+    // and apply a callback function on each node that's an object
+    var pickRecursive = function(templateObj, themeObj, picked, callback) {
+        _.each(templateObj, function(templateValue, templateKey) {
+            var themeValue = themeObj[templateKey];
+            if (_.isObject(templateValue)) {
+                if (!callback(templateValue, themeValue, picked)) pickRecursive(templateValue, themeValue, picked, callback);
+            }
+        });
+    };
+
+    // A function that enumerates the template definition object and
+    // composes a CSS rule set.  Selectors are taken from the template definition
+    // and the actual CSS rules are taken from the theme object
+    var pickCss = function(templateObj, themeObj, picked) {
+        pickRecursive(templateObj, themeObj, picked, function(templateValue, themeValue, picked) {
+            if (templateValue.type === "css") {
+                picked.push({selector : templateValue.selector, rules: themeValue});
+                return true;
+            }
+            if (templateValue.type === "backgroundImage") {
+                picked.push({selector : templateValue.selector, rules: "background-image: url('" + themeValue + "');"});
+                return true;
+            }
+            return false;
+        });
+    };
+    // A function that enumerates the template definition object and
+    // composes a list of background image URLs to preload
+    var pickImages = function(templateObj, themeObj, picked) {
+        pickRecursive(templateObj, themeObj, picked, function(templateValue, themeValue, picked) {
+            if (templateValue.type === "backgroundImage") {
+                picked.push(themeValue);
+                return true;
+            }
+            return false;
+        });
+    };
+
+
+
     var themeRelativePath = "../theme";
 
     $(function() {
@@ -30,6 +71,15 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 _.each(templateAttributes, function(attribute) {
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
+
+
+                // Start by augmenting the flat paths of images to relative paths
+                if (!json.imagePathsAugmented) {
+                    Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
+                    Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
+                    Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
+                }
+
 
                 // Define which CSS, JS and Handlebars files need to be fetched
                 // The template folder is either overriden externally in the JSON or is hardcoded
@@ -59,45 +109,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 // Set template base path
                 Handlebars.setTemplatePath(htmlTemplatesPath);
 
-                // Utility function to recursively traverse the template and theme trees
-                // and apply a callback function on each node that's an object
-                var pickRecursive = function(templateObj, themeObj, picked, callback) {
-                    _.each(templateObj, function(templateValue, templateKey) {
-                        var themeValue = themeObj[templateKey];
-                        if (_.isObject(templateValue)) {
-                            if (!callback(templateValue, themeValue, picked)) pickRecursive(templateValue, themeValue, picked, callback);
-                        }
-                    });
-                };
-
-                // A function that enumerates the template definition object and
-                // composes a CSS rule set.  Selectors are taken from the template definition
-                // and the actual CSS rules are taken from the theme object
-                var pickCss = function(templateObj, themeObj, picked) {
-                    pickRecursive(templateObj, themeObj, picked, function(templateValue, themeValue, picked) {
-                        if (templateValue.type === "css") {
-                            picked.push({selector : templateValue.selector, rules: themeValue});
-                            return true;
-                        }
-                        if (templateValue.type === "backgroundImage") {
-                            picked.push({selector : templateValue.selector, rules: "background-image: url('" + themeValue + "');"});
-                            return true;
-                        }
-                        return false;
-                    });
-                };
-                // A function that enumerates the template definition object and
-                // composes a list of background image URLs to preload
-                var pickImages = function(templateObj, themeObj, picked) {
-                    pickRecursive(templateObj, themeObj, picked, function(templateValue, themeValue, picked) {
-                        if (templateValue.type === "backgroundImage") {
-                            picked.push(themeValue);
-                            return true;
-                        }
-                        return false;
-                    });
-                };
-
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
                 var cssRequest 		= $.ajax({ url: "css.handlebars" }),
@@ -112,13 +123,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                         template            = templateResponse[0],
                         cssRuleSet          = [],
                         backgroundImages    = [];
-
-                    // Start by augmenting the flat paths of images to relative paths
-                    if (!json.imagePathsAugmented) {
-                        Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
-                        Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
-                        Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
-                    }
 
                     // Append theme specific styles to head
                     pickCss(template.attributes, json.theme, cssRuleSet);
