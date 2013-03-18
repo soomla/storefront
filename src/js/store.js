@@ -181,11 +181,12 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                         var evt = document.createEvent('Event');
                         evt.initEvent('imagesLoaded', true, true);
                         window.dispatchEvent(evt);
+
+                        // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
+                        if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
+                        triggerEventOnFrame("store:initialized");
+
                     }).render();
-
-
-                    if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-                    triggerEventOnFrame("store:initialized");
                 });
 
                 return this.store;
