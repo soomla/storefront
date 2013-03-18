@@ -77,7 +77,7 @@ module.exports = function (grunt) {
         cp(srcFolder + "/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
 
         // Add mobile preview HTML
-        cp(srcFolder + "/mobile-preview.html", distFolder);
+        cp("./mobile-preview.html", distFolder);
 
         // Add symlink to themes
         exec("ln -s ../../" + themesFolder +  " " + distFolder + "/themes")
