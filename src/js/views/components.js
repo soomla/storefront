@@ -242,6 +242,20 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
+    var SoomlaInfoModalDialog = Backbone.View.extend({
+        events : {
+            "fastclick" : function(event) { if (event && event.target === event.currentTarget) this.hide(); },
+            "fastclick .close" : "hide"
+        },
+        show : function() {
+            this.$el.show();
+        },
+        hide : function() {
+            this.$el.hide();
+        }
+    });
+
+
     // TODO: Write unit test for this component
     var BaseStoreView = BaseView.extend({
         constructor : function(options) {
@@ -305,7 +319,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         updateBalance : function(currency) {
             this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
         },
-        finalizeRendering : function() {
+        finalizeRendering : function() {                 close
             // When all store images are loaded, trigger an event
             // TODO: Preload images that aren't visible at first
             var $this = this;
@@ -313,6 +327,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $this.trigger("imagesLoaded");
             });
 
+            this.addSoomlaInfoModal();
             this.adjustZoom();
             return this;
         },
@@ -334,6 +349,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $(window).resize(adjustBodySize);
                 adjustBodySize();
             }
+        },
+        addSoomlaInfoModal : function() {
+            var dialog = new SoomlaInfoModalDialog({ el : $("#soomla-info-modal") });
+            var selector = this.model.get("noBranding") ? ".nobrand" : ".soombot";
+            $(selector).show().on("fastclick", function(event) {
+                dialog.show();
+            });
         },
         leaveStore : function() {
             this.playSound().wantsToLeaveStore();
