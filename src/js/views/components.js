@@ -352,7 +352,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         addSoomlaInfoModal : function() {
             var dialog = new SoomlaInfoModalDialog({ el : $("#soomla-info-modal") });
-            var selector = this.model.get("noBranding") ? ".nobrand" : ".soombot";
+            var selector = this.model.get("template").noBranding ? ".nobrand" : ".soombot";
             $(selector).show().on("fastclick", function(event) {
                 dialog.show();
             });
