@@ -116,6 +116,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         onEquippingChange : function() {
             this.model.get("equipped") ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
+        },
+        onRender : function() {
+
+            // Check the state of the view's virtual good and update the view accordingly
+            this.onBalanceChange();
+            this.onEquippingChange();
         }
     });
 
