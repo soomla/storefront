@@ -68,4 +68,10 @@ require.config({
         // No need to export globally in 'shim' section
     }
 });
+
+// Configure less not to poll for changes
+less = {
+    env: "production"
+};
+
 require(["store"]);
