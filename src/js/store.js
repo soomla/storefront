@@ -111,28 +111,50 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
-                var cssRequest 		= $.ajax({ url: "css.handlebars" }),
-                    templateRequest = $.ajax({ url: templateDefinition, dataType: "json" }),
-                	themeCss;
+                var cssRequest 			= $.ajax({ url: "css.handlebars" }),
+                    templateRequest 	= $.ajax({ url: templateDefinition, dataType: "json" }),
+                    $this           	= this,
+                    cssDeferred     	= $.Deferred(),
+                    storeViewDeferred 	= $.Deferred(),
+                    backgroundImagesPromise;
 
                 // Fetch the CSS template and the template definition, then compose a theme-specific rule set
                 // and add it the document head.
-                // TODO: Listen to css load event and add it as a deferred object to the rest of the initialization
                 $.when(cssRequest, templateRequest).then(function(cssResponse, templateResponse) {
                     var cssTemplate         = cssResponse[0],
                         template            = templateResponse[0],
                         cssRuleSet          = [],
-                        backgroundImages    = [];
+                        backgroundImages    = [],
+                        themeCss;
 
-                    // Append theme specific styles to head
+                    // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
                     themeCss = Handlebars.compile(cssTemplate)(cssRuleSet);
-                    $(themeCss).appendTo($("head"));
+                    $(themeCss).load(cssDeferred.resolve).appendTo($("head"));
 
-                    // Preload CSS background images
+                    // Preload CSS background images with a promise
                     pickImages(template.attributes, json.theme, backgroundImages);
                     backgroundImages = _.compact(backgroundImages);
-                    $.preload(backgroundImages)
+                    backgroundImagesPromise = $.preload(backgroundImages);
+
+
+                    // Expose UI and notify application when all three conditions are met:
+                    // 1. The store is rendered (and all regular images are preloaded)
+                    // 2. The injected CSS is loaded
+                    // 3. Background images were preloaded
+                    $.when(backgroundImagesPromise, cssDeferred.promise(), storeViewDeferred.promise()).then(function() {
+
+                        $("#preroll-cover").remove();
+
+                        // Notify window when all images are loaded
+                        var evt = document.createEvent('Event');
+                        evt.initEvent('imagesLoaded', true, true);
+                        window.dispatchEvent(evt);
+
+                        // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
+                        if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
+                        triggerEventOnFrame("store:initialized");
+                    });
                 });
 
 
@@ -161,33 +183,19 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                 // Initialize model
                 this.store = new Models.Store(json);
-                var $this = this;
 
                 require(jsFiles, function(ThemeViews) {
 
-                    // Call template load callback if provided
-                    if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(ThemeViews, Components);
+					// Call template load callback if provided
+					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(ThemeViews, Components);
 
-                    // Initialize view
-                    $this.storeView = new ThemeViews.StoreView({
-                        model : $this.store,
-                        el : $("#main"),
-                        template : Handlebars.getTemplate("template")
-                    }).on("imagesLoaded", function() {
-
-                        $("#preroll-cover").remove();
-
-                        // Notify window when all images are loaded
-                        var evt = document.createEvent('Event');
-                        evt.initEvent('imagesLoaded', true, true);
-                        window.dispatchEvent(evt);
-
-                        // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
-                        if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-                        triggerEventOnFrame("store:initialized");
-
-                    }).render();
-                });
+					// Initialize view
+					$this.storeView = new ThemeViews.StoreView({
+						model : $this.store,
+						el : $("#main"),
+						template : Handlebars.getTemplate("template")
+					}).on("imagesLoaded", storeViewDeferred.resolve).render();
+				});
 
                 return this.store;
             },
