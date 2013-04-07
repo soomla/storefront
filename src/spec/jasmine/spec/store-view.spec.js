@@ -94,7 +94,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
             });
 
             it("should show the currency store when 'Buy more' is tapped", function () {
-                var spy = sinon.spy(StoreView.prototype, "showCurrencyStore");
+                var spy = sinon.spy(StoreView.prototype, "showCurrencyPacks");
                 storeView = new StoreView(attributes);
                 storeView.$(".buy-more").trigger(touchendEvent);
                 expect(spy.called).toBeTruthy();
@@ -110,7 +110,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
             });
 
             it("should move to the currency store if the insufficient funds dialog returns 'buyMore'", function() {
-                var spy = sinon.spy(StoreView.prototype, "showCurrencyStore");
+                var spy = sinon.spy(StoreView.prototype, "showCurrencyPacks");
                 storeView = new StoreView(attributes).openDialog(Models.Currency.prototype.defaults.itemId);
                 storeView.$(".buy-more").trigger(touchendEvent);
                 expect(spy.called).toBeTruthy();
@@ -123,7 +123,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                 beforeEach(function() {
                     _.extend(StoreView.prototype.events, {
                         "click .leave-store" : "wantsToLeaveStore",
-                        "click .buy-more"    : "showCurrencyStore",
+                        "click .buy-more"    : "showCurrencyPacks",
                         "click .back"        : "showGoodsStore"
                     });
                 });
@@ -140,7 +140,7 @@ define("storeView.spec", ["storeViews", "models", "components"], function (Store
                 });
 
                 it("should show the currency store when 'Buy more' is clicked", function () {
-                    var spy = sinon.spy(StoreView.prototype, "showCurrencyStore");
+                    var spy = sinon.spy(StoreView.prototype, "showCurrencyPacks");
                     storeView = new StoreView(attributes);
                     storeView.$(".buy-more").click();
                     expect(spy.called).toBeTruthy();
