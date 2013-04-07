@@ -20,10 +20,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.$el.addClass("expanded");
             this.triggerMethod("expand");
         },
-        collapse : function() {
+        collapse : function(options) {
             this.expanded = false;
             this.$el.removeClass("expanded");
-            this.triggerMethod("collapse");
+            this.triggerMethod("collapse", options);
         }
     };
 
@@ -130,7 +130,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         onBalanceChange : function() {
             if (this.model.get("balance") >  0) {
                 this.$el.addClass("owned");
-                if (this.expanded) this.collapse();
+                if (this.expanded) this.collapse({noSound: true});
             } else {
                 this.$el.removeClass("owned");
             }
@@ -192,15 +192,15 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var ExpandableIScrollCollectionView = IScrollCollectionView.extend({
         itemView : ExpandableEquipppableItemView,
         onItemviewExpand : function(view) {
-            if (this.expandedChild) this.expandedChild.collapse();
+            if (this.expandedChild) this.expandedChild.collapse({noSound: true});
             this.expandedChild = view;
         },
         onItemviewCollapse : function(view) {
             delete this.expandedChild;
         },
-        collapseExpandedChild : function() {
+        collapseExpandedChild : function(options) {
             if (this.expandedChild) {
-                this.expandedChild.collapse();
+                this.expandedChild.collapse(options);
                 delete this.expandedChild;
             }
         },
@@ -274,7 +274,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");
@@ -365,6 +365,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         leaveStore : function() {
             this.playSound().wantsToLeaveStore();
+        },
+        conditionalPlaySound : function(view, options) {
+            if (!(options && options.noSound)) return this.playSound();
+            return this;
         }
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
