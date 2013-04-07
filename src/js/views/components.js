@@ -325,7 +325,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         updateBalance : function(currency) {
             this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
         },
-        finalizeRendering : function() {                 close
+        finalizeRendering : function() {
             // When all store images are loaded, trigger an event
             // TODO: Preload images that aren't visible at first
             var $this = this;
