@@ -306,7 +306,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },
-        openDialog : function() {
+        openDialog : function(currencyId) {
+
             var dialog = new ModalDialog({
                 parent : this.$el,
                 template : Handlebars.getTemplate("modalDialog"),
@@ -318,7 +319,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $this.playSound();
                 dialog.close();
             }).on("buyMore", function() {
-                $this.playSound().showCurrencyStore();
+                $this.playSound().showCurrencyPacks(currencyId);
             });
             return dialog.render();
         },
