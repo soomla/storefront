@@ -183,17 +183,20 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 // Initialize model
                 this.store = new Models.Store(json);
 
-                require(jsFiles, function(ThemeViews) {
+                require(jsFiles, function(Theme) {
 
 					// Call template load callback if provided
-					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(ThemeViews, Components);
+					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(Theme, Components);
 
 					// Initialize view
-					$this.storeView = new ThemeViews.StoreView({
-						model : $this.store,
-						el : $("#main"),
-						template : Handlebars.getTemplate("template")
-					}).on("imagesLoaded", storeViewDeferred.resolve).render();
+                    $this.storeView = Theme.createStoreView({
+                        storeViewOptions : {
+                            model : $this.store,
+                            el : $("#main"),
+                            template : Handlebars.getTemplate("template")
+                        },
+                        imagesLoadedCallback : storeViewDeferred.resolve
+                    });
 				});
 
                 return this.store;
