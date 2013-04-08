@@ -114,7 +114,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 var cssRequest 			= $.ajax({ url: "css.handlebars" }),
                     templateRequest 	= $.ajax({ url: templateDefinition, dataType: "json" }),
                     $this           	= this,
-                    cssDeferred     	= $.Deferred(),
                     storeViewDeferred 	= $.Deferred(),
                     backgroundImagesPromise;
 
@@ -130,7 +129,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
                     themeCss = Handlebars.compile(cssTemplate)(cssRuleSet);
-                    $(themeCss).load(cssDeferred.resolve).appendTo($("head"));
+                    $(themeCss).appendTo($("head"));
 
                     // Preload CSS background images with a promise
                     pickImages(template.attributes, json.theme, backgroundImages);
@@ -138,11 +137,11 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     backgroundImagesPromise = $.preload(backgroundImages);
 
 
-                    // Expose UI and notify application when all three conditions are met:
+                    // Expose UI and notify application when all conditions are met:
                     // 1. The store is rendered (and all regular images are preloaded)
-                    // 2. The injected CSS is loaded
-                    // 3. Background images were preloaded
-                    $.when(backgroundImagesPromise, cssDeferred.promise(), storeViewDeferred.promise()).then(function() {
+                    // 2. Background images were preloaded
+                    // TODO: Add condition when the injected CSS is loaded
+                    $.when(backgroundImagesPromise, storeViewDeferred.promise()).then(function() {
 
                         $("#preroll-cover").remove();
 
