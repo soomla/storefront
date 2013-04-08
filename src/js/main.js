@@ -69,9 +69,4 @@ require.config({
     }
 });
 
-// Configure less not to poll for changes
-less = {
-    env: "production"
-};
-
 require(["store"]);
