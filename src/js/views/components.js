@@ -319,7 +319,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $this.playSound();
                 dialog.close();
             }).on("buyMore", function() {
-                $this.playSound().showCurrencyPacks(currencyId);
+                $this.showCurrencyPacks(currencyId);
             });
             return dialog.render();
         },
