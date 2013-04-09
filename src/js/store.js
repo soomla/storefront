@@ -15,7 +15,10 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
     var pickRecursive = function(templateObj, themeObj, picked, callback) {
         _.each(templateObj, function(templateValue, templateKey) {
             var themeValue = themeObj[templateKey];
-            if (_.isObject(templateValue)) {
+
+            // Check that theme value is defined.  This is to allow
+            // Template attributes that a certain theme chooses not to use
+            if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
                 if (!callback(templateValue, themeValue, picked)) pickRecursive(templateValue, themeValue, picked, callback);
             }
         });
