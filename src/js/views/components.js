@@ -215,8 +215,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             _.bindAll(this, "switchActive");
         },
         events : {
-            "click .next"       : "showNext",
-            "click .previous"   : "showPrevious"
+            "fastclick .next"       : "showNext",
+            "fastclick .previous"   : "showPrevious"
         },
         showNext : function() {
             this.activeIndex += 1;
