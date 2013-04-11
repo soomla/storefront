@@ -287,6 +287,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 var originalOnRender = this.onRender;
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
+                    this.createIScrolls();
                     this.finalizeRendering();
                 }, this);
             }
@@ -325,6 +326,23 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         updateBalance : function(currency) {
             this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
+        },
+        createIScrolls : function() {
+            if (this.iscrollRegions) {
+
+                // Create a hash with all the iscrolls
+                this.iscrolls = {};
+                _.each(this.iscrollRegions, function(value,region) {
+                    this.iscrolls[region] = new iScroll(this.$(value.el)[0], value.options);
+                }, this);
+
+                // When images are loaded refresh all iscrolls
+                this.once("imagesLoaded", function() {
+                    _.each(this.iscrolls, function(iscroll) {
+                        iscroll.refresh();
+                    });
+                }, this);
+            }
         },
         finalizeRendering : function() {
             // When all store images are loaded, trigger an event
