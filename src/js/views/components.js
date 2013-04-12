@@ -210,34 +210,37 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
     // TODO: Write unit test for this component
     var CarouselView = Marionette.CompositeView.extend({
+        tagName : "ul",
         initialize : function() {
             _.bindAll(this, "switchActive");
         },
         events : {
-            "click .next"       : "showNext",
-            "click .previous"   : "showPrevious"
+            "fastclick .next"       : "showNext",
+            "fastclick .previous"   : "showPrevious"
         },
         showNext : function() {
             this.activeIndex += 1;
-            if (this.activeIndex == this.keys.length) this.activeIndex = 0;
+            if (this.activeIndex === this.children.length) this.activeIndex = 0;
             this.switchActive().trigger("next");
         },
         showPrevious : function() {
             this.activeIndex -= 1;
-            if (this.activeIndex == -1) this.activeIndex = this.keys.length - 1;
+            if (this.activeIndex === -1) this.activeIndex = this.children.length - 1;
             this.switchActive().trigger("previous");
         },
         switchActive : function() {
             this.activeChild.$el.hide();
-            this.activeChild = this.children[this.keys[this.activeIndex]];
+            this.activeChild = this.getActiveChild();
             this.activeChild.$el.show();
             return this;
         },
+        getActiveChild : function() {
+            return this.children.findByIndex(this.activeIndex);
+        },
         onRender : function() {
             // Initialize variables necessary for next / previous functionality
-            this.keys        = _.keys(this.children);
             this.activeIndex = 0;
-            this.activeChild = this.children[this.keys[this.activeIndex]];
+            this.activeChild = this.getActiveChild();
 
             _.each(this.children, function(view) {
                 view.$el.hide();
