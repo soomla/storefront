@@ -175,6 +175,22 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         itemView : ItemView
     });
 
+    // Currently not in use
+    var ActiveCollectionView = CollectionView.extend({
+        onItemviewSelect : function(view) {
+            this.activeView.$el.removeClass("active");
+            this.activeView = view;
+            this.activeView.$el.addClass("active");
+        },
+        onRender : function() {
+            var first = this.children.findByIndex(0);
+            if (first) {
+                this.activeView = first;
+                this.activeView.addClass("active");
+            }
+        }
+    });
+
 
     var IScrollCollectionView = Marionette.CompositeView.extend({
         itemView : ItemView,
