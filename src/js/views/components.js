@@ -89,7 +89,15 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             "fastclick" : "buy"
         },
         disable : function() {
-            if (this.model.get("owned") === true) this.undelegateEvents();
+            if (this.model.get("owned") === true) {
+                this.undelegateEvents();
+                this.$el.addClass("owned");
+            }
+        },
+        onRender : function() {
+
+            // Check the state of the view's virtual good and update the view accordingly
+            if (this.model.get("owned") === true) this.disable();
         }
     });
 
