@@ -293,7 +293,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "conditionalPlaySound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");

@@ -25,6 +25,9 @@ define({
     nonConsumablesUpdated : function(nonConsumables) {
         SoomlaJS.store.updateNonConsumables(nonConsumables);
     },
+    purchasesRestored : function(nonConsumables) {
+        SoomlaJS.store.restorePurchases(nonConsumables);
+    },
     insufficientFunds : function(currency) {
         SoomlaJS.storeView.openDialog(currency);
     },
