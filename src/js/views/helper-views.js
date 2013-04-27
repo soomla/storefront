@@ -23,7 +23,13 @@ define(["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Mar
         },
         onStateChange : function(model, state) {
             var title = this.states[state];
-            this.$(".title-container h1").html(title);
+            this.$(".title-container").toggleClass("secondView");
+            if(this.$(".title-container").hasClass("secondView")){
+                this.$(".title-container h2").html(title);
+            }else{
+                this.$(".title-container h1").html(title);
+            }
+            //this.$(".title-container h1").html(title);
 
             if (state === this.initialState) {
                 this.ui.backButton.hide();
