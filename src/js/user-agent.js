@@ -10,6 +10,9 @@ define(function() {
         iOS: function() {
             return navigator.userAgent.match(/iPhone|iPad|iPod/i) ? true : false;
         },
+        iPhone: function() {
+            return navigator.userAgent.match(/iPhone|iPod/i) ? true : false;
+        },
         Windows: function() {
             return navigator.userAgent.match(/IEMobile/i) ? true : false;
         },

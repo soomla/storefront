@@ -209,6 +209,12 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
             Components : Components
         });
 
+        // iPhone \ iPod hack: add a "iphone" class to the body to apply
+        // iPhone specific CSS hacks on font-face + line height problems
+        if (UserAgent.iPhone()) {
+            $("body").addClass("iphone");
+        }
+
         // Notify native code that we're initialized only if an interface exists
         // i.e. only when running in a device and not in the store builder.
         if (UserAgent.iOS()){
