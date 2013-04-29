@@ -14,6 +14,9 @@ define({
     wantsToBuyMarketItem : function(productId) {
         document.location = "soomla:wantsToBuyMarketItem:" + productId;
     },
+    wantsToRestorePurchases : function() {
+        document.location = "soomla:wantsToRestorePurchases";
+    },
     wantsToEquipGoods : function(itemId) {
         document.location = "soomla:wantsToEquipGoods:" + itemId;
     },

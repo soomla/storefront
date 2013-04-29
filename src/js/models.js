@@ -160,6 +160,18 @@ define(["backboneRelational"], function() {
             _.each(nonConsumables, function(attributes, nonConsumableId) {
                 $this.get("nonConsumables").get(nonConsumableId).set(attributes);
             });
+        },
+        restorePurchases : function(nonConsumables) {
+
+            // In case the input is empty, create an object with all the
+            // non-consumable items marked as owned.
+            if (!nonConsumables) {
+                nonConsumables = {};
+                this.get("nonConsumables").each(function(nonConsumable) {
+                    nonConsumables[nonConsumable.id] = {owned : true};
+                });
+            }
+            this.updateNonConsumables(nonConsumables);
         }
     });
 

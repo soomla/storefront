@@ -175,6 +175,22 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         itemView : ItemView
     });
 
+    // Currently not in use
+    var ActiveCollectionView = CollectionView.extend({
+        onItemviewSelect : function(view) {
+            this.activeView.$el.removeClass("active");
+            this.activeView = view;
+            this.activeView.$el.addClass("active");
+        },
+        onRender : function() {
+            var first = this.children.findByIndex(0);
+            if (first) {
+                this.activeView = first;
+                this.activeView.addClass("active");
+            }
+        }
+    });
+
 
     var IScrollCollectionView = Marionette.CompositeView.extend({
         itemView : ItemView,
@@ -277,7 +293,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "playSound", "conditionalPlaySound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");

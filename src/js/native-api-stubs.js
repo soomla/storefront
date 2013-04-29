@@ -34,12 +34,31 @@ define(function(){
         wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
 
-            var balances    = {},
-                currencyId  = model.get("currency_itemId"),
-                newBalance  = SoomlaJS.store.getBalance(currencyId) + model.get("amount");
+            var amount = model.get("amount");
 
-            balances[currencyId] = newBalance;
-            _jsAPI.currencyBalanceChanged(balances);
+            // If a market item has the amount field it's a consumable market item (i.e. currency pack)
+            if (amount) {
+
+                // Calculate and assign the new currency balance
+                var balances    = {},
+                    currencyId  = model.get("currency_itemId"),
+                    newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
+
+                balances[currencyId] = newBalance;
+                _jsAPI.currencyBalanceChanged(balances);
+            } else {
+
+                // The market item has no amount and is thus a non-consumable (i.e. "Remove Ads")
+                // Mark it as "owned"
+                var nonConsumables = {};
+                nonConsumables[model.id] = {owned : true};
+                _jsAPI.purchasesRestored(nonConsumables);
+            }
+        },
+        wantsToRestorePurchases : function() {
+            this.log("wantsToRestorePurchases", arguments);
+
+            _jsAPI.purchasesRestored();
         },
         wantsToEquipGoods : function(model) {
             this.log("wantsToEquipGoods", arguments);

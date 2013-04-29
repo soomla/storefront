@@ -24,7 +24,6 @@ define(["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Mar
         onStateChange : function(model, state) {
             var title = this.states[state];
             this.$(".title-container").toggleClass("secondView");
-            console.log("-------------------", title);
             if(this.$(".title-container").hasClass("secondView")){
                 this.$(".title-container h2").html(title);
             }else{

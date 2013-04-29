@@ -8,6 +8,9 @@ define({
     wantsToBuyMarketItem : function(model) {
         this.nativeAPI.wantsToBuyMarketItem(model.toJSON().productId);
     },
+    wantsToRestorePurchases : function() {
+        this.nativeAPI.wantsToRestorePurchases();
+    },
     wantsToEquipGoods : function(model) {
         this.nativeAPI.wantsToEquipGoods(model.toJSON().itemId);
     },
