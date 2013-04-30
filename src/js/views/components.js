@@ -344,7 +344,22 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             return dialog.render();
         },
         updateBalance : function(currency) {
-            this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
+            //console.log(":::::::::::::", currency);
+
+            
+            var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
+
+            /*
+            var currentBalance = parseInt($(balanceHolder).text());
+            var newBalanace = currency.get("balance");
+            */
+            $(balanceHolder).addClass("changed");
+            //console.log(currentBalance, newBalanace, currentBalance-newBalanace)
+            $(balanceHolder).text(currency.get("balance"));
+
+            setTimeout(function(){
+                    $(balanceHolder).removeClass("changed");
+                }, 1000);
         },
         createIScrolls : function() {
             if (this.iscrollRegions) {
