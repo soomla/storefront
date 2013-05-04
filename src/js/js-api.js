@@ -13,6 +13,9 @@ define({
      * @param boolean
      */
     currencyBalanceChanged : function(balances) {
+
+        // TODO: Chaim - close the dialog from here, before the balances are set,  and remove the alert
+        alert("Close dialog now");
         SoomlaJS.store.setBalance(balances);
     },
     /**
@@ -32,6 +35,10 @@ define({
         SoomlaJS.storeView.openDialog(currency);
     },
     unexpectedError : function() {
+
+
+        // TODO: Chaim - close the dialog from here, before the balances are set,  and remove the alert
+        alert("unexpectedError arrived");
         console.log("An unexpected error has occurred.  Please try again.");
     },
     notEnoughGoods : function(itemId) {
@@ -41,5 +48,15 @@ define({
     // The native UI is going to be destroyed
     destroy : function() {
         alert("Sorry bub, not implemented yet.");
+    },
+    marketPurchaseStarted : function() {
+
+        // TODO: Chaim - open the dialog from here and remove the alert
+        alert("marketPurchaseStarted arrived");
+    },
+    marketPurchaseCancelled : function() {
+
+        // TODO: Chaim - close the dialog from here and remove the alert
+        alert("marketPurchaseCancelled arrived");
     }
 });

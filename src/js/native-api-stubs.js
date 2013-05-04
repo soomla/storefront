@@ -45,7 +45,11 @@ define(function(){
                     newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
 
                 balances[currencyId] = newBalance;
-                _jsAPI.currencyBalanceChanged(balances);
+
+                _jsAPI.marketPurchaseStarted();
+                setTimeout(function() {
+                    _jsAPI.currencyBalanceChanged(balances);
+                }, 1000);
             } else {
 
                 // The market item has no amount and is thus a non-consumable (i.e. "Remove Ads")
@@ -53,6 +57,8 @@ define(function(){
                 var nonConsumables = {};
                 nonConsumables[model.id] = {owned : true};
                 _jsAPI.purchasesRestored(nonConsumables);
+
+                // TODO: Add a timeout for showing the dialog
             }
         },
         wantsToRestorePurchases : function() {
