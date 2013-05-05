@@ -348,12 +348,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 $this.dialog.on("cancel buyMore", function () {
                     $this.playSound();
                     $this.dialog.close();
+                }).on("buyMore", function () {
+                    $this.showCurrencyPacks(currencyId);
                 });
             }
 
-            $this.dialog.on("buyMore", function() {
-                $this.showCurrencyPacks(currencyId);
-            });
             return $this.dialog.render();
         },
         closeDialog: function () {
