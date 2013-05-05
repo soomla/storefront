@@ -338,7 +338,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                     return;
                 }
                 $this.playSound();
-                dialog.close();
+                $this.dialog.close();
             }).on("buyMore", function() {
                 $this.showCurrencyPacks(currencyId);
             });
