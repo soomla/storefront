@@ -336,20 +336,29 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         openDialog : function(currencyId) {
 
-            var dialog = new ModalDialog({
+            var $this = this;
+            $this.dialog = new ModalDialog({
                 parent : this.$el,
                 template : Handlebars.getTemplate("modalDialog"),
-                model : this.dialogModel
+                model: !currencyId ? this.loadingModal : this.dialogModal
             });
 
-            var $this = this;
-            dialog.on("cancel buyMore", function() {
-                $this.playSound();
-                dialog.close();
-            }).on("buyMore", function() {
-                $this.showCurrencyPacks(currencyId);
-            });
-            return dialog.render();
+            if (currencyId)
+            {
+                $this.dialog.on("cancel buyMore", function () {
+                    $this.playSound();
+                    $this.dialog.close();
+                }).on("buyMore", function () {
+                    $this.showCurrencyPacks(currencyId);
+                });
+            }
+
+            return $this.dialog.render();
+        },
+        closeDialog: function () {
+            if (!!this.dialog) {
+                this.dialog.close();
+            }
         },
         updateBalance : function(currency) {
             this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));

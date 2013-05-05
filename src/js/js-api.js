@@ -12,10 +12,10 @@ define({
      * Android signature : currencyPurchaseEnded(JSONObject balances)
      * @param boolean
      */
-    currencyBalanceChanged : function(balances) {
-
-        // TODO: Chaim - close the dialog from here, before the balances are set,  and remove the alert
-        alert("Close dialog now");
+    currencyBalanceChanged: function (balances) {
+        if (!!SoomlaJS.storeView) {
+            SoomlaJS.storeView.closeDialog();
+        }
         SoomlaJS.store.setBalance(balances);
     },
     /**
@@ -34,11 +34,10 @@ define({
     insufficientFunds : function(currency) {
         SoomlaJS.storeView.openDialog(currency);
     },
-    unexpectedError : function() {
-
-
-        // TODO: Chaim - close the dialog from here, before the balances are set,  and remove the alert
-        alert("unexpectedError arrived");
+    unexpectedError: function () {
+        if (!!SoomlaJS.storeView) {
+            SoomlaJS.storeView.closeDialog();
+        }
         console.log("An unexpected error has occurred.  Please try again.");
     },
     notEnoughGoods : function(itemId) {
@@ -50,13 +49,9 @@ define({
         alert("Sorry bub, not implemented yet.");
     },
     marketPurchaseStarted : function() {
-
-        // TODO: Chaim - open the dialog from here and remove the alert
-        alert("marketPurchaseStarted arrived");
+        SoomlaJS.storeView.openDialog();
     },
     marketPurchaseCancelled : function() {
-
-        // TODO: Chaim - close the dialog from here and remove the alert
-        alert("marketPurchaseCancelled arrived");
+        SoomlaJS.storeView.closeDialog();
     }
 });
