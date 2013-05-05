@@ -327,39 +327,35 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             return _.extend({}, this.theme, {currencies : currencies});
         },
         openDialog : function(currencyId) {
-
-            var dialog = new ModalDialog({
+            var $this = this;
+            $this.dialog = new ModalDialog({
                 parent : this.$el,
                 template : Handlebars.getTemplate("modalDialog"),
-                model : this.dialogModel
+                model : !currencyId?this.loadingModel:this.dialogModel
             });
-
-            var $this = this;
-            dialog.on("cancel buyMore", function() {
+            $this.dialog.on("cancel buyMore", function() {
+                if(!currencyId){
+                    return;
+                }
                 $this.playSound();
                 dialog.close();
             }).on("buyMore", function() {
                 $this.showCurrencyPacks(currencyId);
             });
-            return dialog.render();
+            return $this.dialog.render();
         },
         updateBalance : function(currency) {
-            //console.log(":::::::::::::", currency);
-
-            
             var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
-
-            /*
-            var currentBalance = parseInt($(balanceHolder).text());
-            var newBalanace = currency.get("balance");
-            */
-            $(balanceHolder).addClass("changed");
-            //console.log(currentBalance, newBalanace, currentBalance-newBalanace)
-            $(balanceHolder).text(currency.get("balance"));
-
-            setTimeout(function(){
+            
+            //console.log(currency._previousAttributes.balance, currency.attributes.balance)
+            if(currency.attributes.balance>currency._previousAttributes.balance){
+                this.dialog.close();
+                $(balanceHolder).addClass("changed"); 
+                setTimeout(function(){
                     $(balanceHolder).removeClass("changed");
-                }, 1000);
+                }, 1000);   
+            }
+            $(balanceHolder).text(currency.get("balance"));
         },
         createIScrolls : function() {
             if (this.iscrollRegions) {

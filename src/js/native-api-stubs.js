@@ -24,7 +24,6 @@ define(function(){
 
             // Increment good balance
             goods[model.id] = {balance: model.get("balance") + 1};
-
             // Update currency balance
             balances[currencyId] = newBalance;
 
@@ -38,7 +37,7 @@ define(function(){
 
             // If a market item has the amount field it's a consumable market item (i.e. currency pack)
             if (amount) {
-
+                SoomlaJS.storeView.openDialog(null);
                 // Calculate and assign the new currency balance
                 var balances    = {},
                     currencyId  = model.get("currency_itemId"),
