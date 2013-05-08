@@ -363,7 +363,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         updateBalance : function(currency) {
             var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
             $(balanceHolder).text(currency.get("balance"));
-            if(currency.previous("balance") < currency.get("balance")){
+            // 
+			if(currency.previous("balance") < currency.get("balance")){
+				this.dialog.close();
                 $(balanceHolder).addClass("changed"); 
                 setTimeout(function(){
                     $(balanceHolder).removeClass("changed");
