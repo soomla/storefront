@@ -361,7 +361,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             }
         },
         updateBalance : function(currency) {
-            this.$("#balance-container label[data-currency='" + currency.id + "']").html(currency.get("balance"));
+            var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
+            $(balanceHolder).addClass("changed");
+            $(balanceHolder).text(currency.get("balance"));
+
+            setTimeout(function(){
+                $(balanceHolder).removeClass("changed");
+            }, 1000);
         },
         createIScrolls : function() {
             if (this.iscrollRegions) {
