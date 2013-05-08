@@ -120,13 +120,17 @@ define(["backboneRelational"], function() {
         },
         updateVirtualGoods : function(goods) {
             var $this = this;
-
             _.each(goods, function(attributes, good) {
                 var good = $this.goodsMap[good];
-
-                if (attributes.balance)
+                if (attributes.balance){
                     good.set("balance", attributes.balance);
+                    // add animation 
+                    $(".expanded .balance-wrap").addClass("changed");
+                    setTimeout(function(){
+                        $(".balance-wrap").removeClass("changed");
+                    }, 1500); 
 
+                }
                 if (attributes.hasOwnProperty("equipped")) {
                     if (attributes.equipped)
                         if (good.get("balance") >  0) {
