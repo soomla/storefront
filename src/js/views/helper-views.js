@@ -29,7 +29,6 @@ define(["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Mar
             }else{
                 this.$(".title-container h1").html(title);
             }
-            //this.$(".title-container h1").html(title);
 
             if (state === this.initialState) {
                 this.ui.backButton.hide();

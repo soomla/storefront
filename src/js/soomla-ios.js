@@ -1,32 +1,45 @@
 define({
+    _callNative : function(command) {
+
+        var iFrame = document.createElement("IFRAME");
+
+        iFrame.setAttribute("src", "soomla:" + command);
+
+        document.body.appendChild(iFrame); 
+
+        iFrame.parentNode.removeChild(iFrame);
+
+        iFrame = null;
+
+    },
     uiReady : function() {
-        document.location = "soomla:uiReady";
+        this._callNative("uiReady");
     },
     storeInitialized : function() {
-        document.location = "soomla:storeInitialized";
+        this._callNative("storeInitialized");
     },
     wantsToLeaveStore : function() {
-        document.location = "soomla:wantsToLeaveStore";
+        this._callNative("wantsToLeaveStore");
     },
     wantsToBuyVirtualGoods : function(itemId) {
-        document.location = "soomla:wantsToBuyVirtualGoods:" + itemId;
+        this._callNative("wantsToBuyVirtualGoods:" + itemId);
     },
     wantsToBuyMarketItem : function(productId) {
-        document.location = "soomla:wantsToBuyMarketItem:" + productId;
+        this._callNative("wantsToBuyMarketItem:" + productId);
     },
     wantsToRestorePurchases : function() {
-        document.location = "soomla:wantsToRestorePurchases";
+        this._callNative("wantsToRestorePurchases");
     },
     wantsToEquipGoods : function(itemId) {
-        document.location = "soomla:wantsToEquipGoods:" + itemId;
+        this._callNative("wantsToEquipGoods:" + itemId);
     },
     wantsToUnequipGoods : function(itemId) {
-        document.location = "soomla:wantsToUnequipGoods:" + itemId;
+        this._callNative("wantsToUnequipGoods:" + itemId);
     },
     requestEarnedCurrency : function(provider) {
-        document.location = "soomla:requestEarnedCurrency:" + provider;
+        this._callNative("requestEarnedCurrency:" + provider);
     },
     playPop : function() {
-        document.location = "soomla:playPop";
+        this._callNative("playPop");
     }
 });
