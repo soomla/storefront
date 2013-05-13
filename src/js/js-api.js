@@ -10,17 +10,17 @@ define({
     /**
      *
      * Android signature : currencyPurchaseEnded(JSONObject balances)
-     * @param boolean
      */
     currencyBalanceChanged: function (balances) {
+        // TODO: Test if this condition is needed
         if (!!SoomlaJS.storeView) {
             SoomlaJS.storeView.closeDialog();
         }
         SoomlaJS.store.setBalance(balances);
     },
     /**
+     *
      * Android signature : goodsPurchaseEnded(JSONObject virtualGoods)
-     * @param boolean
      */
     goodsUpdated : function(virtualGoods) {
         SoomlaJS.store.updateVirtualGoods(virtualGoods);
@@ -35,6 +35,7 @@ define({
         SoomlaJS.storeView.openDialog(currency);
     },
     unexpectedError: function () {
+        // TODO: Test if this condition is needed
         if (!!SoomlaJS.storeView) {
             SoomlaJS.storeView.closeDialog();
         }
