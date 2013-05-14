@@ -42,6 +42,7 @@ define({
         console.log("An unexpected error has occurred.  Please try again.");
     },
     notEnoughGoods : function(itemId) {
+        // TODO: Fix broken get for attribute that doesn't exist
         var good = SoomlaJS.store.get("virtualGoods").get(itemId);
         alert("Cannot use " + good.get("name"));
     },
