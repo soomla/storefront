@@ -34,14 +34,14 @@ define(function(){
         wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
 
-            var amount = model.get("amount");
+            var amount = model.get("currency_amount");
 
             // If a market item has the amount field it's a consumable market item (i.e. currency pack)
             if (amount) {
 
                 // Calculate and assign the new currency balance
                 var balances    = {},
-                    currencyId  = model.get("currency_itemId"),
+                    currencyId  = model.getCurrencyId(),
                     newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
 
                 balances[currencyId] = newBalance;
@@ -68,12 +68,11 @@ define(function(){
         },
         wantsToEquipGoods : function(model) {
             this.log("wantsToEquipGoods", arguments);
-            var goods = {};
+            var goods           = {},
+                categoryGoods   = SoomlaJS.store.getGoodCategory(model.id).get("goods");
 
-            // First unequip all other goods in category ("single" equipping enforcement)
-            var categoryId      = model.get("categoryId"),
-                categoryGoods   = SoomlaJS.store.get("categories").get(categoryId).get("goods");
-            console.dir(categoryGoods.toJSON());
+            // First unequip all other owned goods in category ("single" equipping enforcement)
+            // TODO: Change the logic to support different scopes of equipping, i.e. single, category, global
             categoryGoods.each(function(good) {
                 if (good.get("balance") > 0) goods[good.id] = {equipped: false};
             });

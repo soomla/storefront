@@ -1,7 +1,13 @@
 define(["backboneRelational"], function() {
 
     var CurrencyPack = Backbone.RelationalModel.extend({
-        idAttribute : "itemId"
+        idAttribute : "itemId",
+        getCurrencyId : function() {
+            return this.get("currency_itemId");
+        },
+        getPrice : function() {
+            return this.get("purchasableItem").marketItem.price;
+        }
     });
     var VirtualGood = Backbone.RelationalModel.extend({
         idAttribute : "itemId",
@@ -10,10 +16,10 @@ define(["backboneRelational"], function() {
             equipped    : false
         },
         getCurrencyId : function() {
-            return _.keys(this.get("priceModel").values)[0];
+            return this.get("purchasableItem").pvi_itemId;
         },
-        getPrice : function(currencyId) {
-            return this.get("priceModel").values[currencyId];
+        getPrice : function() {
+            return this.get("purchasableItem").pvi_amount;
         }
     });
 
@@ -47,6 +53,7 @@ define(["backboneRelational"], function() {
     });
 
     var Category = Backbone.RelationalModel.extend({
+        idAttribute: "name",
         defaults : {
             name    : "General"
         },
@@ -107,11 +114,41 @@ define(["backboneRelational"], function() {
                     goodsMap[good.id] = good;
                 });
             });
+
+            var categoryMap = this.categoryMap = {};
+
+            _.each(this.get("goods"), function(rawGoods, type) {
+                _.each(rawGoods, function(rawGood) {
+                    rawGood.type = type;
+                    var good = new VirtualGood(rawGood);
+                    goodsMap[good.id] = good;
+                });
+            });
+
+
+
+            // Fill goods from the raw categories into category buckets (collections)
+            _.each(this.get("rawCategories"), function(rawCategory) {
+
+                var category = new Category(_.pick(rawCategory, "name")),
+                    goods = category.get("goods");
+
+                _.each(rawCategory.goods_itemIds, function(goodItemId) {
+                    goods.add(goodsMap[goodItemId]);
+                    categoryMap[goodItemId] = category;
+                });
+
+                this.get("categories").add(category);
+            }, this);
+
+        },
+        getGoodCategory: function(goodId) {
+            return this.categoryMap[goodId];
         },
         setBalance : function(balances) {
-            var model = this.get("virtualCurrencies");
+            var currencies = this.get("virtualCurrencies");
             _.each(balances, function(balance, currency) {
-                model.get(currency).set("balance", balance);
+                currencies.get(currency).set("balance", balance);
             });
             return this;
         },
@@ -124,11 +161,11 @@ define(["backboneRelational"], function() {
                 var good = $this.goodsMap[good];
                 if (attributes.balance){
                     good.set("balance", attributes.balance);
-                    // add animation 
+                    // add animation
                     $(".expanded .balance-wrap").addClass("changed");
                     setTimeout(function(){
                         $(".balance-wrap").removeClass("changed");
-                    }, 1500); 
+                    }, 1500);
 
                 }
                 if (attributes.hasOwnProperty("equipped")) {
