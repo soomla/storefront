@@ -41,5 +41,19 @@ define({
     },
     playPop : function() {
         this._callNative("playPop");
+    },
+
+
+    //
+    // New Model API
+    //
+    wantsToBuyItem : function(model) {
+        this._callNative("wantsToBuyItem:" + model.toJSON().itemId);
+    },
+    wantsToRestoreTransactions : function() {
+        this._callNative("wantsToRestoreTransactions");
+    },
+    wantsToUpgradeVirtualGood : function(model) {
+        this._callNative("wantsToUpgradeVirtualGood:" + model.toJSON().itemId);
     }
 });
