@@ -126,11 +126,11 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 				});
 			});
             SoomlaJS.store.get("virtualCurrencies").each(function(currency) {
-                balances[currency.id] = 10000;
+                balances[currency.id] = {balance : 10000};
             });
 
 			SoomlaJS.goodsUpdated(goods);
-            SoomlaJS.currencyBalanceChanged(balances);
+            SoomlaJS.currenciesUpdated(balances);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");

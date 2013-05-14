@@ -26,10 +26,10 @@ define(function(){
             goods[model.id] = {balance: model.get("balance") + 1};
 
             // Update currency balance
-            balances[currencyId] = newBalance;
+            balances[currencyId] = {balance: newBalance};
 
             _jsAPI.goodsUpdated(goods);
-            _jsAPI.currencyBalanceChanged(balances);
+            _jsAPI.currenciesUpdated(balances);
         },
         wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
@@ -44,11 +44,11 @@ define(function(){
                     currencyId  = model.getCurrencyId(),
                     newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
 
-                balances[currencyId] = newBalance;
+                balances[currencyId] = {balance: newBalance};
 
                 _jsAPI.marketPurchaseStarted();
                 setTimeout(function() {
-                    _jsAPI.currencyBalanceChanged(balances);
+                    _jsAPI.currenciesUpdated(balances);
                 }, 1000);
             } else {
 

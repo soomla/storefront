@@ -9,9 +9,9 @@ define({
     },
     /**
      *
-     * Android signature : currencyPurchaseEnded(JSONObject balances)
+     * Android signature : currenciesUpdated(JSONObject currencies)
      */
-    currencyBalanceChanged: function (balances) {
+    currenciesUpdated : function(balances) {
         // TODO: Test if this condition is needed
         if (!!SoomlaJS.storeView) {
             SoomlaJS.storeView.closeDialog();

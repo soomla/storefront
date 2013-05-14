@@ -147,8 +147,8 @@ define(["backboneRelational"], function() {
         },
         setBalance : function(balances) {
             var currencies = this.get("virtualCurrencies");
-            _.each(balances, function(balance, currency) {
-                currencies.get(currency).set("balance", balance);
+            _.each(balances, function(attributes, currency) {
+                currencies.get(currency).set("balance", attributes.balance);
             });
             return this;
         },
