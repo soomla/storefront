@@ -23,5 +23,19 @@ define({
     playSound :function() {
         this.nativeAPI.playPop();
         return this;
+    },
+
+
+    //
+    // New Model API
+    //
+    wantsToBuyItem : function(model) {
+        this.nativeAPI.wantsToBuyItem(model.toJSON().itemId);
+    },
+    wantsToRestoreTransactions : function() {
+        this.nativeAPI.wantsToRestoreTransactions();
+    },
+    wantsToUpgradeVirtualGood : function(model) {
+        this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     }
 });
