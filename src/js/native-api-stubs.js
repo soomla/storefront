@@ -18,7 +18,7 @@ define(function(){
 
             // Check if there's enough balance for the purchase
             if (newBalance < 0) {
-                _jsAPI.insufficientFunds(currencyId);
+                _jsAPI.errInsufficientFunds(currencyId);
                 return;
             }
 

@@ -31,16 +31,6 @@ define({
     purchasesRestored : function(nonConsumables) {
         SoomlaJS.store.restorePurchases(nonConsumables);
     },
-    insufficientFunds : function(currency) {
-        SoomlaJS.storeView.openDialog(currency);
-    },
-    unexpectedError: function () {
-        // TODO: Test if this condition is needed
-        if (!!SoomlaJS.storeView) {
-            SoomlaJS.storeView.closeDialog();
-        }
-        console.log("An unexpected error has occurred.  Please try again.");
-    },
     notEnoughGoods : function(itemId) {
         // TODO: Fix broken get for attribute that doesn't exist
         var good = SoomlaJS.store.get("virtualGoods").get(itemId);
@@ -50,10 +40,56 @@ define({
     destroy : function() {
         alert("Sorry bub, not implemented yet.");
     },
+
+
+    //
+    // Market related functions
+    //
+
     marketPurchaseStarted : function() {
         SoomlaJS.storeView.openDialog();
     },
     marketPurchaseCancelled : function() {
         SoomlaJS.storeView.closeDialog();
+    },
+    billingSupported : function() {
+        alert("TODO: implement billingSupported");
+    },
+
+
+    //
+    // Restore transactions
+    //
+
+    restoreTransactionsStarted : function() {
+        alert("TODO: implement restoreTransactionsStarted");
+    },
+    transactionsRestored : function() {
+        this.purchasesRestored();
+    },
+
+
+    //
+    // Error functions
+    //
+
+    errInsufficientFunds : function(currencyId) {
+        SoomlaJS.storeView.openDialog(currencyId);
+    },
+    errItemNotFound : function(itemId) {
+        alert("TODO: implement errItemNotFound");
+    },
+    errNotEnoughGoods : function(itemId) {
+        alert("TODO: implement errNotEnoughGoods");
+    },
+    errUnexpected : function(itemId) {
+        // TODO: Test if this condition is needed
+        if (!!SoomlaJS.storeView) {
+            SoomlaJS.storeView.closeDialog();
+        }
+        console.log("An unexpected error has occurred.  Please try again.");
+    },
+    errBillingNotSupported : function(itemId) {
+        alert("TODO: implement errBillingNotSupported");
     }
 });
