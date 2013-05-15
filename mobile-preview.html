@@ -116,20 +116,20 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 			SoomlaJS.initialize(data);
 
 			// Inject prices and balances
-			var goods = {}, balances = {};
-			_.each(data.categories, function(category) {
-				_.each(category.goods, function(good) {
-					goods[good.itemId] = {
-						balance : 0,
-						price : good.priceModel.values
-					};
-				});
+			var goodsAttributes = {}, balances = {};
+
+			_.each(data.goods, function(goods) {
+                _.each(goods, function(good) {
+                    goodsAttributes[good.itemId] = {
+                        balance : 0
+                    };
+                });
 			});
             SoomlaJS.store.get("virtualCurrencies").each(function(currency) {
                 balances[currency.id] = {balance : 10000};
             });
 
-			SoomlaJS.goodsUpdated(goods);
+			SoomlaJS.goodsUpdated(goodsAttributes);
             SoomlaJS.currenciesUpdated(balances);
 
         }).fail(function(modelData, themeData) {

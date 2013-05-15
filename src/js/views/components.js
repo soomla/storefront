@@ -75,6 +75,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var ItemView = LinkView.extend({
         initialize : function() {
             // TODO: Remove change:balance => this.render
+            // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
             this.model.on("change:balance change:priceModel", this.render);
         }
     });
@@ -110,6 +111,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item equippable",
         initialize : function() {
             this.model.on({
+                // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
                 "change:priceModel" : this.render,
                 "change:balance"    : this.onBalanceChange,
                 "change:equipped"   : this.onEquippingChange
@@ -168,6 +170,40 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     ExpandableSingleUseItemView.mixin(ExpandableModule);
     ExpandableSingleUseItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
+
+    var LifetimeItemView = ItemView.extend({
+        className: "item lifetime",
+        triggers : {
+            "fastclick .buy" : "buy"
+        },
+        initialize : function() {
+            this.model.on({
+                // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
+                "change:priceModel" : this.render,
+                "change:balance"    : this.onBalanceChange
+            }, this);
+        },
+        onBalanceChange : function() {
+            if (this.model.get("balance") >  0) {
+                this.$el.addClass("owned");
+                if (this.expanded) this.collapse({noSound: true});
+            } else {
+                this.$el.removeClass("owned");
+            }
+        },
+        onRender : function() {
+
+            // Check the state of the view's virtual good and update the view accordingly
+            this.onBalanceChange();
+        }
+    });
+
+    var ExpandableLifetimeItemView = LifetimeItemView.extend();
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableLifetimeItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
+    ExpandableLifetimeItemView.mixin(ExpandableModule);
+    ExpandableLifetimeItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
     ////////////////////  Collection Views  /////////////////////
@@ -446,6 +482,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         EquippableItemView              : EquippableItemView,
         ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
         ExpandableSingleUseItemView     : ExpandableSingleUseItemView,
+        LifetimeItemView                : LifetimeItemView,
+        ExpandableLifetimeItemView      : ExpandableLifetimeItemView,
         ModalDialog                     : ModalDialog,
         CollectionView                  : CollectionView,
         IScrollCollectionView           : IScrollCollectionView,
