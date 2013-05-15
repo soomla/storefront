@@ -7,10 +7,6 @@ define({
         // Raise a flag to indicate that the currency store can't be opened (probably due to connectivity issues)
         SoomlaJS.store.set("isCurrencyStoreDisabled", true);
     },
-    /**
-     *
-     * Android signature : currenciesUpdated(JSONObject currencies)
-     */
     currenciesUpdated : function(balances) {
         // TODO: Test if this condition is needed
         if (!!SoomlaJS.storeView) {
@@ -18,10 +14,6 @@ define({
         }
         SoomlaJS.store.setBalance(balances);
     },
-    /**
-     *
-     * Android signature : goodsPurchaseEnded(JSONObject virtualGoods)
-     */
     goodsUpdated : function(virtualGoods) {
         SoomlaJS.store.updateVirtualGoods(virtualGoods);
     },
@@ -53,7 +45,7 @@ define({
         SoomlaJS.storeView.closeDialog();
     },
     billingSupported : function() {
-        alert("TODO: implement billingSupported");
+        // TODO: implement if needed
     },
 
 

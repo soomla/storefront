@@ -21,7 +21,7 @@ define({
         this.nativeAPI.requestEarnedCurrency(provider);
     },
     playSound :function() {
-        this.nativeAPI.playPop();
+        this.nativeAPI.playSound("../theme/sounds/pop.mp3");
         return this;
     },
 

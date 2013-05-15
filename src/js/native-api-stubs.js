@@ -90,7 +90,7 @@ define(function(){
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
         requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },
-        playPop                         : function()        { this.log("playPop", arguments);                   },
+        playSound                       : function()        { this.log("playSound", arguments); return this;    },
         injectJsApi : function(jsAPI) {
             _jsAPI = jsAPI;
         }

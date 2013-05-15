@@ -39,8 +39,8 @@ define({
     requestEarnedCurrency : function(provider) {
         this._callNative("requestEarnedCurrency:" + provider);
     },
-    playPop : function() {
-        this._callNative("playPop");
+    playSound : function(filePath) {
+        this._callNative("playSound:" + filePath);
     },
 
 

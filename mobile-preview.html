@@ -53,7 +53,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
     // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
     window.SoomlaNative = {
-        playPop : function() {},
+        playSound : function(filePath) {},
         storeInitialized : function() {
             require(["native-api-stubs", "js-api"], function(NativeApiStubs, jsAPI) {
                 // Inject Native API stubs
