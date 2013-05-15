@@ -372,10 +372,13 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         openDialog : function(currencyId) {
 
+            // Ensure dialog is closed
+            this.closeDialog();
+
             this.dialog = new ModalDialog({
-                parent : this.$el,
-                template : Handlebars.getTemplate("modalDialog"),
-                model: !currencyId ? this.loadingModal : this.dialogModal
+                parent 	: this.$el,
+                template: Handlebars.getTemplate("modalDialog"),
+                model	: !currencyId ? this.loadingModal : this.dialogModal
             });
 
             if (currencyId) {
@@ -389,10 +392,24 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             return this.dialog.render();
         },
-        closeDialog: function () {
-            if (!!this.dialog) {
+        openMessageDialog : function(text) {
+
+            // Ensure dialog is closed
+            this.closeDialog();
+
+            this.dialog = new ModalDialog({
+                parent  : this.$el,
+                template: Handlebars.getTemplate("modalDialog"),
+                model   : _.extend({text : text}, this.messageDialogOptions)
+            }).on("cancel", function () {
+                this.playSound();
                 this.dialog.close();
-            }
+            }, this);
+
+            return this.dialog.render();
+        },
+        closeDialog: function () {
+            if (this.dialog) this.dialog.close();
         },
         updateBalance : function(currency) {
             var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");

@@ -142,6 +142,9 @@ define(["backboneRelational"], function() {
             }, this);
 
         },
+        getItem : function(itemId) {
+            return this.goodsMap[itemId];
+        },
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
         },

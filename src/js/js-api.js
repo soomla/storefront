@@ -77,19 +77,21 @@ define({
         SoomlaJS.storeView.openDialog(currencyId);
     },
     errItemNotFound : function(itemId) {
-        alert("TODO: implement errItemNotFound");
+        SoomlaJS.storeView.openMessageDialog("Error: " + this._getItemName(itemId) + " not found");
     },
     errNotEnoughGoods : function(itemId) {
-        alert("TODO: implement errNotEnoughGoods");
+        SoomlaJS.storeView.openMessageDialog("Error: not enough goods of type " + this._getItemName(itemId));
     },
     errUnexpected : function(itemId) {
-        // TODO: Test if this condition is needed
-        if (!!SoomlaJS.storeView) {
-            SoomlaJS.storeView.closeDialog();
-        }
-        console.log("An unexpected error has occurred.  Please try again.");
+        SoomlaJS.storeView.openMessageDialog("Unexpected error with " + this._getItemName(itemId));
     },
-    errBillingNotSupported : function(itemId) {
-        alert("TODO: implement errBillingNotSupported");
+    errBillingNotSupported : function() {
+        SoomlaJS.storeView.openMessageDialog("Billing is not supported. Please check your internet connection and try again.");
+    },
+
+    // Private methods
+    _getItemName: function(itemId) {
+        var item = SoomlaJS.store.getItem(itemId);
+        return item.get("name") || "item";
     }
 });
