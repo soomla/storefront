@@ -54,10 +54,10 @@ define({
     //
 
     restoreTransactionsStarted : function() {
-        alert("TODO: implement restoreTransactionsStarted");
+        SoomlaJS.storeView.openMessageDialog("Restoring transactions...");
     },
     transactionsRestored : function() {
-        this.purchasesRestored();
+        SoomlaJS.storeView.closeDialog();
     },
 
 
