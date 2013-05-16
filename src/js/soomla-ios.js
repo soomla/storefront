@@ -40,7 +40,9 @@ define({
         this._callNative("requestEarnedCurrency:" + provider);
     },
     playSound : function(filePath) {
+        filePath || (filePath = "pop.mp3");
         this._callNative("playSound:" + filePath);
+        return this;
     },
 
 

@@ -20,8 +20,9 @@ define({
     requestEarnedCurrency : function(provider) {
         this.nativeAPI.requestEarnedCurrency(provider);
     },
-    playSound :function() {
-        this.nativeAPI.playSound("../theme/sounds/pop.mp3");
+    playSound :function(filePath) {
+        filePath || (filePath = "pop.mp3");
+        this.nativeAPI.playSound(filePath);
         return this;
     },
 
