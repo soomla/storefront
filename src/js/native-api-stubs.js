@@ -9,7 +9,16 @@ define(function(){
         log : function() {
             console.log(arguments);
         },
-        wantsToBuyVirtualGoods : function(model) {
+        wantsToBuyItem : function(itemId) {
+            var model;
+
+            if (model = SoomlaJS.store.getItem(itemId)) {
+                this._wantsToBuyVirtualGoods(model);
+            } else if (model = SoomlaJS.store.getMarketItem(itemId)) {
+                this._wantsToBuyMarketItem(model);
+            }
+        },
+        _wantsToBuyVirtualGoods : function(model) {
             this.log("wantsToBuyVirtualGoods", arguments);
             var goods       = {},
                 balances    = {},
@@ -31,7 +40,7 @@ define(function(){
             _jsAPI.goodsUpdated(goods);
             _jsAPI.currenciesUpdated(balances);
         },
-        wantsToBuyMarketItem : function(model) {
+        _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
 
             var amount = model.get("currency_amount");

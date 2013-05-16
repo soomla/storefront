@@ -5,9 +5,6 @@ define({
     wantsToBuyVirtualGoods : function(model) {
         this.nativeAPI.wantsToBuyVirtualGoods(model.toJSON().itemId);
     },
-    wantsToBuyMarketItem : function(model) {
-        this.nativeAPI.wantsToBuyMarketItem(model.toJSON().productId);
-    },
     wantsToRestorePurchases : function() {
         this.nativeAPI.wantsToRestorePurchases();
     },
@@ -30,8 +27,8 @@ define({
     //
     // New Model API
     //
-    wantsToBuyItem : function(model) {
-        this.nativeAPI.wantsToBuyItem(model.toJSON().itemId);
+    wantsToBuyItem : function(itemId) {
+        this.nativeAPI.wantsToBuyItem(itemId);
     },
     wantsToRestoreTransactions : function() {
         this.nativeAPI.wantsToRestoreTransactions();

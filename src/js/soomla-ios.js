@@ -24,9 +24,6 @@ define({
     wantsToBuyVirtualGoods : function(itemId) {
         this._callNative("wantsToBuyVirtualGoods:" + itemId);
     },
-    wantsToBuyMarketItem : function(productId) {
-        this._callNative("wantsToBuyMarketItem:" + productId);
-    },
     wantsToRestorePurchases : function() {
         this._callNative("wantsToRestorePurchases");
     },
@@ -49,8 +46,8 @@ define({
     //
     // New Model API
     //
-    wantsToBuyItem : function(model) {
-        this._callNative("wantsToBuyItem:" + model.toJSON().itemId);
+    wantsToBuyItem : function(itemId) {
+        this._callNative("wantsToBuyItem:" + itemId);
     },
     wantsToRestoreTransactions : function() {
         this._callNative("wantsToRestoreTransactions");

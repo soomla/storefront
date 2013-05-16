@@ -108,15 +108,18 @@ define(["backboneRelational"], function() {
             _.bindAll(this, "getBalance", "setBalance", "updateVirtualGoods");
 
             // Create a {ID : good} map with goods from all categories
-            var goodsMap = this.goodsMap = {};
-            this.get("categories").each(function(category) {
-                category.get("goods").each(function(good) {
-                    goodsMap[good.id] = good;
+            var goodsMap 		= this.goodsMap 		= {};
+            var marketItemsMap 	= this.marketItemsMap 	= {};
+            var categoryMap 	= this.categoryMap 		= {};
+
+            // Populate market items map
+            this.get("virtualCurrencies").each(function(currency) {
+                currency.get("packs").each(function(pack) {
+                    marketItemsMap[pack.id] = pack;
                 });
             });
 
-            var categoryMap = this.categoryMap = {};
-
+            // Populate goods map, flag each good with its type
             _.each(this.get("goods"), function(rawGoods, type) {
                 _.each(rawGoods, function(rawGood) {
                     rawGood.type = type;
@@ -144,6 +147,9 @@ define(["backboneRelational"], function() {
         },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
+        },
+        getMarketItem : function(itemId) {
+            return this.marketItemsMap[itemId];
         },
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
