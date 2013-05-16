@@ -66,7 +66,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 if (!json) {
                     throw new Error("No JSON passed to `initialize`");
                 }
-                var attributes = ["template", "modelAssets", "theme", "virtualCurrencies", "categories"];
+                var attributes = ["template", "modelAssets", "theme", "currencies", "categories"];
                 _.each(attributes, function(attribute) {
                     if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
                 });
@@ -175,7 +175,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 // **********   WARNING   **********
                 // This condition can be removed only if all DB records have been migrated to the new relational model
                 if (json.currencyPacks) {
-                    _.each(json.virtualCurrencies, function(currency) {
+                    _.each(json.currencies, function(currency) {
                         var packs = _.filter(json.currencyPacks, (function(item) {return item.currency_itemId == currency.itemId}));
                         currency.packs = packs;
                     });

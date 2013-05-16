@@ -359,11 +359,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             BaseView.prototype.constructor.apply(this, arguments);
 
             // Balance currency balance changes
-            this.model.get("virtualCurrencies").on("change:balance", this.updateBalance, this);
+            this.model.get("currencies").on("change:balance", this.updateBalance, this);
         },
         serializeData : function() {
-            var currencies      = this.model.get("virtualCurrencies").toJSON(),
-                currencyImages  = this.model.get("modelAssets").virtualCurrencies;
+            var currencies      = this.model.get("currencies").toJSON(),
+                currencyImages  = this.model.get("modelAssets").currencies;
 
             _.each(currencies, function(currency) {
                 currency.imgFilePath = currencyImages[currency.itemId];

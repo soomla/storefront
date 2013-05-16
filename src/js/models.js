@@ -87,7 +87,7 @@ define(["backboneRelational"], function() {
             },
             {
                 type: Backbone.HasMany,
-                key: 'virtualCurrencies',
+                key: 'currencies',
                 relatedModel: Currency,
                 collectionType: VirtualCurrencyCollection,
                 reverseRelation: {
@@ -113,7 +113,7 @@ define(["backboneRelational"], function() {
             var categoryMap 	= this.categoryMap 		= {};
 
             // Populate market items map
-            this.get("virtualCurrencies").each(function(currency) {
+            this.get("currencies").each(function(currency) {
                 currency.get("packs").each(function(pack) {
                     marketItemsMap[pack.id] = pack;
                 });
@@ -155,14 +155,14 @@ define(["backboneRelational"], function() {
             return this.categoryMap[goodId];
         },
         setBalance : function(balances) {
-            var currencies = this.get("virtualCurrencies");
+            var currencies = this.get("currencies");
             _.each(balances, function(attributes, currency) {
                 currencies.get(currency).set("balance", attributes.balance);
             });
             return this;
         },
         getBalance : function(currency) {
-            return this.get("virtualCurrencies").get(currency).get("balance");
+            return this.get("currencies").get(currency).get("balance");
         },
         updateVirtualGoods : function(goods) {
             var $this = this;
