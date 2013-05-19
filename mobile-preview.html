@@ -85,7 +85,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
 			themeUrl 		= themesFolder + "/" + themeName +  "/theme.json",
             modelAjax       = $.ajax({url : modelUrl, dataType : "json"}),
-            themeAjax       = $.ajax({url : themeUrl, dataType : "json"});
+            themeAjax       = $.ajax({url : themeUrl, dataType : "json"}),
+            initViewItemId  = getParameterByName("itemid");
 
 
         // Request both JSONs
@@ -112,8 +113,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 			var data = _.extend({}, model, theme);
 
-			// Initialize store
-			SoomlaJS.initialize(data);
+            // Initialize store
+			SoomlaJS.initialize(data, null, initViewItemId);
 
 			// Inject prices and balances
 			var goods = {}, balances = {};

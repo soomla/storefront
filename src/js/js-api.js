@@ -55,5 +55,8 @@ define({
     },
     marketPurchaseCancelled : function() {
         SoomlaJS.storeView.closeDialog();
+    },
+    changeViewToItem: function (itemId) {
+        SoomlaJS.storeView.changeViewToItem(itemId);
     }
 });

@@ -60,7 +60,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
-            initialize : function(json, templateLoadCallback) {
+            initialize : function(json, templateLoadCallback, initViewItemId) {
 
                 // First, validate JSON attributes
                 if (!json) {
@@ -196,7 +196,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                         storeViewOptions : {
                             model : $this.store,
                             el : $("#main"),
-                            template : Handlebars.getTemplate("template")
+                            template : Handlebars.getTemplate("template"),
+                            initViewItemId: initViewItemId
                         },
                         imagesLoadedCallback : storeViewDeferred.resolve
                     });
