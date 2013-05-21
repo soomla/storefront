@@ -236,7 +236,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var CarouselView = Marionette.CompositeView.extend({
         tagName : "ul",
         initialize : function() {
-            _.bindAll(this, "switchActive");
+            _.bindAll(this, "switchActive", "changeActiveByModel");
         },
         events : {
             "fastclick .next"       : "showNext",
@@ -252,7 +252,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             if (this.activeIndex === -1) this.activeIndex = this.children.length - 1;
             this.switchActive().trigger("previous");
         },
-        switchActive : function() {
+        switchActive: function () {
             this.activeChild.$el.hide();
             this.activeChild = this.getActiveChild();
             this.activeChild.$el.show();
@@ -260,6 +260,21 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         getActiveChild : function() {
             return this.children.findByIndex(this.activeIndex);
+        },
+        changeActiveByModel: function (model) {
+            var newActiveChildView = this.children.findByModel(model);
+            var newActiveIndex = 0;
+            this.children.each(function (view) {
+                if (view.cid == newActiveChildView.cid) {
+                    this.activeIndex = newActiveIndex;
+                }
+                newActiveIndex++;
+            }, this);
+            if (this.activeIndex == this.children.length) {
+                console.log('CarouselView / changeActiveByModel / Invalid model', model);
+                return;
+            }
+            this.switchActive();
         },
         onRender : function() {
             // Initialize variables necessary for next / previous functionality
