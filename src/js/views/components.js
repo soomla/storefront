@@ -315,6 +315,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
                     this.createIScrolls();
+                    this.changeViewToItem(this.options.initViewItemId);
                     this.finalizeRendering();
                 }, this);
             }

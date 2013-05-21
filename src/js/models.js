@@ -107,6 +107,14 @@ define(["backboneRelational"], function() {
                     goodsMap[good.id] = good;
                 });
             });
+
+            // Create a {ID : currencyPack } map with all currency packs
+            var currencyPacksMap = this.currencyPacksMap = {};
+            this.get("virtualCurrencies").each(function (currency) {
+                currency.get("packs").each(function(pack) {
+                    currencyPacksMap[pack.id] = pack;
+                });
+            });
         },
         setBalance : function(balances) {
             var model = this.get("virtualCurrencies");
