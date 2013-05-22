@@ -272,10 +272,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.children.each(function (view) {
                 if (view.cid == newActiveChildView.cid) {
                     this.activeIndex = newActiveIndex;
+                    return;
                 }
                 newActiveIndex++;
             }, this);
-            if (this.activeIndex == this.children.length) {
+            if (newActiveIndex == this.children.length) {
                 console.log('CarouselView / changeActiveByModel / Invalid model', model);
                 return;
             }
@@ -398,8 +399,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
                 // Create a hash with all the iscrolls
                 this.iscrolls = {};
-                _.each(this.iscrollRegions, function(value,region) {
-                    this.iscrolls[region] = new iScroll(this.$(value.el)[0], value.options);
+                _.each(this.iscrollRegions, function (value, region) {
+                    var $this = this,
+                        options = $.extend({}, value.options);
+                    options.onScrollEndBinded = options.onScrollEnd;
+                    options.onScrollEnd = function () {
+                        options.onScrollEndBinded($this, this);
+                    };
+                    this.iscrolls[region] = new iScroll(this.$(value.el)[0], options);
                 }, this);
 
                 // When images are loaded refresh all iscrolls
