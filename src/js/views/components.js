@@ -206,7 +206,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
         },
-        refreshIScroll : refreshIScroll,
+        refreshIScroll: refreshIScroll,
+        scrollToItemByModel: function (model, time) {
+            var view = this.children.findByModel(model),
+                el = view.el;
+            this.iscroll.scrollToElement(el, time);
+        },
         getIScrollWrapper : function() {
             return Marionette.getOption(this, "iscrollWrapper") || this.el;
         }
