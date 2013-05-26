@@ -58,7 +58,32 @@ h1 {
     left:  0;
     bottom: 0;
     right:  0;
-    background: #fff;
+    background: #000;
+    background-position: center;
+    .background-size(cover);
+
+    .preroll-modal {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        .box(horizontal, center, center);
+        z-index: 2001;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .preroll-dialog {
+	    width: 520px;
+        height: 200px;
+        .box(vertical, center, center);
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            width: 480px;
+        }
+    }
 }
 
 // ================  Soomla modal and branding  ==================
