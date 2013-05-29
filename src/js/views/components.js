@@ -362,11 +362,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             this.model.get("currencies").on("change:balance", this.updateBalance, this);
         },
         serializeData : function() {
-            var currencies      = this.model.get("currencies").toJSON(),
-                currencyImages  = this.model.get("modelAssets").currencies;
+            var currencies  = this.model.get("currencies").toJSON(),
+                modelAssets = this.model.get("modelAssets");
 
             _.each(currencies, function(currency) {
-                currency.imgFilePath = currencyImages[currency.itemId];
+                currency.imgFilePath = modelAssets.items[currency.itemId].url;
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },

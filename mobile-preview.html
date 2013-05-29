@@ -99,7 +99,9 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 			// Replace paths
 			var Utils = require("utils");
-			Utils.replaceStringAttributes(theme.modelAssets, /^img/, themePath + "/img");
+            _.each(theme.modelAssets, function(assets) {
+                Utils.assignAssetUrls(assets, /^img/, themePath + "/img");
+            });
 			Utils.replaceStringAttributes(theme.theme, /^img/, themePath + "/img");
 			Utils.replaceStringAttributes(theme.theme, /^fonts/, themePath + "/fonts");
 

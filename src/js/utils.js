@@ -16,6 +16,17 @@ define(function() {
                 }
             });
         },
+        //
+        // Replaces URLs for a given collection of assets by
+        // applying a regex and replacement string to the assets' name
+        //
+        assignAssetUrls : function(obj, regex, replaceString) {
+            _.each(obj, function(attributes) {
+                if (_.isUndefined(attributes.url)) {
+                    attributes.url = attributes.name.replace(regex, replaceString);
+                }
+            });
+        },
         // Find all theme attributes with URLs by walking the template object.
         // Add a prefix to these URLs
         augmentThemeUrls : function(templateObj, themeObj, prefixPath) {

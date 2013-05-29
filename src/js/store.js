@@ -78,7 +78,9 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                 // Start by augmenting the flat paths of images to relative paths
                 if (!json.imagePathsAugmented) {
-                    Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
+                    _.each(json.modelAssets, function(assets) {
+                        Utils.assignAssetUrls(assets, /^img/, "../theme/img");
+                    });
                     Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
                     Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
                 }
