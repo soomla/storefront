@@ -144,6 +144,8 @@ define(["backboneRelational"], function() {
                 this.get("categories").add(category);
             }, this);
 
+            // Clean raw categories, not necessary anymore
+            this.unset("rawCategories");
         },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
