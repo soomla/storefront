@@ -162,28 +162,6 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 });
 
 
-                // In case we're in the old model without a category => goods relationship, normalize.
-                // **********   WARNING   **********
-                // This condition can be removed only if all DB records have been migrated to the new relational model
-                if (json.virtualGoods) {
-                    _.each(json.categories, function(category) {
-                        var categoryGoods = _.filter(json.virtualGoods, (function(item) {return item.categoryId == category.id}));
-                        category.goods = categoryGoods;
-                    });
-                    delete json.virtualGoods;
-                }
-
-                // In case we're in the old model without a currency => packs relationship, normalize.
-                // **********   WARNING   **********
-                // This condition can be removed only if all DB records have been migrated to the new relational model
-                if (json.currencyPacks) {
-                    _.each(json.currencies, function(currency) {
-                        var packs = _.filter(json.currencyPacks, (function(item) {return item.currency_itemId == currency.itemId}));
-                        currency.packs = packs;
-                    });
-                    delete json.currencyPacks;
-                }
-
                 // Move the raw categories' metadata, because the `categories` attribute
                 // should be saved for the backbone relational categories collection
                 json.rawCategories = json.categories;

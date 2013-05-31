@@ -113,10 +113,9 @@ define(["backboneRelational"], function() {
             var categoryMap 	= this.categoryMap 		= {};
 
             // Populate market items map
-            this.get("currencies").each(function(currency) {
-                currency.get("packs").each(function(pack) {
-                    marketItemsMap[pack.id] = pack;
-                });
+            _.each(this.get("currencyPacks"), function(rawPack) {
+                var pack = new CurrencyPack(rawPack);
+                marketItemsMap[pack.id] = pack;
             });
 
             // Populate goods map, flag each good with its type
@@ -128,7 +127,12 @@ define(["backboneRelational"], function() {
                 });
             });
 
-
+            // Fill currency packs into currency buckets (collections)
+            var currencies = this.get("currencies");
+            _.each(this.get("currencyPacks"), function(pack) {
+                var packs = currencies.get(pack.currency_itemId).get("packs");
+                packs.add(marketItemsMap[pack.itemId]);
+            });
 
             // Fill goods from the raw categories into category buckets (collections)
             _.each(this.get("rawCategories"), function(rawCategory) {
@@ -144,8 +148,10 @@ define(["backboneRelational"], function() {
                 this.get("categories").add(category);
             }, this);
 
-            // Clean raw categories, not necessary anymore
+            // Clean fields that are not unnecessary to prevent duplicate data
             this.unset("rawCategories");
+            this.unset("goods");
+            this.unset("currencyPacks");
         },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
