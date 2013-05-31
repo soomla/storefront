@@ -35,8 +35,7 @@ define(["backboneRelational"], function() {
     var Currency = Backbone.RelationalModel.extend({
         defaults : {
             name    : "coins",
-            balance : 0,
-            itemId  : "currency_coins"
+            balance : 0
         },
         relations: [
             {
