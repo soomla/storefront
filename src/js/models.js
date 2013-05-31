@@ -239,6 +239,7 @@ define(["backboneRelational"], function() {
         CurrencyPack                : CurrencyPack,
         Store                       : Store,
         Currency                    : Currency,
+        Category                    : Category,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
         NonConsumable               : NonConsumable,
