@@ -161,6 +161,15 @@ define(["backboneRelational"], function() {
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
         },
+        updateItemId : function(oldItemId, newItemId) {
+
+            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, this.get("modelAssets").items], function(map) {
+                if (_.has(map, oldItemId)) {
+                    map[newItemId] = map[oldItemId];
+                    delete map[oldItemId];
+                }
+            });
+        },
         setBalance : function(balances) {
             var currencies = this.get("currencies");
             _.each(balances, function(attributes, currency) {
