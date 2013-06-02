@@ -41,7 +41,11 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 <div role="main" id="main">
 </div>
 
-<div id="preroll-cover"></div>
+<div id="preroll-cover" class="preroll-modal">
+    <div class="preroll-dialog preroll-font-face-2 invisible">
+        <h1></h1>
+    </div>
+</div>
 
 <!-- JavaScript at the bottom for fast page loading -->
 <script src="js/libs/jquery/jquery-1.9.1.min.js"></script>
@@ -85,7 +89,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
 			themeUrl 		= themesFolder + "/" + themeName +  "/theme.json",
             modelAjax       = $.ajax({url : modelUrl, dataType : "json"}),
-            themeAjax       = $.ajax({url : themeUrl, dataType : "json"});
+            themeAjax       = $.ajax({url : themeUrl, dataType : "json"}),
+            initViewItemId  = getParameterByName("itemid");
 
 
         // Request both JSONs
@@ -112,8 +117,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 			var data = _.extend({}, model, theme);
 
-			// Initialize store
-			SoomlaJS.initialize(data);
+            // Initialize store
+			SoomlaJS.initialize(data, null, initViewItemId);
 
 			// Inject prices and balances
 			var goods = {}, balances = {};

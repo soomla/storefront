@@ -206,7 +206,12 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
         },
-        refreshIScroll : refreshIScroll,
+        refreshIScroll: refreshIScroll,
+        scrollToItemByModel: function (model, time) {
+            var view = this.children.findByModel(model),
+                el = view.el;
+            this.iscroll.scrollToElement(el, time);
+        },
         getIScrollWrapper : function() {
             return Marionette.getOption(this, "iscrollWrapper") || this.el;
         }
@@ -236,7 +241,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var CarouselView = Marionette.CompositeView.extend({
         tagName : "ul",
         initialize : function() {
-            _.bindAll(this, "switchActive");
+            _.bindAll(this, "switchActive", "changeActiveByModel");
         },
         events : {
             "fastclick .next"       : "showNext",
@@ -252,7 +257,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             if (this.activeIndex === -1) this.activeIndex = this.children.length - 1;
             this.switchActive().trigger("previous");
         },
-        switchActive : function() {
+        switchActive: function () {
             this.activeChild.$el.hide();
             this.activeChild = this.getActiveChild();
             this.activeChild.$el.show();
@@ -260,6 +265,22 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         getActiveChild : function() {
             return this.children.findByIndex(this.activeIndex);
+        },
+        changeActiveByModel: function (model) {
+            var newActiveChildView = this.children.findByModel(model);
+            var newActiveIndex = 0;
+            this.children.each(function (view) {
+                if (view.cid == newActiveChildView.cid) {
+                    this.activeIndex = newActiveIndex;
+                    return;
+                }
+                newActiveIndex++;
+            }, this);
+            if (newActiveIndex == this.children.length) {
+                console.log('CarouselView / changeActiveByModel / Invalid model', model);
+                return;
+            }
+            this.switchActive();
         },
         onRender : function() {
             // Initialize variables necessary for next / previous functionality
@@ -315,6 +336,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
                     this.createIScrolls();
+                    this.changeViewToItem(this.options.initViewItemId);
                     this.finalizeRendering();
                 }, this);
             }
@@ -377,8 +399,14 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
                 // Create a hash with all the iscrolls
                 this.iscrolls = {};
-                _.each(this.iscrollRegions, function(value,region) {
-                    this.iscrolls[region] = new iScroll(this.$(value.el)[0], value.options);
+                _.each(this.iscrollRegions, function (value, region) {
+                    var $this = this,
+                        options = $.extend({}, value.options);
+                    options.onScrollEndBinded = options.onScrollEnd;
+                    options.onScrollEnd = function () {
+                        options.onScrollEndBinded($this, this);
+                    };
+                    this.iscrolls[region] = new iScroll(this.$(value.el)[0], options);
                 }, this);
 
                 // When images are loaded refresh all iscrolls
