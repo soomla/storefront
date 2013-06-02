@@ -75,8 +75,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var ItemView = LinkView.extend({
         initialize : function() {
             // TODO: Remove change:balance => this.render
-            // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
-            this.model.on("change:balance change:priceModel", this.render);
+            this.model.on("change:balance change:purchasableItem", this.render);
         }
     });
 
@@ -111,10 +110,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item equippable",
         initialize : function() {
             this.model.on({
-                // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
-                "change:priceModel" : this.render,
-                "change:balance"    : this.onBalanceChange,
-                "change:equipped"   : this.onEquippingChange
+                "change:purchasableItem"    : this.render,
+                "change:balance"            : this.onBalanceChange,
+                "change:equipped"           : this.onEquippingChange
             }, this);
         },
         triggers : {
@@ -178,9 +176,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         initialize : function() {
             this.model.on({
-                // TODO: Change priceModel to something else, otherwise dashboard changes won't affect the view
-                "change:priceModel" : this.render,
-                "change:balance"    : this.onBalanceChange
+                "change:purchasableItem"    : this.render,
+                "change:balance"            : this.onBalanceChange
             }, this);
         },
         onBalanceChange : function() {

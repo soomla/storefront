@@ -205,19 +205,6 @@ define(["backboneRelational"], function() {
                     else
                         good.set("equipped", attributes.equipped);
                 }
-
-                if (attributes.price) {
-                    // TODO: Support passing multiple prices in different currencies
-                    // Currently this code always takes the currency of the first price it encounters
-                    // regardless of the number of prices passed
-                    var priceModel = _.clone(good.get("priceModel"));
-                    if (_.isArray(attributes.price)) {
-                        _.each(attributes.price, function(price, currency) {priceModel.values[currency] = price; });
-                    } else {
-                        if (priceModel.type === "static") priceModel.values = attributes.price;
-                    }
-                    good.set("priceModel", priceModel);
-                }
             });
             return this;
         },
