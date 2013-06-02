@@ -60,7 +60,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
-            initialize : function(json, templateLoadCallback) {
+            initialize : function(json, options) {
 
                 // First, validate JSON attributes
                 if (!json) {
@@ -85,6 +85,16 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
                 }
 
+                // Add a preload modal with the theme background
+                var modal = json.theme.noFundsModal || json.theme.pages.goods.noFundsModal;
+                var prerollEl = $("#preroll-cover");
+                var prerollDlg = prerollEl.find(".preroll-dialog");
+                var prerollHdr = prerollDlg.find("h1");
+                prerollEl.css('background-image', 'url("' + json.theme.background + '")');
+                prerollHdr.text('Loading');
+                prerollHdr.attr("style", prerollHdr.attr("style") + "; " + modal.textStyle);
+                prerollDlg.css('background-image', 'url("' + modal.background + '")');
+                prerollDlg.toggleClass('invisible', 'false');
 
                 // Define which CSS, JS and Handlebars files need to be fetched
                 // The template folder is either overriden externally in the JSON or is hardcoded
@@ -124,7 +134,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                 // Fetch the CSS template and the template definition, then compose a theme-specific rule set
                 // and add it the document head.
-                $.when(cssRequest, templateRequest).then(function(cssResponse, templateResponse) {
+                $.when(cssRequest, templateRequest).then(function (cssResponse, templateResponse) {
                     var cssTemplate         = cssResponse[0],
                         template            = templateResponse[0],
                         cssRuleSet          = [],
@@ -174,6 +184,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 require(jsFiles, function(Theme) {
 
 					// Call template load callback if provided
+                    var templateLoadCallback = options.templateLoadCallback;
 					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(Theme, Components);
 
 					// Initialize view
@@ -181,7 +192,8 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                         storeViewOptions : {
                             model : $this.store,
                             el : $("#main"),
-                            template : Handlebars.getTemplate("template")
+                            template : Handlebars.getTemplate("template"),
+                            initViewItemId: options.initViewItemId
                         },
                         imagesLoadedCallback : storeViewDeferred.resolve
                     });

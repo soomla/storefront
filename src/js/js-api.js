@@ -81,6 +81,16 @@ define({
         SoomlaJS.storeView.openMessageDialog("Billing is not supported. Please check your internet connection and try again.");
     },
 
+
+    //
+    // Navigation functions
+    //
+
+    changeViewToItem: function (itemId) {
+        SoomlaJS.storeView.changeViewToItem(itemId);
+    },
+
+
     // Private methods
     _getItemName: function(itemId) {
         var item = SoomlaJS.store.getItem(itemId);

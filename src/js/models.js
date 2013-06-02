@@ -116,6 +116,7 @@ define(["backboneRelational"], function() {
             var marketItemsMap 	= this.marketItemsMap 	= {};
             var categoryMap 	= this.categoryMap 		= {};
 
+
             // Populate market items map
             _.each(this.get("currencyPacks"), function(rawPack) {
                 var pack = new CurrencyPack(rawPack);

@@ -14,11 +14,7 @@ html,body {
 }
 
 body {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    .user-select(none);
 }
 
 h1 {
@@ -33,16 +29,14 @@ h1 {
 }
 
 [data-role="page"] {
-    width: 100%;
-    height: 100%;
+    .square(100%);
     .box(vertical);
     position: absolute;
 
     &>.background {
         position: absolute;
         z-index: -1;
-        width: 100%;
-        height: 100%;
+        .square(100%);
     }
 }
 
@@ -58,7 +52,30 @@ h1 {
     left:  0;
     bottom: 0;
     right:  0;
-    background: #fff;
+    background: @black;
+    background-position: center;
+    .background-size(cover);
+
+    .preroll-modal {
+        .square(100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        .box(horizontal, center, center);
+        z-index: 2001;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .preroll-dialog {
+        .size(200px, 520px);
+        .box(vertical, center, center);
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            width: 480px;
+        }
+    }
 }
 
 // ================  Soomla modal and branding  ==================
