@@ -74,8 +74,8 @@ define({
     errNotEnoughGoods : function(itemId) {
         SoomlaJS.storeView.openMessageDialog("Error: not enough goods of type " + this._getItemName(itemId));
     },
-    errUnexpected : function(itemId) {
-        SoomlaJS.storeView.openMessageDialog("Unexpected error with " + this._getItemName(itemId));
+    errUnexpected : function() {
+        SoomlaJS.storeView.openMessageDialog("Unexpected error");
     },
     errBillingNotSupported : function() {
         SoomlaJS.storeView.openMessageDialog("Billing is not supported. Please check your internet connection and try again.");
