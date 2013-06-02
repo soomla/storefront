@@ -60,7 +60,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
-            initialize : function(json, templateLoadCallback, initViewItemId) {
+            initialize : function(json, options) {
 
                 // First, validate JSON attributes
                 if (!json) {
@@ -83,6 +83,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
                 }
 
+                // Add a preload modal with the theme background
                 var modal = json.theme.noFundsModal || json.theme.pages.goods.noFundsModal;
                 var prerollEl = $("#preroll-cover");
                 var prerollDlg = prerollEl.find(".preroll-dialog");
@@ -198,6 +199,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 require(jsFiles, function(Theme) {
 
 					// Call template load callback if provided
+                    var templateLoadCallback = options.templateLoadCallback;
 					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(Theme, Components);
 
 					// Initialize view
@@ -206,7 +208,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                             model : $this.store,
                             el : $("#main"),
                             template : Handlebars.getTemplate("template"),
-                            initViewItemId: initViewItemId
+                            initViewItemId: options.initViewItemId
                         },
                         imagesLoadedCallback : storeViewDeferred.resolve
                     });

@@ -118,7 +118,9 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 			var data = _.extend({}, model, theme);
 
             // Initialize store
-			SoomlaJS.initialize(data, null, initViewItemId);
+			SoomlaJS.initialize(data, {
+                initViewItemId : initViewItemId
+            });
 
 			// Inject prices and balances
 			var goods = {}, balances = {};
