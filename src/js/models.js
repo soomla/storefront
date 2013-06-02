@@ -13,7 +13,12 @@ define(["backboneRelational"], function() {
         idAttribute : "itemId",
         defaults : {
             balance     : 0,
-            equipped    : false
+            equipped    : false,
+            purchasableItem : {
+                pvi_itemId: "currency_coins",
+                pvi_amount: 100,
+                purchaseType: "virtualItem"
+            }
         },
         getCurrencyId : function() {
             return this.get("purchasableItem").pvi_itemId;
