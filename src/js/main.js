@@ -5,6 +5,9 @@ require.config({
     waitSeconds : 0,
 
     paths: {
+        store                   : "store",
+        models                  : "models",
+        jsAPI                   : "js-api",
         components              : "views/components",
         helperViews             : "views/helper-views",
         viewMixins          	: "views/view-mixins",
@@ -14,6 +17,7 @@ require.config({
         templates           	: "views/templates",
         utils                   : "utils",
         userAgent               : "user-agent",
+        soomlaiOS               : "soomla-ios",
 
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.9.1.min",

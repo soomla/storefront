@@ -1,4 +1,4 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "utils", "userAgent", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
+define(["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
