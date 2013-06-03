@@ -24,13 +24,13 @@ require.config({
         modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.0.min",
         iscroll                 : "libs/iscroll",
-        underscore          	: "libs/underscore-min",
-        backbone            	: "libs/backbone/backbone-0.9.10",
-        backboneRelational  	: "libs/backbone/backbone-relational-0.7.1",
-        marionette          	: "libs/backbone/backbone.marionette.core-1.0.0-rc5",
-        "backbone.babysitter"   : "libs/backbone/backbone.babysitter",
-        "backbone.wreqr"        : "libs/backbone/backbone.wreqr",
-        handlebars          	: "libs/handlebars-1.0.rc.2"
+        underscore          	: "libs/underscore-1.4.4",
+        backbone            	: "libs/backbone/backbone-1.0.0",
+        backboneRelational  	: "libs/backbone/backbone-relational-0.8.5",
+        marionette          	: "libs/backbone/backbone.marionette.core-1.0.3",
+        "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
+        "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
+        handlebars          	: "libs/handlebars-1.0.0"
     },
     shim: {
         underscore: {
