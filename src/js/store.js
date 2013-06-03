@@ -61,6 +61,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
         window.SoomlaJS = _.extend({}, jsAPI, {
             // The native UI is loaded and the html needs to be rendered now
             initialize : function(json, options) {
+                (options) || (options = {});
 
                 // First, validate JSON attributes
                 if (!json) {
