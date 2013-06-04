@@ -34,7 +34,7 @@ require.config({
         marionette          	: "libs/backbone/backbone.marionette.core-1.0.3",
         "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
-        handlebars          	: "libs/handlebars-1.0.0"
+        handlebars          	: "libs/handlebars-1.0.rc.2"
     },
     shim: {
         underscore: {
