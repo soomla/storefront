@@ -5,8 +5,9 @@ require('shelljs/global');
 module.exports = function (grunt) {
 
     // Define folders
-    var distFolder      = "dist",
-        srcFolder       = "./src/",
+    var distFolder      = "./dist",
+        deployFolder    = "./deploy",
+        srcFolder       = "./src",
         themesFolder    = "storefront-themes/themes",
         lessFiles       = {};
 
@@ -68,7 +69,17 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('clean', 'Cleans the distribution folder', function() {
-        rm("-rf", distFolder);
+        rm("-rf", deployFolder);
+    });
+
+
+    //
+    // Prepares the source and distribution files in a deployment folder
+    //
+    grunt.registerTask('prepareDeploy', 'Cleans the distribution folder', function() {
+        mkdir("-p", deployFolder + "/src");
+        cp("-R", srcFolder + "/*", deployFolder + "/src");
+        mv(distFolder, deployFolder);
     });
 
     grunt.registerTask('production', function() {
@@ -85,5 +96,5 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'clean copy less requirejs');
+    grunt.registerTask('default', 'clean copy less requirejs prepareDeploy');
 };
