@@ -59,7 +59,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
     window.SoomlaNative = {
         playSound : function(filePath) {},
         storeInitialized : function() {
-            require(["native-api-stubs", "jsAPI"], function(NativeApiStubs, jsAPI) {
+            require(["nativeApiStubs", "jsAPI"], function(NativeApiStubs, jsAPI) {
                 // Inject Native API stubs
                 _.extend(SoomlaJS.storeView, NativeApiStubs);
                 NativeApiStubs.injectJsApi(jsAPI);
