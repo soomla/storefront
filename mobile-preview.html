@@ -96,10 +96,8 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            var model 			= modelData[0],
-                theme 			= themeData[0],
-                templateUrl     = "../../storefront-themes/templates/" + theme.template.name + "/template.json",
-                templateAjax    = $.ajax({url : templateUrl, dataType : "json"});
+            var model = modelData[0],
+                theme = themeData[0];
 
 
 			// Replace paths
@@ -112,7 +110,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 
 			// Inject the base URL for loading template
-			theme.template.baseUrl = "../../storefront-themes/templates/" + theme.template.name;
+			theme.template.baseUrl = "../../storefront-themes/templates/" + theme.template.name + "/src";
 
 			// Prevent storefront from augmenting image paths, since this page already does it
 			theme.imagePathsAugmented = true;
