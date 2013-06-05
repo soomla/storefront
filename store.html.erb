@@ -61,7 +61,8 @@
 			SoomlaJS.initialize(json, {
 				env : "dist",
 				cssHandlbarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
-				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>"
+				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>",
+				assets          : <%= theme_assets %>
 			});
 
 		});
