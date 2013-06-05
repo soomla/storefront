@@ -1,4 +1,4 @@
-define(["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
+define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -103,22 +103,49 @@ define(["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userA
                 var templateName        = json.template.name,
                     templatesFolder     = json.template.baseUrl || "../template",
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
-                    jsFiles             = [templatesFolder + "/js/" + templateName + "Views.js"],
+                    templateModule      = templateName + "Views",
+                    templateModulePath  = templatesFolder + "/js/" + templateModule,
                     htmlTemplatesPath   = templatesFolder  + "/templates",
                     templateDefinition  = templatesFolder  + "/template.json";
+
+                if (options.env === "dist") {
+
+                    // In `dist` environment, assume template javascripts are
+                    // already loaded locally in a script tag and require them
+                    // by their module name and not by their relative URL
+                    templateModulePath = templateModule
+                }
+
+                // Ensure the correct module is loaded for the template
+                // Use a non-public Require.js API to alter the config paths in runtime
+                // See: https://groups.google.com/forum/?fromgroups#!topic/requirejs/Hf-qNmM0ceI
+                require.s.contexts._.config.paths[templateModule] = templateModulePath;
+
 
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
                 _.each(cssFiles, function(file) {
-                    var isLess  = file.match(/\.less$/),
-                        type    = isLess ? "text/less" : "text/css",
-                        link    = $("<style>").appendTo($("head"));
 
-                    $.get(file, function(data, textStatus, jqXHR) {
-                        link.html(data).attr("type", type);
-                        if (isLess) less.refreshStyles();
-                    });
+                    if (options.env === "dist") {
+
+                        // In `dist` environment the less styles are already injected
+                        // into the page, only need to refresh
+                        less.refreshStyles();
+
+                    } else {
+
+                        // In non-`dist` environment, fetch the remote less file
+                        // and then Less-compile it
+                        var isLess  = file.match(/\.less$/);
+                            type    = isLess ? "text/less" : "text/css",
+                            link    = $("<style>").appendTo($("head"));
+
+                        $.get(file, function(data, textStatus, jqXHR) {
+                            link.html(data).attr("type", type);
+                            if (isLess) less.refreshStyles();
+                        });
+                    }
                 });
 
 
@@ -182,7 +209,8 @@ define(["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userA
                 // Initialize model
                 this.store = new Models.Store(json);
 
-                require(jsFiles, function(Theme) {
+
+                require([templateModule], function(Theme) {
 
 					// Call template load callback if provided
                     var templateLoadCallback = options.templateLoadCallback;

@@ -1,4 +1,4 @@
-define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
+define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
 
     Handlebars.registerHelper('formatCurrency', function(value) {
         return parseFloat(value).toFixed(2);

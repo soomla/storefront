@@ -1,4 +1,4 @@
-define(["modernizr"], function() {
+define("cssUtils", ["modernizr"], function() {
     // Determine which CSS transition event to bind according to the browser vendor
     var transEndEventNames = {
         'WebkitTransition' : 'webkitTransitionEnd',

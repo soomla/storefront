@@ -1,7 +1,7 @@
 /**
  * This set of functions is an API implemented by the Javascript code and is provided for the native code to invoke.
  */
-define({
+define("jsAPI", {
     // in case Market purchases are not supported we only want to show the goods store
     disableCurrencyStore : function() {
         // Raise a flag to indicate that the currency store can't be opened (probably due to connectivity issues)

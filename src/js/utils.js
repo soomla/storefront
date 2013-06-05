@@ -1,4 +1,4 @@
-define(function() {
+define("utils", function() {
     return {
         // Given an object, replaces all string attributes in the object (or deeply nested)
         // that match the given regex with the given replacement string.

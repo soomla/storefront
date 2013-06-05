@@ -2,7 +2,7 @@
  * This set of functions is an API implemented by the native code and is provided for the Javascript code to invoke.
  * Since the native code should provide this interface, it is currently implemented with stubs.
  */
-define(function(){
+define("nativeApiStubs", function(){
     var _jsAPI;
 
     var API = {

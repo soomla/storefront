@@ -1,4 +1,4 @@
-define({
+define("soomlaiOS", {
     _callNative : function(command) {
 
         var iFrame = document.createElement("IFRAME");

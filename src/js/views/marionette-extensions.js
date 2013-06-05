@@ -1,4 +1,4 @@
-define(["backbone", "marionette"], function(Backbone, Marionette) {
+define("marionetteExtensions", ["backbone", "marionette"], function(Backbone, Marionette) {
 
     _.extend(Marionette.View.prototype, {
 

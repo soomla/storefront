@@ -1,4 +1,4 @@
-define({
+define("viewMixins", {
     wantsToLeaveStore : function() {
         this.nativeAPI.wantsToLeaveStore();
     },

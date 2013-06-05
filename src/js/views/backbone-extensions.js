@@ -1,4 +1,4 @@
-define(["backbone"], function(Backbone) {
+define("backboneExtensions", ["backbone"], function(Backbone) {
 
     // Taken from https://github.com/kjbekkelund/writings/blob/master/published/backbone-mixins.md
 
