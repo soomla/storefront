@@ -18,12 +18,26 @@ define("utils", function() {
         },
         //
         // Replaces URLs for a given collection of assets by
-        // applying a regex and replacement string to the assets' name
+        // applying a regex and replacement string to the assets' URL
         //
         assignAssetUrls : function(obj, regex, replaceString) {
-            _.each(obj, function(attributes) {
-                if (_.isUndefined(attributes.url)) {
-                    attributes.url = attributes.name.replace(regex, replaceString);
+            _.each(obj, function(url, name) {
+                obj[name] = url.replace(regex, replaceString);
+            });
+        },
+        //
+        // Replaces URLs for a given collection of assets by providing
+        // a replacements object that maps the assets' values to new values
+        //
+        replaceAssetUrls : function(assets, replacements) {
+            var _this = this;
+            _.each(assets, function(url, name) {
+                if (_.isObject(url)) {
+                    _this.replaceAssetUrls(url, replacements);
+                } else if (replacements[url]) {
+
+                    // Replace the asset value with the new mapped value
+                    assets[name] = replacements[url];
                 }
             });
         },
