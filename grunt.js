@@ -80,6 +80,7 @@ module.exports = function (grunt) {
         mkdir("-p", deployFolder + "/src");
         cp("-R", srcFolder + "/*", deployFolder + "/src");
         mv(distFolder, deployFolder);
+        cp("store.html.erb", deployFolder);
     });
 
     grunt.registerTask('production', function() {
