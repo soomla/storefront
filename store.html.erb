@@ -55,14 +55,28 @@
 <!-- Finally, allow the page an option to self initialize if provided with a model -->
 <% if model %>
     <script>
+
+	    // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
+	    window.SoomlaNative = {
+		    playSound : function(filePath) {},
+		    storeInitialized : function() {
+			    require(["nativeApiStubs", "jsAPI"], function(NativeApiStubs, jsAPI) {
+				    // Inject Native API stubs
+				    _.extend(SoomlaJS.storeView, NativeApiStubs);
+				    NativeApiStubs.injectJsApi(jsAPI);
+			    });
+		    }
+	    };
+
 		$(window).load(function() {
 
 			var json = <%= JSON model %>;
-			SoomlaJS.initialize(json, {
+			json.assets = <%= JSON theme_assets %>;
+
+				SoomlaJS.initialize(json, {
 				env : "dist",
 				cssHandlebarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
-				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>",
-				assets          : <%= theme_assets %>
+				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>"
 			});
 
 		});
