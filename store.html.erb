@@ -1,0 +1,83 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+
+    <!-- Mobile viewport optimized: h5bp.com/viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
+
+	<link rel="stylesheet" href="<%= sfjs_assets["#{dist_type}/css/store.css"] %>">
+	<link rel="stylesheet" href="<%= template_assets["#{dist_type}/less/#{template_name}.less"] %>" type="text/less">
+</head>
+<body>
+
+
+<div role="main" id="main">
+</div>
+
+<div id="preroll-cover" class="preroll-modal">
+    <div class="preroll-dialog preroll-font-face-2 invisible">
+        <h1></h1>
+    </div>
+</div>
+
+<!-- JavaScript at the bottom for fast page loading -->
+<!-- scripts concatenated and minified via build script -->
+
+<% if dist_type == "dist" %>
+
+    <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+    <script src="<%= template_assets["#{dist_type}/js/pirateRaceViews.js"] %>"></script>
+    <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
+
+<% elsif dist_type == "src" %>
+
+    <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+    <script src="<%= template_assets["#{dist_type}/js/pirateRaceViews.js"] %>"></script>
+
+	<%
+	   sfjs_assets.each do |name, url|
+
+	     # Deploy if
+	     next if (name == "#{dist_type}/js/libs/require.js" || name == "#{dist_type}/js/main.js")
+	%>
+
+        <script src="<%= url %>"></script>
+	<% end %>
+
+
+    <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
+
+<% end %>
+
+
+<!-- Finally, allow the page an option to self initialize if provided with a model -->
+<% if model %>
+    <script>
+	    var json = JSON.parse(<%= JSON model %>);
+	    SoomlaJS.initialize(json, {dist : true});
+    </script>
+<% end %>
+
+<!-- end scripts -->
+
+<div id="soomla-info-modal" class="modal" style="display: none">
+    <div id="soomla-info-dialog">
+      <span class="soomla-logo"></span>
+        <div class="description">This store is powered by SOOMLA.</div>
+        <div class="actions" style="display: none;">
+            <a href="http://soom.la/privacy-policy/">Privacy Policy</a>
+            <a href="http://soom.la/">Learn more</a>
+        </div>
+        <button class="close">Close</button>
+    </div>
+</div>
+<a class="soombot"></a>
+<a class="nobrand"></a>
+
+
+
+
+</body>
+</html>
