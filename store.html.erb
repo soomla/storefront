@@ -28,13 +28,13 @@
 <% if dist_type == "dist" %>
 
     <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
-    <script src="<%= template_assets["#{dist_type}/js/pirateRaceViews.js"] %>"></script>
+    <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
     <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
 
 <% elsif dist_type == "src" %>
 
     <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
-    <script src="<%= template_assets["#{dist_type}/js/pirateRaceViews.js"] %>"></script>
+    <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
 
 	<%
 	   sfjs_assets.each do |name, url|
