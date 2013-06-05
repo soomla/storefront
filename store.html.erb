@@ -55,8 +55,16 @@
 <!-- Finally, allow the page an option to self initialize if provided with a model -->
 <% if model %>
     <script>
-	    var json = JSON.parse(<%= JSON model %>);
-	    SoomlaJS.initialize(json, {dist : true});
+		$(window).load(function() {
+
+			var json = <%= JSON model %>;
+			SoomlaJS.initialize(json, {
+				env : "dist",
+				cssHandlbarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
+				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>"
+			});
+
+		});
     </script>
 <% end %>
 

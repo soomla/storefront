@@ -105,8 +105,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
                     templateModule      = templateName + "Views",
                     templateModulePath  = templatesFolder + "/js/" + templateModule,
-                    htmlTemplatesPath   = templatesFolder  + "/templates",
-                    templateDefinition  = templatesFolder  + "/template.json";
+                    htmlTemplatesPath   = templatesFolder  + "/templates";
 
                 if (options.env === "dist") {
 
@@ -154,8 +153,10 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
-                var cssRequest 			= $.ajax({ url: "css.handlebars" }),
-                    templateRequest 	= $.ajax({ url: templateDefinition, dataType: "json" }),
+                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "css.handlebars",
+                    templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
+                    cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
+                    templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
                     $this           	= this,
                     storeViewDeferred 	= $.Deferred(),
                     backgroundImagesPromise;
