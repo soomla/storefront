@@ -83,7 +83,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
-        var themesFolder 	= "../../storefront-themes/themes",
+        var themesFolder 	= "../../../storefront-themes/themes",
 			themeName 		= getParameterByName("theme"),
             themePath       = themesFolder + "/" + themeName +  "/theme",
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
@@ -110,7 +110,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 
 			// Inject the base URL for loading template
-			theme.template.baseUrl = "../../storefront-themes/templates/" + theme.template.name + "/src";
+			theme.template.baseUrl = "../../../storefront-themes/templates/" + theme.template.name + "/src";
 
 			// Prevent storefront from augmenting image paths, since this page already does it
 			theme.imagePathsAugmented = true;
