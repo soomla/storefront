@@ -269,7 +269,18 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         },
         addNewCurrencyPack : function(options) {
             var currencyPack = new CurrencyPack({
-                itemId  : _.uniqueId("untitled_good_")
+                purchasableItem : {
+                    marketItem : {
+                        consumable  : 1,
+                        price       : 0.99,
+                        productId   : "untitled_currency_pack"
+                    },
+                    purchaseType    : "market"
+                },
+                name                : "Untitled",
+                itemId              : _.uniqueId("untitled_currency_pack_"),
+                currency_itemId     : options.currency_itemId,
+                currency_amount     : 1000
             });
             currencyPack.get("purchasableItem").pvi_itemId = firstCurrencyId;
 
