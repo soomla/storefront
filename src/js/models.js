@@ -1,5 +1,23 @@
 define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
+
+    /**
+     * Moves a model to the given index, if different from its current index. Handy
+     * for shuffling models after they've been pulled into a new position via
+     * drag and drop.
+     */
+    Backbone.Collection.prototype.move = function(model, toIndex) {
+        var fromIndex = this.indexOf(model);
+        if (fromIndex == -1) {
+            throw new Error("Can't move a model that's not in the collection")
+        }
+        if (fromIndex !== toIndex) {
+            this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0]);
+        }
+    };
+
+
+
     var CurrencyPack = Backbone.RelationalModel.extend({
         idAttribute : "itemId",
         getCurrencyId : function() {
@@ -230,6 +248,71 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
                 });
             }
             this.updateNonConsumables(nonConsumables);
+        },
+        toJSON : function() {
+
+            // Prepare a JSON using the original prototype's toJSON method
+            var json = Backbone.RelationalModel.prototype.toJSON.apply(this);
+
+
+            // Remove all fields injected into models during runtime
+            // e.g. balance, equipped...
+            _.each(json.currencies, function(currency) {
+                delete currency.balance;
+            });
+            _.each(json.categories, function(category) {
+                _.each(category.goods, function(good) {
+                    delete good.balance;
+                    delete good.equipped;
+                });
+            });
+
+
+            // Construct categories and goods
+            json.goods = {goodUpgrades : [], lifetime : [], equippable : [], singleUse : [], goodPacks : []};
+            _.each(json.categories, function(category) {
+
+                category.goods_itemIds = [];
+
+                _.each(category.goods, function(good) {
+
+                    // Add the good to its category
+                    category.goods_itemIds.push(good.itemId);
+                    json.goods[good.type].push(good);
+                    delete good.type;
+                });
+
+                delete category.goods;
+            });
+
+
+            // Construct currency packs
+            json.currencyPacks = [];
+            _.each(json.currencies, function(currency) {
+                _.each(currency.packs, function(pack) {
+                    json.currencyPacks.push(pack);
+                });
+                delete currency.packs;
+            });
+
+
+            // Delete auxiliary fields
+            // TODO: Check if needed
+            delete json.rawCategories;
+            delete json.nonConsumables;
+            delete json.imagePathsAugmented;
+
+
+            // Remove the base URL that was injected by the store bridge (only for loading assets in the dashboard)
+            // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
+            // a shallow clone.  See http://underscorejs.org/#clone
+            // This is why cloning the template object first is necessary.  Manipulating it directly will
+            // affect the original model which we don't want
+            // TODO: Remove once the storefront loads its template files (.less, .handlbars, *Views.js) from S3 URLs
+            json.template = _.clone(json.template);
+            delete json.template.baseUrl;
+
+            return json;
         }
     });
 

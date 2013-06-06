@@ -2,10 +2,10 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
-    var triggerEventOnFrame = function(eventName) {
+    var triggerEventOnFrame = function(eventName, data) {
         try {
             if (frameElement && frameElement.ownerDocument.defaultView != window && frameElement.ownerDocument.defaultView.$) {
-                frameElement.ownerDocument.defaultView.$(frameElement).trigger(eventName);
+                frameElement.ownerDocument.defaultView.$(frameElement).trigger(eventName, data);
             }
         } catch(e) {}
     };
@@ -54,8 +54,6 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
 
 
-    var themeRelativePath = "../theme";
-
     $(function() {
 
         window.SoomlaJS = _.extend({}, jsAPI, {
@@ -76,6 +74,9 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
+
+                // Create an asst map: item ID => asset name
+                var assetMap = _.extend({}, json.modelAssets.items, json.modelAssets.categories);
 
                 // Start by augmenting the flat paths of images to relative paths
                 if (options.assets) {
@@ -199,7 +200,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                         // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
                         if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-                        triggerEventOnFrame("store:initialized");
+                        triggerEventOnFrame("store:initialized", _.extend({assetMap : assetMap}, options));
                     });
                 });
 

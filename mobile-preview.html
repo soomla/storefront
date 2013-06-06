@@ -101,6 +101,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 
 			// Replace paths
+            // TODO: replace it with options.assets map that maps {<asset name> : <asset URL>}.  Storefront will take care of replacement
 			var Utils = require("utils");
             _.each(theme.modelAssets, function(assets) {
                 Utils.assignAssetUrls(assets, /^img/, themePath + "/img");

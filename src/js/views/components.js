@@ -64,6 +64,11 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             // event callbacks on the view or its model
             if (this.addEvents) this.addEvents();
         },
+        addEvents : function() {
+            // This one is for categories - sometimes there is a model and sometimes there isn't
+            // TODO: Review
+            if (this.model) this.model.on("all", this.render, this);
+        },
         className : "item",
         tagName : "li",
         triggers : {
@@ -76,6 +81,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         initialize : function() {
             // TODO: Remove change:balance => this.render
             this.model.on("change:balance change:purchasableItem", this.render);
+        },
+        addEvents : function() {
+            this.model.on("change:name change:description change:amount change:purchasableItem change:asset", this.render, this);
         }
     });
 
@@ -156,6 +164,8 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         className : "item single-use",
         constructor : function(options) {
             ItemView.prototype.constructor.apply(this, arguments);
+
+            // TODO: Check if this listener is necessary: might be duplicate with ItemView
             this.model.on("change:balance", this.render);
         },
         triggers : {
@@ -175,6 +185,8 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             "fastclick .buy" : "buy"
         },
         initialize : function() {
+
+            // TODO: Check if this listener is necessary: might be duplicate with ItemView
             this.model.on({
                 "change:purchasableItem"    : this.render,
                 "change:balance"            : this.onBalanceChange
