@@ -249,7 +249,41 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             }
             this.updateNonConsumables(nonConsumables);
         },
-        toJSON : function() {
+        addNewVirtualGood : function(options) {
+            var firstCurrencyId = this.get("currencies").at(0).id;
+            var good = new VirtualGood({
+                itemId  : _.uniqueId("untitled_good_"),
+                type    : options.type || "singleUse"
+            });
+            good.get("purchasableItem").pvi_itemId = firstCurrencyId;
+
+            // Ensure the model has an asset assigned directly and in the `modelAssets`
+            // before adding it to the collection (which triggers a render)
+            var modelAssets = this.get("modelAssets");
+            modelAssets.items[good.id] = "";
+
+            var categoryId = options.categoryId || this.get("categories").first().id;
+            this.get("categories").get(categoryId).get("goods").add(good, {at: 0});
+
+            return good;
+        },
+        addNewCurrencyPack : function(options) {
+            var currencyPack = new CurrencyPack({
+                itemId  : _.uniqueId("untitled_good_")
+            });
+            currencyPack.get("purchasableItem").pvi_itemId = firstCurrencyId;
+
+            // Ensure the model has an asset assigned directly and in the `modelAssets`
+            // before adding it to the collection (which triggers a render)
+            var modelAssets = this.get("modelAssets");
+            modelAssets.items[currencyPack.id] = "";
+
+            var currency_itemId = options.currency_itemId;
+            this.get("currencies").get(currency_itemId).get("packs").add(currencyPack, {at: 0});
+
+            return currencyPack;
+        },
+        toJSON : function(options) {
 
             // Prepare a JSON using the original prototype's toJSON method
             var json = Backbone.RelationalModel.prototype.toJSON.apply(this);
@@ -294,6 +328,18 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
                 });
                 delete currency.packs;
             });
+
+
+
+            // Update model assets
+            if (options.assetNameMap) {
+                _.each(json.modelAssets.items, function(name, itemId) {
+                    json.modelAssets.items[itemId] = options.assetNameMap[itemId];
+                });
+                _.each(json.modelAssets.categories, function(name, itemId) {
+                    json.modelAssets.categories[itemId] = options.assetNameMap[itemId];
+                });
+            }
 
 
             // Delete auxiliary fields
