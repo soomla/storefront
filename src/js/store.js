@@ -108,7 +108,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     templatesFolder     = json.template.baseUrl || "../template",
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
                     templateModule      = templateName + "Views",
-                    templateModulePath  = templatesFolder + "/js/" + templateModule,
+                    templateModulePath  = (json.template.baseUrl || "../../template") + "/js/" + templateModule,
                     htmlTemplatesPath   = templatesFolder  + "/templates";
 
                 if (options.env === "dist") {
