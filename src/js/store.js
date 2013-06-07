@@ -217,10 +217,6 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                 require([templateModule], function(Theme) {
 
-					// Call template load callback if provided
-                    var templateLoadCallback = options.templateLoadCallback;
-					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(Theme, Components);
-
 					// Initialize view
                     $this.storeView = Theme.createStoreView({
                         storeViewOptions : {
