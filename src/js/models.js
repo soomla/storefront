@@ -13,6 +13,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         }
         if (fromIndex !== toIndex) {
             this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0]);
+            this.trigger("reset");
         }
     };
 
