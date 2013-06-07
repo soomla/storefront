@@ -1,4 +1,11 @@
 define("utils", function() {
+
+    // Extend String functionality
+    String.prototype.snakeCase = function(){
+        return this.toLowerCase().replace(/[^0-9a-z\s]+/g, "").trim().replace(/\s+/g, "_");
+    };
+
+
     return {
         // Given an object, replaces all string attributes in the object (or deeply nested)
         // that match the given regex with the given replacement string.

@@ -249,6 +249,17 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             }
             this.updateNonConsumables(nonConsumables);
         },
+        addNewCurrency : function(options) {
+            options.itemId = "currency_" + options.name.snakeCase();
+            var currency = new Currency(options);
+            this.get("currencies").add(currency);
+            return currency;
+        },
+        addNewCategory : function(options) {
+            var category = new Category(options);
+            this.get("categories").add(category);
+            return category;
+        },
         addNewVirtualGood : function(options) {
             var firstCurrencyId = this.get("currencies").at(0).id;
             var good = new VirtualGood({
@@ -295,6 +306,8 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             return currencyPack;
         },
         toJSON : function(options) {
+
+            (options) || (options = {});
 
             // Prepare a JSON using the original prototype's toJSON method
             var json = Backbone.RelationalModel.prototype.toJSON.apply(this);
