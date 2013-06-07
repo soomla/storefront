@@ -305,6 +305,12 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
             return currencyPack;
         },
+        removeCategory : function(category) {
+            this.get("categories").remove(category);
+        },
+        removeCurrency : function(currency) {
+            this.get("currencies").remove(currency);
+        },
         toJSON : function(options) {
 
             (options) || (options = {});
