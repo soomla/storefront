@@ -294,7 +294,6 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
                 currency_itemId     : options.currency_itemId,
                 currency_amount     : 1000
             });
-            currencyPack.get("purchasableItem").pvi_itemId = firstCurrencyId;
 
             // Ensure the model has an asset assigned directly and in the `modelAssets`
             // before adding it to the collection (which triggers a render)
