@@ -397,7 +397,7 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
                 modelAssets = this.model.get("modelAssets");
 
             _.each(currencies, function(currency) {
-                currency.imgFilePath = modelAssets.items[currency.itemId].url;
+                currency.imgFilePath = modelAssets.items[currency.itemId];
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },
