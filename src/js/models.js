@@ -73,6 +73,11 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             }
         ],
         idAttribute : "itemId"
+
+    }, {
+        generateNameFor : function(name) {
+            return "currency_" + name.snakeCase();
+        }
     });
 
     var Category = Backbone.RelationalModel.extend({
@@ -251,7 +256,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             this.updateNonConsumables(nonConsumables);
         },
         addNewCurrency : function(options) {
-            options.itemId = "currency_" + options.name.snakeCase();
+            options.itemId = Currency.generateNameFor(options.name);
             var currency = new Currency(options);
             this.get("currencies").add(currency);
             return currency;
@@ -310,6 +315,38 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         },
         removeCurrency : function(currency) {
             this.get("currencies").remove(currency);
+        },
+        changeCategoryName : function(id, newName) {
+
+            var oldItemId   = id,
+                newItemId   = newName,
+                category    = this.get("categories").get(id);
+
+            // TODO: conditionally do this - only if store has category assets
+            // First ensure model assets are updated
+            this.updateItemId(oldItemId, newItemId);
+
+            // then set the new values
+            category.set("name", newName);
+
+            return category;
+        },
+        changeCurrencyName : function(id, newName) {
+
+            var oldItemId   = id,
+                newItemId   = Currency.generateNameFor(newName),
+                currency    = this.get("currencies").get(id);
+
+            // First ensure model assets are updated
+            this.updateItemId(oldItemId, newItemId);
+
+            // then set the new values
+            currency.set({
+                name    : newName,
+                itemId  : newItemId
+            });
+
+            return currency;
         },
         toJSON : function(options) {
 
