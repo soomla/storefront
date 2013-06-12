@@ -126,33 +126,6 @@ define("marionetteExtensions", ["backbone", "marionette"], function(Backbone, Ma
             });
 
             return events;
-        },
-
-        // Override Marionette's "close" to enable not removing the DOM element
-        // But just unbinding its events
-        close: function(){
-            if (this.isClosed) { return; }
-
-            // allow the close to be stopped by returning `false`
-            // from the `onBeforeClose` method
-            var shouldClose = this.triggerMethod("before:close");
-            if (shouldClose === false){
-                return;
-            }
-
-            // mark as closed before doing the actual close, to
-            // prevent infinite loops within "close" event handlers
-            // that are trying to close other views
-            this.isClosed = true;
-            this.triggerMethod("close");
-
-            // Allow the DOM node not to be removed but just unbound from events
-            if (this.noRemove || this.options.noRemove) {
-                this.$el.off()
-            } else {
-                this.remove();
-            }
-            this.stopListening();
         }
     });
 
