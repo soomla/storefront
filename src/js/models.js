@@ -182,6 +182,9 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             this.unset("goods");
             this.unset("currencyPacks");
         },
+        getModelAssets : function() {
+            return this.get("modelAssets");
+        },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },
@@ -193,11 +196,21 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         },
         updateItemId : function(oldItemId, newItemId) {
 
-            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, this.get("modelAssets").items], function(map) {
+            var modelAssets = this.getModelAssets();
+
+            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
                 if (_.has(map, oldItemId)) {
                     map[newItemId] = map[oldItemId];
                     delete map[oldItemId];
                 }
+            });
+        },
+        removeItemId : function(id) {
+
+            var modelAssets = this.getModelAssets();
+
+            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
+                if (_.has(map, id)) delete map[id];
             });
         },
         setBalance : function(balances) {
@@ -276,7 +289,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
             // Ensure the model has an asset assigned directly and in the `modelAssets`
             // before adding it to the collection (which triggers a render)
-            var modelAssets = this.get("modelAssets");
+            var modelAssets = this.getModelAssets();
             modelAssets.items[good.id] = "";
 
             var categoryId = options.categoryId || this.get("categories").first().id;
@@ -302,7 +315,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
             // Ensure the model has an asset assigned directly and in the `modelAssets`
             // before adding it to the collection (which triggers a render)
-            var modelAssets = this.get("modelAssets");
+            var modelAssets = this.getModelAssets();
             modelAssets.items[currencyPack.id] = "";
 
             var currency_itemId = options.currency_itemId;
@@ -311,9 +324,58 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             return currencyPack;
         },
         removeCategory : function(category) {
+
+            //
+            // Remove all goods associated with this currency
+            //
+            var categoryGoods = category.get("goods");
+            categoryGoods.each(_.bind(function(good) {
+
+                // Remove from mappings
+                this.removeItemId(good.id);
+            }, this));
+            categoryGoods.reset();
+
+            // Remove the currency mappings
+            this.removeItemId(category.id);
+
+            // Remove the category model
             this.get("categories").remove(category);
         },
         removeCurrency : function(currency) {
+
+            //
+            // Remove all goods associated with this currency
+            //
+            _.each(this.goodsMap, _.bind(function(good) {
+
+                if (good.getCurrencyId() === currency.id) {
+
+                    // Keep the category before deleting the mapping to it
+                    var category        = this.categoryMap[good.id],
+                        categoryGoods   = category.get("goods");
+
+                    // First remove from mappings, then remove from collection
+                    this.removeItemId(good.id);
+                    categoryGoods.remove(good);
+                }
+            }, this));
+
+            //
+            // Remove all packs associated with this currency
+            //
+            var currencyPacks = currency.get("packs");
+            currencyPacks.each(_.bind(function(pack) {
+
+                // Remove from mappings
+                this.removeItemId(pack.id);
+            }, this));
+            currencyPacks.reset();
+
+            // Remove the currency mappings
+            this.removeItemId(currency.id);
+
+            // Remove the currency model
             this.get("currencies").remove(currency);
         },
         changeCategoryName : function(id, newName) {
