@@ -280,7 +280,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             return category;
         },
         addNewVirtualGood : function(options) {
-            var firstCurrencyId = this.get("currencies").at(0).id;
+            var firstCurrencyId = this.getFirstCurrency().id;
             var good = new VirtualGood({
                 itemId  : _.uniqueId("untitled_good_"),
                 type    : options.type || "singleUse"
@@ -377,6 +377,12 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
             // Remove the currency model
             this.get("currencies").remove(currency);
+        },
+        getFirstCategory : function() {
+            return this.get("categories").first();
+        },
+        getFirstCurrency: function() {
+            return this.get("currencies").first();
         },
         changeCategoryName : function(id, newName) {
 
