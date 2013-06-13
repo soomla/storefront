@@ -462,6 +462,10 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             // Prepare a JSON using the original prototype's toJSON method
             var json = Backbone.RelationalModel.prototype.toJSON.apply(this);
 
+            // Deep clone the model assets and theme since they might be manipulated
+            // by this function and we don't want to affect the original objects
+            json.modelAssets = $.extend(true, {}, json.modelAssets);
+            json.theme = $.extend(true, {}, json.theme);
 
             // Remove all fields injected into models during runtime
             // e.g. balance, equipped...
