@@ -21,6 +21,9 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
     var CurrencyPack = Backbone.RelationalModel.extend({
         idAttribute : "itemId",
+        defaults : {
+            name : "Untitled"
+        },
         getCurrencyId : function() {
             return this.get("currency_itemId");
         },
@@ -40,6 +43,7 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
     var VirtualGood = Backbone.RelationalModel.extend({
         idAttribute : "itemId",
         defaults : {
+            name        : "Untitled",
             balance     : 0,
             equipped    : false,
             purchasableItem : {
