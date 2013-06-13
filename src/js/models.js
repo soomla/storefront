@@ -26,6 +26,15 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         },
         getPrice : function() {
             return this.get("purchasableItem").marketItem.price;
+        },
+        setPrice : function(price) {
+            // Use jQuery's extend to achieve a deep clone
+            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
+            purchasableItem.marketItem.price = price;
+            return this.set("purchasableItem", purchasableItem);
+        },
+        setAmount : function(amount) {
+            return this.set("currency_amount", amount);
         }
     });
     var VirtualGood = Backbone.RelationalModel.extend({
@@ -44,6 +53,19 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
         },
         getPrice : function() {
             return this.get("purchasableItem").pvi_amount;
+        },
+        setCurrencyId : function(currencyId) {
+            return this._setPurchasableItem({pvi_itemId : currencyId});
+        },
+        setPrice : function(price) {
+            return this._setPurchasableItem({pvi_amount : price});
+        },
+        _setPurchasableItem : function(options) {
+
+            // Instead of mutating the model's attribute, clone it to a new one and mutate that.
+            // Backbone will trigger the change event only this way.
+            var purchasableItem = _.extend({}, this.get("purchasableItem"), options);
+            return this.set("purchasableItem", purchasableItem);
         }
     });
 

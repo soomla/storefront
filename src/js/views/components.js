@@ -83,7 +83,7 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             this.model.on("change:balance change:purchasableItem", this.render);
         },
         addEvents : function() {
-            this.model.on("change:name change:description change:amount change:purchasableItem change:asset", this.render, this);
+            this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
         }
     });
 
