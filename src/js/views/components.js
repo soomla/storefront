@@ -394,7 +394,7 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         },
         serializeData : function() {
             var currencies  = this.model.get("currencies").toJSON(),
-                modelAssets = this.model.get("modelAssets");
+                modelAssets = this.model.getModelAssets();
 
             _.each(currencies, function(currency) {
                 currency.imgFilePath = modelAssets.items[currency.itemId];
