@@ -39,6 +39,10 @@ module.exports = function (grunt) {
         }
     };
 
+    // Uncomment to prevent code obfuscation
+    config.requirejs.optimize = "none";
+
+
     grunt.initConfig(config);
 
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -95,6 +99,8 @@ module.exports = function (grunt) {
         // Add symlink to themes
         exec("ln -s ../../" + themesFolder +  " " + distFolder + "/themes")
     });
+
+
 
     // Default task.
     grunt.registerTask('default', 'clean copy less requirejs prepareDeploy');
