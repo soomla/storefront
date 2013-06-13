@@ -204,6 +204,23 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             this.unset("goods");
             this.unset("currencyPacks");
         },
+        setCategoryAsset : function(category, url) {
+
+            // First assign image path to modelAssets hash, so that when the item view
+            // in the store renders, it will have it accessible as a template helper
+            this.getModelAssets().categories[category.id] = url;
+
+            // Force the preview to update by triggering a change event on the model
+            category.trigger("change:asset");
+        },
+        setItemAsset : function(model, url) {
+
+            // Update asset map
+            this.getModelAssets().items[model.id] = url;
+
+            // Force the preview to update by triggering a change event on the model
+            model.trigger("change:asset");
+        },
         getModelAssets : function() {
             return this.get("modelAssets");
         },
