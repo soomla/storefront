@@ -335,8 +335,14 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             var modelAssets = this.getModelAssets();
             modelAssets.items[good.id] = options.assetUrl || "";
 
-            var categoryId = options.categoryId || this.get("categories").first().id;
-            this.get("categories").get(categoryId).get("goods").add(good, {at: 0});
+            // Add good to category
+            var categoryId  = options.categoryId || this.get("categories").first().id,
+                category    = this.get("categories").get(categoryId);
+            category.get("goods").add(good, {at: 0});
+
+            // Add good to other maps
+            this.goodsMap[good.id] = good;
+            this.categoryMap[good.id] = category;
 
             return good;
         },
@@ -361,8 +367,12 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
             var modelAssets = this.getModelAssets();
             modelAssets.items[currencyPack.id] = options.assetUrl || "";
 
+            // Add pack to currency
             var currency_itemId = options.currency_itemId;
             this.get("currencies").get(currency_itemId).get("packs").add(currencyPack, {at: 0});
+
+            // Add pack to other maps
+            this.marketItemsMap[currencyPack.id] = currencyPack;
 
             return currencyPack;
         },
