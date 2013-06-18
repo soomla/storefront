@@ -54,6 +54,33 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
 
 
+	//
+	// Given the template and theme JSONs, manipulates the target object to
+    // hold a mapping of {<asset keychain> : <name>}
+    //
+    // i.e. {"pages.goods.list.background" : "img/bg.png"}
+    //
+    var createThemeAssetMap = function(templateObj, themeObj, target, keychain) {
+
+         _.each(templateObj, function(templateValue, templateKey) {
+            var themeValue = themeObj[templateKey];
+
+            // Check that theme value is defined.  This is to allow
+            // Template attributes that a certain theme chooses not to use
+            if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
+                var currentKeychain = keychain + "." + templateKey;
+                if (_.contains(["image", "backgroundImage"], templateValue.type)) {
+                    currentKeychain = currentKeychain.replace(".", "");
+                    target[currentKeychain] = themeValue;
+                } else {
+                    createThemeAssetMap(templateValue, themeValue, target, currentKeychain);
+                }
+            }
+        });
+    };
+
+
+
     $(function() {
 
         window.SoomlaJS = _.extend({}, jsAPI, {
@@ -74,9 +101,12 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
+                // Save an untouched copy of the theme object so we can access its original names later
+                var originalTheme = $.extend(true, {}, json.theme);
+
 
                 // Create an asst map: item ID => asset name
-                var assetMap = _.extend({}, json.modelAssets.items, json.modelAssets.categories);
+                var modelAssetNames = _.extend({}, json.modelAssets.items, json.modelAssets.categories);
 
                 // Start by augmenting the flat paths of images to relative paths
                 if (options.assets) {
@@ -91,6 +121,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 }
 
                 // Add a preload modal with the theme background
+/*
                 var modal = json.theme.noFundsModal || json.theme.pages.goods.noFundsModal;
                 var prerollEl = $("#preroll-cover");
                 var prerollDlg = prerollEl.find(".preroll-dialog");
@@ -100,6 +131,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 prerollHdr.attr("style", prerollHdr.attr("style") + "; " + modal.textStyle);
                 prerollDlg.css('background-image', 'url("' + modal.background + '")');
                 prerollDlg.toggleClass('invisible', 'false');
+*/
 
                 // Define which CSS, JS and Handlebars files need to be fetched
                 // The template folder is either overriden externally in the JSON or is hardcoded
@@ -174,6 +206,10 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                         backgroundImages    = [],
                         themeCss;
 
+                    // Create an asset map for the theme assets
+                    var themeAssetNames = {};
+                    createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
+
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
                     themeCss = Handlebars.compile(cssTemplate)(cssRuleSet);
@@ -200,7 +236,11 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                         // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
                         if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-                        triggerEventOnFrame("store:initialized", _.extend({assetMap : assetMap}, options));
+                        triggerEventOnFrame("store:initialized", _.extend({
+                            modelAssetNames : modelAssetNames,
+                            themeAssetNames : themeAssetNames,
+                            template        : template
+                        }, options));
                     });
                 });
 
