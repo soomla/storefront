@@ -544,12 +544,12 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
 
 
             // Update model assets
-            if (options.assetNameMap) {
+            if (options.modelAssetNames) {
                 _.each(json.modelAssets.items, function(name, itemId) {
-                    json.modelAssets.items[itemId] = options.assetNameMap[itemId];
+                    json.modelAssets.items[itemId] = options.modelAssetNames[itemId];
                 });
                 _.each(json.modelAssets.categories, function(name, itemId) {
-                    json.modelAssets.categories[itemId] = options.assetNameMap[itemId];
+                    json.modelAssets.categories[itemId] = options.modelAssetNames[itemId];
                 });
             }
 
