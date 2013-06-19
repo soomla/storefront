@@ -78,6 +78,9 @@ define("utils", function() {
         // Example:
         // ( {a : {b : {c :10}}},  ["a", "b", "c"], 20 )  ==>  {a : {b : {c :20}}}
         setByKeyChain : function(target, keychain, value) {
+
+            if (_.isString(keychain)) keychain = keychain.split(".");
+
             var obj = target;
             _.each(keychain, function(key, i) {
                 if (i == keychain.length - 1) {

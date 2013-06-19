@@ -228,6 +228,9 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         getModelAssets : function() {
             return this.get("modelAssets");
         },
+        setThemeAttribute : function(keychain, value) {
+            Utils.setByKeyChain(this.get("theme"), keychain, value);
+        },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },
@@ -556,7 +559,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             // Update model assets
             if (options.themeAssetNames) {
                 _.each(options.themeAssetNames, function(name, keychain) {
-                    Utils.setByKeyChain(json.theme, keychain.split("."), name);
+                    Utils.setByKeyChain(json.theme, keychain, name);
                 });
             }
 
