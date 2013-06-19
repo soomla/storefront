@@ -69,7 +69,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
             // Template attributes that a certain theme chooses not to use
             if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
                 var currentKeychain = keychain + "." + templateKey;
-                if (_.contains(["image", "backgroundImage"], templateValue.type)) {
+                if (_.contains(["image", "backgroundImage", "font"], templateValue.type)) {
                     currentKeychain = currentKeychain.replace(".", "");
                     target[currentKeychain] = themeValue;
                 } else {

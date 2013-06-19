@@ -15,7 +15,7 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
             // Define the font face with a numbered name and source URL
             buffer += "\t@font-face {\n";
             buffer += "\t\tfont-family: FontFace" + i + ";\n";
-            buffer += "\t\tsrc: url('" + font.url + "');\n";
+            buffer += "\t\tsrc: url('" + font + "');\n";
 
             // Add additional font face properties if they exist
             if (font.stretch)   buffer += "\t\tfont-stretch: "  + font.stretch  + ";\n";
