@@ -73,8 +73,20 @@ define("utils", function() {
                     }
                 }
             });
-
+        },
+        // Set the value of deeply nested attributes
+        // Example:
+        // ( {a : {b : {c :10}}},  ["a", "b", "c"], 20 )  ==>  {a : {b : {c :20}}}
+        setByKeyChain : function(target, keychain, value) {
+            var obj = target;
+            _.each(keychain, function(key, i) {
+                if (i == keychain.length - 1) {
+                    obj[key] = value;
+                } else {
+                    (obj[key]) || (obj[key] = {});
+                    obj = obj[key];
+                }
+            });
         }
-
     };
 });

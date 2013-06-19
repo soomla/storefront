@@ -1,4 +1,4 @@
-define("models", ["backbone", "backboneRelational"], function(Backbone) {
+define("models", ["backbone", "utils", "backboneRelational"], function(Backbone, Utils) {
 
 
     /**
@@ -550,6 +550,13 @@ define("models", ["backbone", "backboneRelational"], function(Backbone) {
                 });
                 _.each(json.modelAssets.categories, function(name, itemId) {
                     json.modelAssets.categories[itemId] = options.modelAssetNames[itemId];
+                });
+            }
+
+            // Update model assets
+            if (options.themeAssetNames) {
+                _.each(options.themeAssetNames, function(name, keychain) {
+                    Utils.setByKeyChain(json.theme, keychain.split("."), name);
                 });
             }
 
