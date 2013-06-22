@@ -1,12 +1,17 @@
 define("models", ["backbone", "utils", "backboneRelational"], function(Backbone, Utils) {
 
+    // Cache base classes.
+    var RelationalModel = Backbone.RelationalModel,
+        Collection 		= Backbone.Collection;
+
+
 
     /**
      * Moves a model to the given index, if different from its current index. Handy
      * for shuffling models after they've been pulled into a new position via
      * drag and drop.
      */
-    Backbone.Collection.prototype.move = function(model, toIndex) {
+    Collection.prototype.move = function(model, toIndex) {
         var fromIndex = this.indexOf(model);
         if (fromIndex == -1) {
             throw new Error("Can't move a model that's not in the collection")
@@ -19,7 +24,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
 
 
-    var CurrencyPack = Backbone.RelationalModel.extend({
+    var CurrencyPack = RelationalModel.extend({
         idAttribute : "itemId",
         defaults : {
             name : "Untitled"
@@ -40,12 +45,11 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             return this.set("currency_amount", amount);
         }
     });
-    var VirtualGood = Backbone.RelationalModel.extend({
+
+    var VirtualGood = RelationalModel.extend({
         idAttribute : "itemId",
         defaults : {
             name        : "Untitled",
-            balance     : 0,
-            equipped    : false,
             purchasableItem : {
                 pvi_itemId: "currency_coins",
                 pvi_amount: 100,
@@ -73,16 +77,48 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         }
     });
 
-    var NonConsumable = Backbone.RelationalModel.extend({
+    var SingleUseGood = VirtualGood.extend({
+
+        // Single use goods should have a balance of 0 by default
+        defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults)
+    });
+
+    var EquippableGood = SingleUseGood.extend({
+
+        // Equippable goods should, by default, have a balance of 0 and not be equipped
+        defaults : $.extend(true, {equipped : false}, SingleUseGood.prototype.defaults)
+    });
+
+    var LifetimeGood = SingleUseGood.extend();
+
+    var Upgrade = VirtualGood.extend({});
+
+    var UpgradeCollection = Collection.extend({ model : Upgrade });
+    var UpgradableGood = VirtualGood.extend({
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: 'upgrades',
+                relatedModel: Upgrade,
+                collectionType: UpgradeCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            }
+        ]
+    });
+
+
+    var NonConsumable = RelationalModel.extend({
         idAttribute : "itemId"
     });
 
 
-    var CurrencyPacksCollection     = Backbone.Collection.extend({ model : CurrencyPack }),
-        VirtualGoodsCollection      = Backbone.Collection.extend({ model : VirtualGood  }),
-        NonConsumablesCollection    = Backbone.Collection.extend({ model : NonConsumable  });
+    var CurrencyPacksCollection     = Collection.extend({ model : CurrencyPack }),
+        VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
+        NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
 
-    var Currency = Backbone.RelationalModel.extend({
+    var Currency = RelationalModel.extend({
         defaults : {
             name    : "coins",
             balance : 0
@@ -106,7 +142,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         }
     });
 
-    var Category = Backbone.RelationalModel.extend({
+    var Category = RelationalModel.extend({
         idAttribute: "name",
         defaults : {
             name    : "General"
@@ -124,11 +160,11 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         ]
     });
 
-    var CategoryCollection          = Backbone.Collection.extend({ model : Category }),
-        VirtualCurrencyCollection   = Backbone.Collection.extend({ model : Currency });
+    var CategoryCollection          = Collection.extend({ model : Category }),
+        VirtualCurrencyCollection   = Collection.extend({ model : Currency });
 
 
-    var Store = Backbone.RelationalModel.extend({
+    var Store = RelationalModel.extend({
         relations: [
             {
                 type: Backbone.HasMany,
@@ -173,14 +209,53 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                 marketItemsMap[pack.id] = pack;
             });
 
+            //
             // Populate goods map, flag each good with its type
-            _.each(this.get("goods"), function(rawGoods, type) {
+            //
+
+            // Start by filtering goods with upgrades
+            var upgradableGoodIds = _(this.get("goods").goodUpgrades).chain().map(function(u) { return u.good_itemId; }).uniq().value();
+
+            // Iterate all types of goods and instantiate
+            // objects for all goods according to their classification
+            _.each(_.omit(this.get("goods"), "goodUpgrades"), function(rawGoods, type) {
                 _.each(rawGoods, function(rawGood) {
                     rawGood.type = type;
-                    var good = new VirtualGood(rawGood);
+                    var good;
+
+                    if (_.contains(upgradableGoodIds, rawGood.itemId)) {
+
+                        // If a good has upgrade levels, instantiate it as a different object
+                        good = new UpgradableGood(rawGood);
+                    } else {
+                        switch (type) {
+                            case "equippable":
+                                good = new EquippableGood(rawGood);
+                                break;
+                            case "lifetime":
+                                good = new LifetimeGood(rawGood);
+                                break;
+                            default:
+
+                                // By default instantiate goods like this
+                                good = new SingleUseGood(rawGood);
+                                break;
+                        }
+                    }
+
+                    // Keep a reference to the goods in a map
                     goodsMap[good.id] = good;
                 });
             });
+
+
+            // Now, add upgrades to existing upgradable goods
+            _.each(this.get("goods").goodUpgrades, function(rawUpgrade) {
+                var upgrade = new Upgrade(rawUpgrade);
+                var good = goodsMap[upgrade.get("good_itemId")];
+                good.get("upgrades").add(upgrade);
+            });
+
 
             // Fill currency packs into currency buckets (collections)
             var currencies = this.get("currencies");
@@ -269,6 +344,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         getBalance : function(currency) {
             return this.get("currencies").get(currency).get("balance");
         },
+        // TODO: Deal with upgradables and equippables
         updateVirtualGoods : function(goods) {
             var $this = this;
             _.each(goods, function(attributes, good) {
@@ -325,9 +401,25 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             this.get("categories").add(category);
             return category;
         },
+        // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
             var firstCurrencyId = this.getFirstCurrency().id;
-            var good = new VirtualGood({
+
+            var GoodType;
+
+            switch(options.type) {
+                case "equippable":
+                    GoodType = EquippableGood;
+                    break;
+                case "lifetime":
+                    GoodType = LifetimeGood;
+                    break;
+                default:
+                    GoodType = SingleUseGood;
+                    break;
+            }
+
+            var good = new GoodType({
                 itemId  : _.uniqueId("untitled_good_"),
                 type    : options.type || "singleUse"
             });
@@ -379,6 +471,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
             return currencyPack;
         },
+        // TODO: Deal with upgradables
         removeVirtualGood : function(good) {
             var category = this.categoryMap[good.id];
 
@@ -399,6 +492,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             // Remove from category
             currency.get("packs").remove(pack);
         },
+        // TODO: Deal with upgradables
         removeCategory : function(category) {
 
             //
@@ -497,7 +591,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             (options) || (options = {});
 
             // Prepare a JSON using the original prototype's toJSON method
-            var json = Backbone.RelationalModel.prototype.toJSON.apply(this);
+            var json = RelationalModel.prototype.toJSON.apply(this);
 
             // Deep clone the model assets and theme since they might be manipulated
             // by this function and we don't want to affect the original objects
@@ -511,11 +605,24 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             });
             _.each(json.categories, function(category) {
                 _.each(category.goods, function(good) {
-                    delete good.balance;
-                    delete good.equipped;
+
+                    // TODO: Deal with upgradables and equippables
+                    switch (good.type) {
+                        case "equippable":
+                            delete good.balance;
+                            delete good.equipped;
+                            break;
+                        case "lifetime":
+                            delete good.balance;
+                            break;
+                        default:
+
+                        	// The default is single use goods
+                            delete good.balance;
+                            break;
+                    }
                 });
             });
-
 
             // Construct categories and goods
             json.goods = {goodUpgrades : [], lifetime : [], equippable : [], singleUse : [], goodPacks : []};
@@ -524,6 +631,17 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                 category.goods_itemIds = [];
 
                 _.each(category.goods, function(good) {
+
+                    // If it's an upgradable good, first process its upgrades
+                    // and delete them in the end.
+                    if (good.upgrades) {
+
+                        _.each(good.upgrades, function(upgrade) {
+                            upgrade.good_itemId = good.itemId;
+                            json.goods.goodUpgrades.push(upgrade);
+                        });
+                        delete good.upgrades;
+                    }
 
                     // Add the good to its category
                     category.goods_itemIds.push(good.itemId);
@@ -586,6 +704,9 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
     return {
         VirtualGood                 : VirtualGood,
+        SingleUseGood 				: SingleUseGood,
+        EquippableGood              : EquippableGood,
+        LifetimeGood 				: LifetimeGood,
         VirtualGoodsCollection      : VirtualGoodsCollection,
         CurrencyPack                : CurrencyPack,
         Store                       : Store,
@@ -594,6 +715,6 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
         NonConsumable               : NonConsumable,
-        RelationalModel             : Backbone.RelationalModel
+        RelationalModel             : RelationalModel
     };
 });
