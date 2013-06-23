@@ -114,14 +114,18 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         getCurrentUpgrade : function() {
 
-            // Make sure the current upgrade ID is of the first upgrade
-            if (this.get("upgradeId") === "") this.set("upgradeId", this.getUpgrades().first().id);
+            // If there's no current upgrade ID, we're still in the zero-upgrade state.
+            // Return `this` as a dummy object
+            if (this.get("upgradeId") === "") return this;
 
             return this.getUpgrades().get(this.get("upgradeId"));
         },
         getNextUpgrade : function() {
             var currentUpgrade  = this.getCurrentUpgrade(),
                 nextUpgradeId   = currentUpgrade.get("next_itemId");
+
+            // Zero-upgrade case - return the first upgrade
+            if (_.isUndefined(nextUpgradeId)) return this.getUpgrades().first();
 
             // If we're in the last upgrade in the list,
             // Return it again
@@ -140,7 +144,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         getUpgradeBarAssetId : function() {
             var upgradeId = this.get("upgradeId");
-            return (upgradeId === "") ? (this.model.id + "_upgrade_bar") : (upgradeId + "_bar");
+            return (upgradeId === "") ? (this.id + "_upgrade0_bar") : (upgradeId + "_bar");
         }
     });
 
@@ -407,7 +411,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                         good.set("equipped", attributes.equipped);
                 }
 
-                if (attributes.currentUpgrade) {
+                if (attributes.currentUpgrade && attributes.currentUpgrade !== "none") {
                     good.upgrade(attributes.currentUpgrade);
                 }
             });

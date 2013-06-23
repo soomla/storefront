@@ -52,7 +52,7 @@ define("soomlaiOS", {
     wantsToRestoreTransactions : function() {
         this._callNative("wantsToRestoreTransactions");
     },
-    wantsToUpgradeVirtualGood : function(model) {
-        this._callNative("wantsToUpgradeVirtualGood:" + model.toJSON().itemId);
+    wantsToUpgradeVirtualGood : function(itemId) {
+        this._callNative("wantsToUpgradeVirtualGood:" + itemId);
     }
 });
