@@ -105,7 +105,43 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                     includeInJSON: 'id'
                 }
             }
-        ]
+        ],
+
+        // Upgradable goods should have a zero-upgrade level by default
+        defaults : $.extend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
+        getUpgrades : function() {
+            return this.get("upgrades");
+        },
+        getCurrentUpgrade : function() {
+
+            // Make sure the current upgrade ID is of the first upgrade
+            if (this.get("upgradeId") === "") this.set("upgradeId", this.getUpgrades().first().id);
+
+            return this.getUpgrades().get(this.get("upgradeId"));
+        },
+        getNextUpgrade : function() {
+            var currentUpgrade  = this.getCurrentUpgrade(),
+                nextUpgradeId   = currentUpgrade.get("next_itemId");
+
+            // If we're in the last upgrade in the list,
+            // Return it again
+            (nextUpgradeId !== "") || (nextUpgradeId = currentUpgrade.id);
+
+            return  this.getUpgrades().get(nextUpgradeId);
+        },
+        getPrice : function() {
+            return this.getNextUpgrade().get("purchasableItem").pvi_amount;
+        },
+        upgrade : function(upgradeId) {
+            this.set("upgradeId", upgradeId);
+        },
+        isComplete : function() {
+            return (this.getUpgrades().last().id === this.getCurrentUpgrade().id);
+        },
+        getUpgradeBarAssetId : function() {
+            var upgradeId = this.get("upgradeId");
+            return (upgradeId === "") ? (this.model.id + "_upgrade_bar") : (upgradeId + "_bar");
+        }
     });
 
 
@@ -253,7 +289,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             _.each(this.get("goods").goodUpgrades, function(rawUpgrade) {
                 var upgrade = new Upgrade(rawUpgrade);
                 var good = goodsMap[upgrade.get("good_itemId")];
-                good.get("upgrades").add(upgrade);
+                good.getUpgrades().add(upgrade);
             });
 
 
@@ -344,11 +380,10 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         getBalance : function(currency) {
             return this.get("currencies").get(currency).get("balance");
         },
-        // TODO: Deal with upgradables and equippables
         updateVirtualGoods : function(goods) {
-            var $this = this;
+            var _this = this;
             _.each(goods, function(attributes, good) {
-                var good = $this.goodsMap[good];
+                good = _this.goodsMap[good];
                 if (attributes.balance){
                     good.set("balance", attributes.balance);
                     // add animation
@@ -358,6 +393,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                     }, 1500);
 
                 }
+
                 if (attributes.hasOwnProperty("equipped")) {
                     if (attributes.equipped)
                         if (good.get("balance") >  0) {
@@ -369,6 +405,10 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                         }
                     else
                         good.set("equipped", attributes.equipped);
+                }
+
+                if (attributes.currentUpgrade) {
+                    good.upgrade(attributes.currentUpgrade);
                 }
             });
             return this;
@@ -606,20 +646,24 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             _.each(json.categories, function(category) {
                 _.each(category.goods, function(good) {
 
-                    // TODO: Deal with upgradables and equippables
-                    switch (good.type) {
-                        case "equippable":
-                            delete good.balance;
-                            delete good.equipped;
-                            break;
-                        case "lifetime":
-                            delete good.balance;
-                            break;
-                        default:
+                    if (good.upgrades) {
+                        delete good.upgradeId;
+                    } else {
 
-                        	// The default is single use goods
-                            delete good.balance;
-                            break;
+                        switch (good.type) {
+                            case "equippable":
+                                delete good.balance;
+                                delete good.equipped;
+                                break;
+                            case "lifetime":
+                                delete good.balance;
+                                break;
+                            default:
+
+                                // The default is single use goods
+                                delete good.balance;
+                                break;
+                        }
                     }
                 });
             });

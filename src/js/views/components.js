@@ -111,6 +111,44 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
 
     /**
+     * Assumes initialization with an upgradable model
+     * @type {*}
+     */
+    var UpgradableItemView = ItemView.extend({
+       className : "item upgradable",
+        initialize : function() {
+            this.model.on({
+                "change:purchasableItem change:upgradeId"   : this.render,
+                "change:upgradeId"                          : this.onUpgradeChange
+            }, this);
+        },
+        ui : {
+            upgradeBar : ".upgrade-bar"
+        },
+        triggers : {
+            "fastclick .upgrade" : "upgrade"
+        },
+        onUpgradeChange : function() {
+            (this.model.isComplete()) ? this.$el.addClass("complete") : this.$el.removeClass("complete");
+        },
+        onRender : function() {
+            this.onUpgradeChange();
+        }
+    });
+    var ExpandableUpgradableItemView = UpgradableItemView.extend({
+        onUpgradeChange : function() {
+            UpgradableItemView.prototype.onUpgradeChange.call(this);
+            this.collapse({noSound: true});
+        }
+    });
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableUpgradableItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
+    ExpandableUpgradableItemView.mixin(ExpandableModule);
+    ExpandableUpgradableItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
+
+
+    /**
      * A variation of the regular item view which has
      * different UI states - regular, owned and equipped
      */
@@ -533,6 +571,8 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         ItemView                        : ItemView,
         LinkView                        : LinkView,
         BuyOnceItemView                 : BuyOnceItemView,
+        UpgradableItemView              : UpgradableItemView,
+        ExpandableUpgradableItemView    : ExpandableUpgradableItemView,
         EquippableItemView              : EquippableItemView,
         ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
         ExpandableSingleUseItemView     : ExpandableSingleUseItemView,

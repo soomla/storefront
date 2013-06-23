@@ -13,13 +13,15 @@ define("nativeApiStubs", function(){
             var model;
 
             if (model = SoomlaJS.store.getItem(itemId)) {
-                this._wantsToBuyVirtualGoods(model);
+                this.log("wantsToBuyVirtualGoods", arguments);
+                this._wantsToBuyVirtualGoods(model, function(model) {
+                    return {balance: model.get("balance") + 1};
+                });
             } else if (model = SoomlaJS.store.getMarketItem(itemId)) {
                 this._wantsToBuyMarketItem(model);
             }
         },
-        _wantsToBuyVirtualGoods : function(model) {
-            this.log("wantsToBuyVirtualGoods", arguments);
+        _wantsToBuyVirtualGoods : function(model, createMap) {
             var goods       = {},
                 balances    = {},
                 currencyId  = model.getCurrencyId(),
@@ -32,7 +34,7 @@ define("nativeApiStubs", function(){
             }
 
             // Increment good balance
-            goods[model.id] = {balance: model.get("balance") + 1};
+            goods[model.id] = createMap(model);
 
             // Update currency balance
             balances[currencyId] = {balance: newBalance};
@@ -95,6 +97,12 @@ define("nativeApiStubs", function(){
             var goods = {};
             goods[model.id] = {equipped: !model.get("equipped")};
             _jsAPI.goodsUpdated(goods);
+        },
+        wantsToUpgradeVirtualGood : function(model) {
+            this.log("wantsToUpgradeVirtualGood", arguments);
+            this._wantsToBuyVirtualGoods(model, function(model) {
+                return {currentUpgrade : model.getNextUpgrade().id };
+            });
         },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
