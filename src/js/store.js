@@ -172,9 +172,10 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                         // In non-`dist` environment, fetch the remote less file
                         // and then Less-compile it
-                        var isLess  = file.match(/\.less$/);
+                        var isLess  = file.match(/\.less$/),
                             type    = isLess ? "text/less" : "text/css",
-                            link    = $("<style>").appendTo($("head"));
+                            rel     = isLess ? "stylesheet/text" : "stylesheet",
+                            link    = $("<style>", {rel : rel, type : type}).appendTo($("head"));
 
                         $.get(file, function(data, textStatus, jqXHR) {
                             link.html(data).attr("type", type);
