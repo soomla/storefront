@@ -255,10 +255,15 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 // Initialize model
                 this.store = new Models.Store(json);
 
+                // Inject the supported features to the store model once they're loaded
+                templateRequest.done(function(template) {
+                    $this.store.set("supportedFeatures", template.supportedFeatures);
+                });
+
 
                 require([templateModule], function(Theme) {
 
-					// Initialize view
+                    // Initialize view
                     $this.storeView = Theme.createStoreView({
                         storeViewOptions : {
                             model : $this.store,

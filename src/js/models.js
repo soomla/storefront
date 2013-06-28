@@ -734,6 +734,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             // TODO: Check if needed
             delete json.rawCategories;
             delete json.nonConsumables;
+            delete json.supportedFeatures;
 
 
             // Remove the base URL that was injected by the store bridge (only for loading assets in the dashboard)
