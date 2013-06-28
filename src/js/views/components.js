@@ -255,13 +255,33 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
     ////////////////////  Collection Views  /////////////////////
 
+    var BaseCollectionView = Marionette.CollectionView.extend({
+
+        appendHtml: function(collectionView, itemView, index){
+            collectionView.$el[index === 0 ? "prepend" : "append"](itemView.el);
+        }
+    });
+
+    var BaseCompositeView = Marionette.CompositeView.extend({
+
+        //
+        // Override Marionette's appendHtml method to support rendering
+        // items in index 0
+        //
+        appendHtml: function(cv, iv, index){
+            var $container = this.getItemViewContainer(cv);
+            $container[index === 0 ? "prepend" : "append"](iv.el);
+        }
+    });
+
+
     // Common function for mixing into views
     var refreshIScroll = function() {
         this.iscroll.refresh();
     };
 
 
-    var CollectionView = Marionette.CollectionView.extend({
+    var CollectionView = BaseCollectionView.extend({
         tagName : "ul",
         itemView : ItemView
     });
@@ -283,7 +303,7 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
     });
 
 
-    var IScrollCollectionView = Marionette.CompositeView.extend({
+    var IScrollCollectionView = BaseCompositeView.extend({
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
         onRender : function() {
@@ -297,6 +317,20 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         },
         getIScrollWrapper : function() {
             return Marionette.getOption(this, "iscrollWrapper") || this.el;
+        },
+
+        //
+        // Override Marionette's appendHtml method to support rendering
+        // items in index 0
+        //
+        appendHtml: function(cv, iv, index){
+            var $container = this.getItemViewContainer(cv);
+
+            if (index === 0) {
+                $container.prepend(iv.el);
+            } else {
+                $container.append(iv.el);
+            }
         }
     });
 
@@ -579,6 +613,8 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         LifetimeItemView                : LifetimeItemView,
         ExpandableLifetimeItemView      : ExpandableLifetimeItemView,
         ModalDialog                     : ModalDialog,
+        BaseCollectionView              : BaseCollectionView,
+        BaseCompositeView               : BaseCompositeView,
         CollectionView                  : CollectionView,
         IScrollCollectionView           : IScrollCollectionView,
         ExpandableIScrollCollectionView : ExpandableIScrollCollectionView,
