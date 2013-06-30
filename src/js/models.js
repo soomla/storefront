@@ -2,7 +2,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel,
-        Collection 		= Backbone.Collection;
+    Collection 		= Backbone.Collection;
 
 
 
@@ -31,6 +31,9 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         getCurrencyId : function() {
             return this.get("currency_itemId");
+        },
+        setCurrencyId : function(id) {
+            return this.set("currency_itemId", id);
         },
         getPrice : function() {
             return this.get("purchasableItem").marketItem.price;
@@ -122,7 +125,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         getNextUpgrade : function() {
             var currentUpgrade  = this.getCurrentUpgrade(),
-                nextUpgradeId   = currentUpgrade.get("next_itemId");
+            nextUpgradeId   = currentUpgrade.get("next_itemId");
 
             // Zero-upgrade case - return the first upgrade
             if (_.isUndefined(nextUpgradeId)) return this.getUpgrades().first();
@@ -155,8 +158,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
 
     var CurrencyPacksCollection     = Collection.extend({ model : CurrencyPack }),
-        VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
-        NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
+    VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
+    NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
 
     var Currency = RelationalModel.extend({
         defaults : {
@@ -201,7 +204,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
     });
 
     var CategoryCollection          = Collection.extend({ model : Category }),
-        VirtualCurrencyCollection   = Collection.extend({ model : Currency });
+    VirtualCurrencyCollection   = Collection.extend({ model : Currency });
 
 
     var Store = RelationalModel.extend({
@@ -308,7 +311,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             _.each(this.get("rawCategories"), function(rawCategory) {
 
                 var category = new Category(_.pick(rawCategory, "name")),
-                    goods = category.get("goods");
+                goods = category.get("goods");
 
                 _.each(rawCategory.goods_itemIds, function(goodItemId) {
                     goods.add(goodsMap[goodItemId]);
@@ -476,7 +479,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
             // Add good to category
             var categoryId  = options.categoryId || this.get("categories").first().id,
-                category    = this.get("categories").get(categoryId);
+            category    = this.get("categories").get(categoryId);
             category.get("goods").add(good, {at: 0});
 
             // Add good to other maps
@@ -528,7 +531,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         removeCurrencyPack : function(pack) {
 
             var currencyId  = pack.getCurrencyId(),
-                currency    = this.get("currencies").get(currencyId);
+            currency    = this.get("currencies").get(currencyId);
 
             // Remove from mappings
             this.removeItemId(pack.id);
@@ -567,7 +570,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
                     // Keep the category before deleting the mapping to it
                     var category        = this.categoryMap[good.id],
-                        categoryGoods   = category.get("goods");
+                    categoryGoods   = category.get("goods");
 
                     // First remove from mappings, then remove from collection
                     this.removeItemId(good.id);
@@ -601,8 +604,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         changeCategoryName : function(id, newName) {
 
             var oldItemId   = id,
-                newItemId   = newName,
-                category    = this.get("categories").get(id);
+            newItemId   = newName,
+            category    = this.get("categories").get(id);
 
             // TODO: conditionally do this - only if store has category assets
             // First ensure model assets are updated
@@ -616,11 +619,21 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         changeCurrencyName : function(id, newName) {
 
             var oldItemId   = id,
-                newItemId   = Currency.generateNameFor(newName),
-                currency    = this.get("currencies").get(id);
+            newItemId   = Currency.generateNameFor(newName),
+            currency    = this.get("currencies").get(id);
 
             // First ensure model assets are updated
             this.updateItemId(oldItemId, newItemId);
+
+            // Update all goods associated with this currency
+            _.each(this.goodsMap, function(good) {
+                if (good.getCurrencyId() === oldItemId) good.setCurrencyId(newItemId);
+            });
+
+            // Update all currency packs associated with this currency
+            _.each(this.marketItemsMap, function(currencyPack) {
+                if (currencyPack.getCurrencyId() === oldItemId) currencyPack.setCurrencyId(newItemId);
+            });
 
             // then set the new values
             currency.set({
