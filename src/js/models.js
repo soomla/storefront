@@ -39,6 +39,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             return this.get("purchasableItem").marketItem.price;
         },
         setPrice : function(price) {
+
             // Use jQuery's extend to achieve a deep clone
             var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
             purchasableItem.marketItem.price = price;
@@ -46,6 +47,39 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
+        },
+        getIosId : function() {
+            return this.get("purchasableItem").marketItem.iosId;
+        },
+        getAndroidId : function() {
+            return this.get("purchasableItem").marketItem.androidId;
+        },
+        setMarketItemId : function(type, id) {
+            switch (type) {
+                case "iosId" :
+                    this.setIosId(id);
+                    break;
+                case "androidId" :
+                    this.setAndroidId(id);
+                    break;
+                default :
+                    this.setIosId(id);
+                    break;
+            }
+        },
+        setIosId : function(id) {
+            return this._setMarketItem({iosId : id});
+        },
+        setAndroidId : function(id) {
+            return this._setMarketItem({androidId : id});
+        },
+        _setMarketItem : function (options) {
+
+            // Instead of mutating the model's attribute, clone it to a new one and mutate that.
+            // Backbone will trigger the change event only this way.
+            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
+            _.extend(purchasableItem.marketItem, options);
+            return this.set("purchasableItem", purchasableItem);
         }
     });
 
@@ -71,7 +105,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         setPrice : function(price) {
             return this._setPurchasableItem({pvi_amount : price});
         },
-        _setPurchasableItem : function(options) {
+        _setPurchasableItem : function (options) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
             // Backbone will trigger the change event only this way.
@@ -494,7 +528,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                     marketItem : {
                         consumable  : 1,
                         price       : 0.99,
-                        productId   : "untitled_currency_pack"
+                        iosId       : "untitled_currency_pack",
+                        androidId   : "untitled_currency_pack"
                     },
                     purchaseType    : "market"
                 },
