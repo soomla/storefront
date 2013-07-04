@@ -1,4 +1,4 @@
-define({
+define("soomlaiOS", {
     _callNative : function(command) {
 
         var iFrame = document.createElement("IFRAME");
@@ -24,9 +24,6 @@ define({
     wantsToBuyVirtualGoods : function(itemId) {
         this._callNative("wantsToBuyVirtualGoods:" + itemId);
     },
-    wantsToBuyMarketItem : function(productId) {
-        this._callNative("wantsToBuyMarketItem:" + productId);
-    },
     wantsToRestorePurchases : function() {
         this._callNative("wantsToRestorePurchases");
     },
@@ -39,7 +36,23 @@ define({
     requestEarnedCurrency : function(provider) {
         this._callNative("requestEarnedCurrency:" + provider);
     },
-    playPop : function() {
-        this._callNative("playPop");
+    playSound : function(filePath) {
+        filePath || (filePath = "pop.mp3");
+        this._callNative("playSound:" + filePath);
+        return this;
+    },
+
+
+    //
+    // New Model API
+    //
+    wantsToBuyItem : function(itemId) {
+        this._callNative("wantsToBuyItem:" + itemId);
+    },
+    wantsToRestoreTransactions : function() {
+        this._callNative("wantsToRestoreTransactions");
+    },
+    wantsToUpgradeVirtualGood : function(itemId) {
+        this._callNative("wantsToUpgradeVirtualGood:" + itemId);
     }
 });

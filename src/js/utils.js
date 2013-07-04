@@ -1,4 +1,11 @@
-define(function() {
+define("utils", function() {
+
+    // Extend String functionality
+    String.prototype.snakeCase = function(){
+        return this.toLowerCase().replace(/[^0-9a-z\s]+/g, "").trim().replace(/\s+/g, "_");
+    };
+
+
     return {
         // Given an object, replaces all string attributes in the object (or deeply nested)
         // that match the given regex with the given replacement string.
@@ -13,6 +20,31 @@ define(function() {
                 } else if (_.isString(value) && value.match(regex)) {
                     // Replace the path
                     obj[key] = value.replace(regex, replaceString);
+                }
+            });
+        },
+        //
+        // Replaces URLs for a given collection of assets by
+        // applying a regex and replacement string to the assets' URL
+        //
+        assignAssetUrls : function(obj, regex, replaceString) {
+            _.each(obj, function(url, name) {
+                obj[name] = url.replace(regex, replaceString);
+            });
+        },
+        //
+        // Replaces URLs for a given collection of assets by providing
+        // a replacements object that maps the assets' values to new values
+        //
+        replaceAssetUrls : function(assets, replacements) {
+            var _this = this;
+            _.each(assets, function(url, name) {
+                if (_.isObject(url)) {
+                    _this.replaceAssetUrls(url, replacements);
+                } else if (replacements[url]) {
+
+                    // Replace the asset value with the new mapped value
+                    assets[name] = replacements[url];
                 }
             });
         },
@@ -41,8 +73,23 @@ define(function() {
                     }
                 }
             });
+        },
+        // Set the value of deeply nested attributes
+        // Example:
+        // ( {a : {b : {c :10}}},  ["a", "b", "c"], 20 )  ==>  {a : {b : {c :20}}}
+        setByKeyChain : function(target, keychain, value) {
 
+            if (_.isString(keychain)) keychain = keychain.split(".");
+
+            var obj = target;
+            _.each(keychain, function(key, i) {
+                if (i == keychain.length - 1) {
+                    obj[key] = value;
+                } else {
+                    (obj[key]) || (obj[key] = {});
+                    obj = obj[key];
+                }
+            });
         }
-
     };
 });

@@ -1,4 +1,4 @@
-define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
+define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
 
     Handlebars.registerHelper('formatCurrency', function(value) {
         return parseFloat(value).toFixed(2);
@@ -15,7 +15,7 @@ define(["handlebars", "underscore", "jquery"], function(Handlebars, _, $) {
             // Define the font face with a numbered name and source URL
             buffer += "\t@font-face {\n";
             buffer += "\t\tfont-family: FontFace" + i + ";\n";
-            buffer += "\t\tsrc: url('" + font.url + "');\n";
+            buffer += "\t\tsrc: url('" + font + "');\n";
 
             // Add additional font face properties if they exist
             if (font.stretch)   buffer += "\t\tfont-stretch: "  + font.stretch  + ";\n";

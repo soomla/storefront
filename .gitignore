@@ -36,7 +36,7 @@ intermediate
 publish
 .idea
 node_modules
-dist
+deploy
 
 # build script local files
 build/buildinfo.properties

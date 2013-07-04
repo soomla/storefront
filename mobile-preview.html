@@ -57,9 +57,9 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
     // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
     window.SoomlaNative = {
-        playPop : function() {},
+        playSound : function(filePath) {},
         storeInitialized : function() {
-            require(["native-api-stubs", "js-api"], function(NativeApiStubs, jsAPI) {
+            require(["nativeApiStubs", "jsAPI"], function(NativeApiStubs, jsAPI) {
                 // Inject Native API stubs
                 _.extend(SoomlaJS.storeView, NativeApiStubs);
                 NativeApiStubs.injectJsApi(jsAPI);
@@ -83,7 +83,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                 return decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
-        var themesFolder 	= "../../storefront-themes/themes",
+        var themesFolder 	= "../../../storefront-themes/themes",
 			themeName 		= getParameterByName("theme"),
             themePath       = themesFolder + "/" + themeName +  "/theme",
             modelUrl 		= themesFolder + "/" + themeName +  "/theme/" + themeName + ".json",
@@ -96,24 +96,22 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         // Request both JSONs
         $.when(modelAjax, themeAjax).done(function(modelData, themeData) {
 
-            var model 			= modelData[0],
-                theme 			= themeData[0],
-                templateUrl     = "../../storefront-themes/templates/" + theme.template.name + "/template.json",
-                templateAjax    = $.ajax({url : templateUrl, dataType : "json"});
+            var model = modelData[0],
+                theme = themeData[0];
 
 
 			// Replace paths
+            // TODO: replace it with options.assets map that maps {<asset name> : <asset URL>}.  Storefront will take care of replacement
 			var Utils = require("utils");
-			Utils.replaceStringAttributes(theme.modelAssets, /^img/, themePath + "/img");
+            _.each(theme.modelAssets, function(assets) {
+                Utils.assignAssetUrls(assets, /^img/, themePath + "/img");
+            });
 			Utils.replaceStringAttributes(theme.theme, /^img/, themePath + "/img");
 			Utils.replaceStringAttributes(theme.theme, /^fonts/, themePath + "/fonts");
 
 
 			// Inject the base URL for loading template
-			theme.template.baseUrl = "../../storefront-themes/templates/" + theme.template.name;
-
-			// Prevent storefront from augmenting image paths, since this page already does it
-			theme.imagePathsAugmented = true;
+			theme.template.baseUrl = "../../../storefront-themes/templates/" + theme.template.name + "/src";
 
 			var data = _.extend({}, model, theme);
 
@@ -123,21 +121,21 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             });
 
 			// Inject prices and balances
-			var goods = {}, balances = {};
-			_.each(data.categories, function(category) {
-				_.each(category.goods, function(good) {
-					goods[good.itemId] = {
-						balance : 0,
-						price : good.priceModel.values
-					};
-				});
+			var goodsAttributes = {}, balances = {};
+
+			_.each(data.goods, function(goods) {
+                _.each(goods, function(good) {
+                    goodsAttributes[good.itemId] = {
+                        balance : 0
+                    };
+                });
 			});
-            SoomlaJS.store.get("virtualCurrencies").each(function(currency) {
-                balances[currency.id] = 10000;
+            SoomlaJS.store.get("currencies").each(function(currency) {
+                balances[currency.id] = {balance : 10000};
             });
 
-			SoomlaJS.goodsUpdated(goods);
-            SoomlaJS.currencyBalanceChanged(balances);
+			SoomlaJS.goodsUpdated(goodsAttributes);
+            SoomlaJS.currenciesUpdated(balances);
 
         }).fail(function(modelData, themeData) {
             console.log("Error: Couldn't retrieve either the model JSON or the theme JSON.");
@@ -150,7 +148,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
 <div id="soomla-info-modal" class="modal" style="display: none">
     <div id="soomla-info-dialog">
-        <img src="img/logo.png">
+        <span class="soomla-logo"></span>
         <div class="description">This store is powered by SOOMLA.</div>
         <div class="actions" style="display: none;">
             <a href="http://soom.la/privacy-policy/">Privacy Policy</a>

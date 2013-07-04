@@ -1,11 +1,11 @@
-define(["jquery", "js-api", "models", "components", "handlebars", "utils", "userAgent", "soomla-ios", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
+define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
-    var triggerEventOnFrame = function(eventName) {
+    var triggerEventOnFrame = function(eventName, data) {
         try {
             if (frameElement && frameElement.ownerDocument.defaultView != window && frameElement.ownerDocument.defaultView.$) {
-                frameElement.ownerDocument.defaultView.$(frameElement).trigger(eventName);
+                frameElement.ownerDocument.defaultView.$(frameElement).trigger(eventName, data);
             }
         } catch(e) {}
     };
@@ -54,7 +54,32 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
 
 
-    var themeRelativePath = "../theme";
+	//
+	// Given the template and theme JSONs, manipulates the target object to
+    // hold a mapping of {<asset keychain> : <name>}
+    //
+    // i.e. {"pages.goods.list.background" : "img/bg.png"}
+    //
+    var createThemeAssetMap = function(templateObj, themeObj, target, keychain) {
+
+         _.each(templateObj, function(templateValue, templateKey) {
+            var themeValue = themeObj[templateKey];
+
+            // Check that theme value is defined.  This is to allow
+            // Template attributes that a certain theme chooses not to use
+            if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
+                var currentKeychain = keychain + "." + templateKey;
+                if (_.contains(["image", "backgroundImage", "font"], templateValue.type)) {
+                    currentKeychain = currentKeychain.replace(".", "");
+                    target[currentKeychain] = themeValue;
+                } else {
+                    createThemeAssetMap(templateValue, themeValue, target, currentKeychain);
+                }
+            }
+        });
+    };
+
+
 
     $(function() {
 
@@ -67,7 +92,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 if (!json) {
                     throw new Error("No JSON passed to `initialize`");
                 }
-                var attributes = ["template", "modelAssets", "theme", "virtualCurrencies", "categories"];
+                var attributes = ["template", "modelAssets", "theme", "currencies", "categories"];
                 _.each(attributes, function(attribute) {
                     if (!json[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field.");
                 });
@@ -76,15 +101,27 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                     if (!json.template[attribute]) throw new Error("Invalid JSON: missing `" + attribute + "` field in `template`.");
                 });
 
+                // Save an untouched copy of the theme object so we can access its original names later
+                var originalTheme = $.extend(true, {}, json.theme);
+
+
+                // Create an asst map: item ID => asset name
+                var modelAssetNames = _.extend({}, json.modelAssets.items, json.modelAssets.categories);
 
                 // Start by augmenting the flat paths of images to relative paths
-                if (!json.imagePathsAugmented) {
-                    Utils.replaceStringAttributes(json.modelAssets, /^img/, "../theme/img");
+                if (options.assets) {
+                    Utils.replaceAssetUrls(json.modelAssets, options.assets);
+                    Utils.replaceAssetUrls(json.theme, options.assets);
+                } else {
+                    _.each(json.modelAssets, function(assets) {
+                        Utils.assignAssetUrls(assets, /^img/, "../theme/img");
+                    });
                     Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
                     Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
                 }
 
                 // Add a preload modal with the theme background
+/*
                 var modal = json.theme.noFundsModal || json.theme.pages.goods.noFundsModal;
                 var prerollEl = $("#preroll-cover");
                 var prerollDlg = prerollEl.find(".preroll-dialog");
@@ -94,6 +131,7 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 prerollHdr.attr("style", prerollHdr.attr("style") + "; " + modal.textStyle);
                 prerollDlg.css('background-image', 'url("' + modal.background + '")');
                 prerollDlg.toggleClass('invisible', 'false');
+*/
 
                 // Define which CSS, JS and Handlebars files need to be fetched
                 // The template folder is either overriden externally in the JSON or is hardcoded
@@ -101,22 +139,49 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                 var templateName        = json.template.name,
                     templatesFolder     = json.template.baseUrl || "../template",
                     cssFiles            = [templatesFolder + "/less/" + templateName + ".less"],
-                    jsFiles             = [templatesFolder + "/js/" + templateName + "Views.js"],
-                    htmlTemplatesPath   = templatesFolder  + "/templates",
-                    templateDefinition  = templatesFolder  + "/template.json";
+                    templateModule      = templateName + "Views",
+                    templateModulePath  = (json.template.baseUrl || "../../template") + "/js/" + templateModule,
+                    htmlTemplatesPath   = templatesFolder  + "/templates";
+
+                if (options.env === "dist") {
+
+                    // In `dist` environment, assume template javascripts are
+                    // already loaded locally in a script tag and require them
+                    // by their module name and not by their relative URL
+                    templateModulePath = templateModule
+                }
+
+                // Ensure the correct module is loaded for the template
+                // Use a non-public Require.js API to alter the config paths in runtime
+                // See: https://groups.google.com/forum/?fromgroups#!topic/requirejs/Hf-qNmM0ceI
+                require.s.contexts._.config.paths[templateModule] = templateModulePath;
+
 
 
                 // Append appropriate stylesheet
                 // TODO: render the store as a callback to the CSS load event
                 _.each(cssFiles, function(file) {
-                    var isLess  = file.match(/\.less$/),
-                        type    = isLess ? "text/less" : "text/css",
-                        link    = $("<style>").appendTo($("head"));
 
-                    $.get(file, function(data, textStatus, jqXHR) {
-                        link.html(data).attr("type", type);
-                        if (isLess) less.refreshStyles();
-                    });
+                    if (options.env === "dist") {
+
+                        // In `dist` environment the less styles are already injected
+                        // into the page, only need to refresh
+                        less.refreshStyles();
+
+                    } else {
+
+                        // In non-`dist` environment, fetch the remote less file
+                        // and then Less-compile it
+                        var isLess  = file.match(/\.less$/),
+                            type    = isLess ? "text/less" : "text/css",
+                            rel     = isLess ? "stylesheet/text" : "stylesheet",
+                            link    = $("<style>", {rel : rel, type : type}).appendTo($("head"));
+
+                        $.get(file, function(data, textStatus, jqXHR) {
+                            link.html(data).attr("type", type);
+                            if (isLess) less.refreshStyles();
+                        });
+                    }
                 });
 
 
@@ -125,8 +190,10 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
-                var cssRequest 			= $.ajax({ url: "css.handlebars" }),
-                    templateRequest 	= $.ajax({ url: templateDefinition, dataType: "json" }),
+                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "css.handlebars",
+                    templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
+                    cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
+                    templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
                     $this           	= this,
                     storeViewDeferred 	= $.Deferred(),
                     backgroundImagesPromise;
@@ -139,6 +206,10 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
                         cssRuleSet          = [],
                         backgroundImages    = [],
                         themeCss;
+
+                    // Create an asset map for the theme assets
+                    var themeAssetNames = {};
+                    createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
 
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
@@ -166,44 +237,33 @@ define(["jquery", "js-api", "models", "components", "handlebars", "utils", "user
 
                         // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
                         if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
-                        triggerEventOnFrame("store:initialized");
+                        triggerEventOnFrame("store:initialized", _.extend({
+                            modelAssetNames : modelAssetNames,
+                            themeAssetNames : themeAssetNames,
+                            template        : template
+                        }, options));
                     });
                 });
 
 
-                // In case we're in the old model without a category => goods relationship, normalize.
-                // **********   WARNING   **********
-                // This condition can be removed only if all DB records have been migrated to the new relational model
-                if (json.virtualGoods) {
-                    _.each(json.categories, function(category) {
-                        var categoryGoods = _.filter(json.virtualGoods, (function(item) {return item.categoryId == category.id}));
-                        category.goods = categoryGoods;
-                    });
-                    delete json.virtualGoods;
-                }
-
-                // In case we're in the old model without a currency => packs relationship, normalize.
-                // **********   WARNING   **********
-                // This condition can be removed only if all DB records have been migrated to the new relational model
-                if (json.currencyPacks) {
-                    _.each(json.virtualCurrencies, function(currency) {
-                        var packs = _.filter(json.currencyPacks, (function(item) {return item.currency_itemId == currency.itemId}));
-                        currency.packs = packs;
-                    });
-                    delete json.currencyPacks;
-                }
+                // Move the raw categories' metadata, because the `categories` attribute
+                // should be saved for the backbone relational categories collection
+                json.rawCategories = json.categories;
+                json.categories = [];
 
 
                 // Initialize model
                 this.store = new Models.Store(json);
 
-                require(jsFiles, function(Theme) {
+                // Inject the supported features to the store model once they're loaded
+                templateRequest.done(function(template) {
+                    $this.store.set("supportedFeatures", template.supportedFeatures);
+                });
 
-					// Call template load callback if provided
-                    var templateLoadCallback = options.templateLoadCallback;
-					if (templateLoadCallback && _.isFunction(templateLoadCallback)) templateLoadCallback(Theme, Components);
 
-					// Initialize view
+                require([templateModule], function(Theme) {
+
+                    // Initialize view
                     $this.storeView = Theme.createStoreView({
                         storeViewOptions : {
                             model : $this.store,

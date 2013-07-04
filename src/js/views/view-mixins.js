@@ -1,12 +1,9 @@
-define({
+define("viewMixins", {
     wantsToLeaveStore : function() {
         this.nativeAPI.wantsToLeaveStore();
     },
     wantsToBuyVirtualGoods : function(model) {
         this.nativeAPI.wantsToBuyVirtualGoods(model.toJSON().itemId);
-    },
-    wantsToBuyMarketItem : function(model) {
-        this.nativeAPI.wantsToBuyMarketItem(model.toJSON().productId);
     },
     wantsToRestorePurchases : function() {
         this.nativeAPI.wantsToRestorePurchases();
@@ -20,8 +17,23 @@ define({
     requestEarnedCurrency : function(provider) {
         this.nativeAPI.requestEarnedCurrency(provider);
     },
-    playSound :function() {
-        this.nativeAPI.playPop();
+    playSound :function(filePath) {
+        filePath || (filePath = "pop.mp3");
+        this.nativeAPI.playSound(filePath);
         return this;
+    },
+
+
+    //
+    // New Model API
+    //
+    wantsToBuyItem : function(itemId) {
+        this.nativeAPI.wantsToBuyItem(itemId);
+    },
+    wantsToRestoreTransactions : function() {
+        this.nativeAPI.wantsToRestoreTransactions();
+    },
+    wantsToUpgradeVirtualGood : function(model) {
+        this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     }
 });

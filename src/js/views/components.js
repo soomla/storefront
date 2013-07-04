@@ -1,4 +1,4 @@
-define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "backboneExtensions", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
+define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "backboneExtensions", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
@@ -64,6 +64,11 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             // event callbacks on the view or its model
             if (this.addEvents) this.addEvents();
         },
+        addEvents : function() {
+            // This one is for categories - sometimes there is a model and sometimes there isn't
+            // TODO: Review
+            if (this.model) this.model.on("all", this.render, this);
+        },
         className : "item",
         tagName : "li",
         triggers : {
@@ -75,7 +80,10 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     var ItemView = LinkView.extend({
         initialize : function() {
             // TODO: Remove change:balance => this.render
-            this.model.on("change:balance change:priceModel", this.render);
+            this.model.on("change:balance change:purchasableItem", this.render);
+        },
+        addEvents : function() {
+            this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
         }
     });
 
@@ -103,6 +111,44 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
 
     /**
+     * Assumes initialization with an upgradable model
+     * @type {*}
+     */
+    var UpgradableItemView = ItemView.extend({
+       className : "item upgradable",
+        initialize : function() {
+            this.model.on({
+                "change:purchasableItem change:upgradeId"   : this.render,
+                "change:upgradeId"                          : this.onUpgradeChange
+            }, this);
+        },
+        ui : {
+            upgradeBar : ".upgrade-bar"
+        },
+        triggers : {
+            "fastclick .upgrade" : "upgrade"
+        },
+        onUpgradeChange : function() {
+            (this.model.isComplete()) ? this.$el.addClass("complete") : this.$el.removeClass("complete");
+        },
+        onRender : function() {
+            this.onUpgradeChange();
+        }
+    });
+    var ExpandableUpgradableItemView = UpgradableItemView.extend({
+        onUpgradeChange : function() {
+            UpgradableItemView.prototype.onUpgradeChange.call(this);
+            this.collapse({noSound: true});
+        }
+    });
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableUpgradableItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
+    ExpandableUpgradableItemView.mixin(ExpandableModule);
+    ExpandableUpgradableItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
+
+
+    /**
      * A variation of the regular item view which has
      * different UI states - regular, owned and equipped
      */
@@ -110,9 +156,9 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item equippable",
         initialize : function() {
             this.model.on({
-                "change:priceModel" : this.render,
-                "change:balance"    : this.onBalanceChange,
-                "change:equipped"   : this.onEquippingChange
+                "change:purchasableItem"    : this.render,
+                "change:balance"            : this.onBalanceChange,
+                "change:equipped"           : this.onEquippingChange
             }, this);
         },
         triggers : {
@@ -156,6 +202,8 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         className : "item single-use",
         constructor : function(options) {
             ItemView.prototype.constructor.apply(this, arguments);
+
+            // TODO: Check if this listener is necessary: might be duplicate with ItemView
             this.model.on("change:balance", this.render);
         },
         triggers : {
@@ -169,8 +217,63 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     ExpandableSingleUseItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
 
 
+    var LifetimeItemView = ItemView.extend({
+        className: "item lifetime",
+        triggers : {
+            "fastclick .buy" : "buy"
+        },
+        initialize : function() {
+
+            // TODO: Check if this listener is necessary: might be duplicate with ItemView
+            this.model.on({
+                "change:purchasableItem"    : this.render,
+                "change:balance"            : this.onBalanceChange
+            }, this);
+        },
+        onBalanceChange : function() {
+            if (this.model.get("balance") >  0) {
+                this.$el.addClass("owned");
+                if (this.expanded) this.collapse({noSound: true});
+            } else {
+                this.$el.removeClass("owned");
+            }
+        },
+        onRender : function() {
+
+            // Check the state of the view's virtual good and update the view accordingly
+            this.onBalanceChange();
+        }
+    });
+
+    var ExpandableLifetimeItemView = LifetimeItemView.extend();
+
+    // Extend functionality with expandable module and vendor prefixed transitionend event
+    ExpandableLifetimeItemView.mixin = Backbone.View.mixin; // TODO: Solve this hack
+    ExpandableLifetimeItemView.mixin(ExpandableModule);
+    ExpandableLifetimeItemView.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
+
 
     ////////////////////  Collection Views  /////////////////////
+
+    var BaseCollectionView = Marionette.CollectionView.extend({
+
+        appendHtml: function(collectionView, itemView, index){
+            collectionView.$el[index === 0 ? "prepend" : "append"](itemView.el);
+        }
+    });
+
+    var BaseCompositeView = Marionette.CompositeView.extend({
+
+        //
+        // Override Marionette's appendHtml method to support rendering
+        // items in index 0
+        //
+        appendHtml: function(cv, iv, index){
+            var $container = this.getItemViewContainer(cv);
+            $container[index === 0 ? "prepend" : "append"](iv.el);
+        }
+    });
+
 
     // Common function for mixing into views
     var refreshIScroll = function() {
@@ -178,7 +281,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     };
 
 
-    var CollectionView = Marionette.CollectionView.extend({
+    var CollectionView = BaseCollectionView.extend({
         tagName : "ul",
         itemView : ItemView
     });
@@ -200,7 +303,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
     });
 
 
-    var IScrollCollectionView = Marionette.CompositeView.extend({
+    var IScrollCollectionView = BaseCompositeView.extend({
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
         onRender : function() {
@@ -214,6 +317,20 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         },
         getIScrollWrapper : function() {
             return Marionette.getOption(this, "iscrollWrapper") || this.el;
+        },
+
+        //
+        // Override Marionette's appendHtml method to support rendering
+        // items in index 0
+        //
+        appendHtml: function(cv, iv, index){
+            var $container = this.getItemViewContainer(cv);
+
+            if (index === 0) {
+                $container.prepend(iv.el);
+            } else {
+                $container.append(iv.el);
+            }
         }
     });
 
@@ -322,7 +439,7 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             // Bind native API
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyVirtualGoods", "wantsToBuyMarketItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");
@@ -345,23 +462,26 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
             BaseView.prototype.constructor.apply(this, arguments);
 
             // Balance currency balance changes
-            this.model.get("virtualCurrencies").on("change:balance", this.updateBalance, this);
+            this.model.get("currencies").on("change:balance", this.updateBalance, this);
         },
         serializeData : function() {
-            var currencies      = this.model.get("virtualCurrencies").toJSON(),
-                currencyImages  = this.model.get("modelAssets").virtualCurrencies;
+            var currencies  = this.model.get("currencies").toJSON(),
+                modelAssets = this.model.getModelAssets();
 
             _.each(currencies, function(currency) {
-                currency.imgFilePath = currencyImages[currency.itemId];
+                currency.imgFilePath = modelAssets.items[currency.itemId];
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },
         openDialog : function(currencyId) {
 
+            // Ensure dialog is closed
+            this.closeDialog();
+
             this.dialog = new ModalDialog({
-                parent : this.$el,
-                template : Handlebars.getTemplate("modalDialog"),
-                model: !currencyId ? this.loadingModal : this.dialogModal
+                parent 	: this.$el,
+                template: Handlebars.getTemplate("modalDialog"),
+                model	: !currencyId ? this.loadingModal : this.dialogModal
             });
 
             if (currencyId) {
@@ -375,10 +495,24 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
 
             return this.dialog.render();
         },
-        closeDialog: function () {
-            if (!!this.dialog) {
+        openMessageDialog : function(text) {
+
+            // Ensure dialog is closed
+            this.closeDialog();
+
+            this.dialog = new ModalDialog({
+                parent  : this.$el,
+                template: Handlebars.getTemplate("modalDialog"),
+                model   : _.extend({text : text}, this.messageDialogOptions)
+            }).on("cancel", function () {
+                this.playSound();
                 this.dialog.close();
-            }
+            }, this);
+
+            return this.dialog.render();
+        },
+        closeDialog: function () {
+            if (this.dialog) this.dialog.close();
         },
         updateBalance : function(currency) {
             var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
@@ -471,10 +605,16 @@ define(["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fa
         ItemView                        : ItemView,
         LinkView                        : LinkView,
         BuyOnceItemView                 : BuyOnceItemView,
+        UpgradableItemView              : UpgradableItemView,
+        ExpandableUpgradableItemView    : ExpandableUpgradableItemView,
         EquippableItemView              : EquippableItemView,
         ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
         ExpandableSingleUseItemView     : ExpandableSingleUseItemView,
+        LifetimeItemView                : LifetimeItemView,
+        ExpandableLifetimeItemView      : ExpandableLifetimeItemView,
         ModalDialog                     : ModalDialog,
+        BaseCollectionView              : BaseCollectionView,
+        BaseCompositeView               : BaseCompositeView,
         CollectionView                  : CollectionView,
         IScrollCollectionView           : IScrollCollectionView,
         ExpandableIScrollCollectionView : ExpandableIScrollCollectionView,
