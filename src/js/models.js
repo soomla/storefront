@@ -2,7 +2,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel,
-    Collection 		= Backbone.Collection;
+        Collection 		= Backbone.Collection;
 
 
 
@@ -20,6 +20,11 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             this.models.splice(toIndex, 0, this.models.splice(fromIndex, 1)[0]);
             this.trigger("reset");
         }
+    };
+
+
+    var setName = function(name) {
+        this.set("name", name);
     };
 
 
@@ -48,6 +53,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
         },
+        setName : setName,
         getIosId : function() {
             return this.get("purchasableItem").marketItem.iosId;
         },
@@ -105,12 +111,17 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         setPrice : function(price) {
             return this._setPurchasableItem({pvi_amount : price});
         },
+        setName : setName,
         _setPurchasableItem : function (options) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
             // Backbone will trigger the change event only this way.
             var purchasableItem = _.extend({}, this.get("purchasableItem"), options);
             return this.set("purchasableItem", purchasableItem);
+        },
+        is : function(type) {
+            if (type === "upgradable") return this.has("upgradeId");
+            return this.get("type") === type;
         }
     });
 
@@ -128,7 +139,23 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
     var LifetimeGood = SingleUseGood.extend();
 
-    var Upgrade = VirtualGood.extend({});
+    var Upgrade = VirtualGood.extend({
+
+        // Assign empty item ID pointers as defaults
+        defaults : $.extend(true, {prev_itemId : "", next_itemId : ""}, VirtualGood.prototype.defaults),
+
+        getUpgradeImageAssetId : function() {
+            return this.id;
+        },
+        getUpgradeBarAssetId : function() {
+            return this.getUpgradeImageAssetId() + Upgrade.barSuffix;
+        }
+    }, {
+        generateNameFor : function(name, i) {
+            return name + "_upgrade" + i;
+        },
+        barSuffix : "_bar"
+    });
 
     var UpgradeCollection = Collection.extend({ model : Upgrade });
     var UpgradableGood = VirtualGood.extend({
@@ -146,8 +173,16 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
         // Upgradable goods should have a zero-upgrade level by default
         defaults : $.extend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
+
+        initialize : function() {
+            this.on("add:upgrades remove:upgrades", this.reorderUpgrades, this);
+            this.on("add:upgrades remove:upgrades", this.resetUpgrades, this);
+        },
         getUpgrades : function() {
             return this.get("upgrades");
+        },
+        getUpgradeCount : function() {
+            return this.getUpgrades().size();
         },
         getCurrentUpgrade : function() {
 
@@ -159,7 +194,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         getNextUpgrade : function() {
             var currentUpgrade  = this.getCurrentUpgrade(),
-            nextUpgradeId   = currentUpgrade.get("next_itemId");
+                nextUpgradeId   = currentUpgrade.get("next_itemId");
 
             // Zero-upgrade case - return the first upgrade
             if (_.isUndefined(nextUpgradeId)) return this.getUpgrades().first();
@@ -179,9 +214,57 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         isComplete : function() {
             return (this.getUpgrades().last().id === this.getCurrentUpgrade().id);
         },
-        getUpgradeBarAssetId : function() {
+        getEmptyUpgradeBarAssetId : function() {
+            return Upgrade.generateNameFor(this.id, 0) + Upgrade.barSuffix;
+        },
+        getCurrentUpgradeBarAssetId : function() {
             var upgradeId = this.get("upgradeId");
-            return (upgradeId === "") ? (this.id + "_upgrade0_bar") : (upgradeId + "_bar");
+            return (upgradeId === "") ? this.getEmptyUpgradeBarAssetId() : this.getUpgrades().get(upgradeId).getUpgradeBarAssetId();
+        },
+        addUpgrade : function(options) {
+
+            var upgrades    = this.getUpgrades(),
+                index       = upgrades.size() + 1,
+                upgrade     = new Upgrade();
+
+            // Update upgrade
+            upgrade.setCurrencyId(options.firstCurrencyId);
+            upgrade.set("itemId", Upgrade.generateNameFor(this.id, index));
+
+            // Keep ordered references of upgrades:
+            // Update its previous pointer to the item that's currently last in the list
+            // Update the currently last item's next pointer to the new upgrade
+            if (upgrades.size() > 0) {
+                upgrade.set("prev_itemId", upgrades.last().id);
+                upgrades.last().set("next_itemId", upgrade.id);
+            }
+
+            // Assume adding the upgrade to the end of the upgrade list:
+            upgrades.add(upgrade);
+
+            return upgrade;
+        },
+        reorderUpgrades : function() {
+            var upgrades = this.getUpgrades();
+
+            // First run: assign correct IDs to all upgrades
+            upgrades.each(function(upgrade, i) {
+                upgrade.set("itemId", Upgrade.generateNameFor(this.id, i + 1));
+            }, this);
+
+            // Second run: assign correct references to previous \ next items
+            upgrades.each(function(upgrade, i, upgrades) {
+                var refs = {};
+                refs.prev_itemId = (i === 0)                        ? "" : upgrades[i - 1].id;
+                refs.next_itemId = (i === (upgrades.length - 1))    ? "" : upgrades[i + 1].id;
+                upgrade.set(refs);
+            });
+
+            return this;
+        },
+        resetUpgrades : function() {
+            this.set("upgradeId", "");
+            return this;
         }
     });
 
@@ -192,8 +275,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
 
     var CurrencyPacksCollection     = Collection.extend({ model : CurrencyPack }),
-    VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
-    NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
+        VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
+        NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
 
     var Currency = RelationalModel.extend({
         defaults : {
@@ -238,7 +321,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
     });
 
     var CategoryCollection          = Collection.extend({ model : Category }),
-    VirtualCurrencyCollection   = Collection.extend({ model : Currency });
+        VirtualCurrencyCollection   = Collection.extend({ model : Currency });
 
 
     var Store = RelationalModel.extend({
@@ -328,9 +411,13 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
             // Now, add upgrades to existing upgradable goods
             _.each(this.get("goods").goodUpgrades, function(rawUpgrade) {
-                var upgrade = new Upgrade(rawUpgrade);
-                var good = goodsMap[upgrade.get("good_itemId")];
-                good.getUpgrades().add(upgrade);
+
+                // Create Upgrade objects without the good_itemId attribute
+                // Since they'll be associated with Backbone Relational to that good
+                var goodItemId  = rawUpgrade.good_itemId,
+                    upgrade     = new Upgrade(_.omit(rawUpgrade, "good_itemId")),
+                    good        = goodsMap[goodItemId];
+                good.getUpgrades().add(upgrade, {silent : true});
             });
 
 
@@ -345,7 +432,7 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             _.each(this.get("rawCategories"), function(rawCategory) {
 
                 var category = new Category(_.pick(rawCategory, "name")),
-                goods = category.get("goods");
+                    goods    = category.get("goods");
 
                 _.each(rawCategory.goods_itemIds, function(goodItemId) {
                     goods.add(goodsMap[goodItemId]);
@@ -369,10 +456,24 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
             // Force the preview to update by triggering a change event on the model
             category.trigger("change:asset");
         },
-        setItemAsset : function(model, url) {
+        setItemAsset : function(model, url, options) {
+
+            var id = model.id;
+
+            // Check for overrides of item ID, for example,
+            // in case of multiple images like in Upgrades
+            if (options) {
+                if (options.upgradeImage) {
+                    id = model.getUpgradeImageAssetId();
+                } else if (options.upgradeBar) {
+                    id = model.getUpgradeBarAssetId();
+                } else if (options.upgradeBarInitial) {
+                    id = model.getEmptyUpgradeBarAssetId();
+                }
+            }
 
             // Update asset map
-            this.getModelAssets().items[model.id] = url;
+            this.getModelAssets().items[id] = url;
 
             // Force the preview to update by triggering a change event on the model
             model.trigger("change:asset");
@@ -484,7 +585,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
-            var firstCurrencyId = this.getFirstCurrency().id;
+            var firstCurrencyId = this.getFirstCurrency().id,
+                assetUrl        = options.assetUrl || "";
 
             var GoodType;
 
@@ -495,6 +597,9 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                 case "lifetime":
                     GoodType = LifetimeGood;
                     break;
+                case "upgradable":
+                    GoodType = UpgradableGood;
+                    break;
                 default:
                     GoodType = SingleUseGood;
                     break;
@@ -504,23 +609,77 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
                 itemId  : _.uniqueId("untitled_good_"),
                 type    : options.type || "singleUse"
             });
-            good.get("purchasableItem").pvi_itemId = firstCurrencyId;
+            good.setCurrencyId(firstCurrencyId);
 
-            // Ensure the model has an asset assigned directly and in the `modelAssets`
+
+            // Ensure the model has an asset in the `modelAssets`
             // before adding it to the collection (which triggers a render)
             var modelAssets = this.getModelAssets();
-            modelAssets.items[good.id] = options.assetUrl || "";
 
-            // Add good to category
+            if (options.type === "upgradable") {
+                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = assetUrl;
+            } else {
+                modelAssets.items[good.id] = assetUrl;
+            }
+
             var categoryId  = options.categoryId || this.get("categories").first().id,
-            category    = this.get("categories").get(categoryId);
-            category.get("goods").add(good, {at: 0});
+                category    = this.get("categories").get(categoryId);
 
             // Add good to other maps
             this.goodsMap[good.id] = good;
             this.categoryMap[good.id] = category;
 
+
+            // For upgradable goods, enforce at least one level.
+            // Assumes that the good is already mapped in the goods map
+            if (options.type === "upgradable") {
+                this.addUpgrade({
+                    goodItemId  : good.id,
+                    assetUrl    : assetUrl
+                });
+            }
+
+            // Add good to category
+            category.get("goods").add(good, {at: 0});
             return good;
+        },
+        addUpgrade : function(options) {
+
+            if (!options || !options.goodItemId) throw new Error("`addUpgrade` must be called with an options hash containing `goodItemId`");
+
+            var firstCurrencyId = this.getFirstCurrency().id,
+                good            = this.goodsMap[options.goodItemId];
+
+            //
+            // Adding the upgrade to the collection will cause
+            // a reset of upgrades, and an addition of new views
+            //
+            var upgrade = good.addUpgrade(_.extend({firstCurrencyId : firstCurrencyId}, options));
+
+            // Ensure the upgrade has its assets in the `modelAssets`
+            // before triggering the `change` event
+            var modelAssets = this.getModelAssets();
+            modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl;
+            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.assetUrl;
+
+            // Manually trigger the event for rendering
+            good.trigger("change");
+
+            // Add upgrade to other maps
+            this.goodsMap[upgrade.id] = upgrade;
+
+            return upgrade;
+        },
+        removeUpgrade : function(upgrade) {
+            var modelAssets = this.getModelAssets();
+
+            // Remove from mappings and delete upgrade-specific assets
+            this.removeItemId(upgrade.id);
+            delete modelAssets.items[upgrade.getUpgradeImageAssetId()];
+            delete modelAssets.items[upgrade.getUpgradeBarAssetId()];
+
+            // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
+            upgrade.trigger('destroy', upgrade, upgrade.collection, {});
         },
         addNewCurrencyPack : function(options) {
             var currencyPack = new CurrencyPack({
@@ -553,15 +712,27 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
             return currencyPack;
         },
-        // TODO: Deal with upgradables
         removeVirtualGood : function(good) {
-            var category = this.categoryMap[good.id];
+
+            // Deal with upgradables
+            if (good.is("upgradable")) {
+
+                // Remove all upgrades in reverse order to prevent this unclear Backbone Relational bug:
+                // "Uncaught TypeError: Cannot call method 'getAssociatedItemId' of undefined"
+                var upgrades = good.getUpgrades();
+                for (var i = upgrades.length - 1; i >= 0; i--) {
+                    this.removeUpgrade(upgrades.at(i));
+                }
+
+                // Remove zero-index bar
+                this.removeItemId(good.getEmptyUpgradeBarAssetId());
+            }
 
             // Remove from mappings
             this.removeItemId(good.id);
 
             // Remove from category
-            category.get("goods").remove(good);
+            good.trigger('destroy', good, good.collection, {});
         },
         removeCurrencyPack : function(pack) {
 
@@ -639,8 +810,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         changeCategoryName : function(id, newName) {
 
             var oldItemId   = id,
-            newItemId   = newName,
-            category    = this.get("categories").get(id);
+                newItemId   = newName,
+                category    = this.get("categories").get(id);
 
             // TODO: conditionally do this - only if store has category assets
             // First ensure model assets are updated
@@ -654,8 +825,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         changeCurrencyName : function(id, newName) {
 
             var oldItemId   = id,
-            newItemId   = Currency.generateNameFor(newName),
-            currency    = this.get("currencies").get(id);
+                newItemId   = Currency.generateNameFor(newName),
+                currency    = this.get("currencies").get(id);
 
             // First ensure model assets are updated
             this.updateItemId(oldItemId, newItemId);
@@ -741,7 +912,12 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
 
                     // Add the good to its category
                     category.goods_itemIds.push(good.itemId);
-                    json.goods[good.type].push(good);
+
+                    // This is hack that enforces supporting only lifetime upgradable goods.
+                    // Will need to be amended in the future to support more types.
+                    var type = good.type === "upgradable" ? "lifetime" : good.type;
+
+                    json.goods[type].push(good);
                     delete good.type;
                 });
 
@@ -804,6 +980,8 @@ define("models", ["backbone", "utils", "backboneRelational"], function(Backbone,
         SingleUseGood 				: SingleUseGood,
         EquippableGood              : EquippableGood,
         LifetimeGood 				: LifetimeGood,
+        UpgradableGood              : UpgradableGood,
+        Upgrade 					: Upgrade,
         VirtualGoodsCollection      : VirtualGoodsCollection,
         CurrencyPack                : CurrencyPack,
         Store                       : Store,
