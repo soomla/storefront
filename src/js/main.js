@@ -6,6 +6,7 @@ require.config({
 
     paths: {
         store                   : "store",
+        economyModels           : "economy-models",
         models                  : "models",
         jsAPI                   : "js-api",
         components              : "views/components",
