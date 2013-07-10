@@ -12,7 +12,6 @@ require.config({
         components              : "views/components",
         helperViews             : "views/helper-views",
         viewMixins          	: "views/view-mixins",
-        backboneExtensions      : "views/backbone-extensions",
         marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
@@ -31,8 +30,10 @@ require.config({
         less                	: "libs/less-1.3.0",
         iscroll                 : "libs/iscroll",
         underscore          	: "libs/underscore-1.4.4",
-        backbone            	: "libs/backbone/backbone-1.0.0",
+        backboneFramework       : "libs/backbone/backbone-1.0.0",
+        backbone            	: "libs/backbone/backbone",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.5",
+        backboneExtensions      : "libs/backbone/backbone-extensions",
         marionette          	: "libs/backbone/backbone.marionette.core-1.0.3",
         "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
@@ -51,12 +52,12 @@ require.config({
         "jquery.fastbutton": {
             deps: ['jquery', 'fastbutton']
         },
-        backbone: {
+        "backboneFramework" : {
             deps: ['underscore'],
             exports: 'Backbone'
         },
-        backboneRelational : {
-            deps: ['backbone']
+        backbone : {
+            deps: ['backboneFramework']
         },
         marionette : {
             deps: ['backbone']

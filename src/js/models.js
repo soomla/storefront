@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "backboneRelational", ], function(Backbone, EconomyModels, Utils) {
+define("models", ["backbone", "economyModels", "utils"], function(Backbone, EconomyModels, Utils) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;

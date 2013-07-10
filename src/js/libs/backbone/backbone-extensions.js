@@ -1,8 +1,8 @@
-define("backboneExtensions", ["backbone"], function(Backbone) {
+define("backboneExtensions", [], function() {
 
     // Taken from https://github.com/kjbekkelund/writings/blob/master/published/backbone-mixins.md
 
-    var Utils = {
+    var BackboneExtensions = {
 
         viewMixin : function(from) {
             var to = this.prototype;
@@ -15,7 +15,7 @@ define("backboneExtensions", ["backbone"], function(Backbone) {
             _.defaults(to.triggers, from.triggers);
 
             // we then extend `to`'s `initialize`
-            Utils.extendMethod(to, from, "initialize");
+            BackboneExtensions.extendMethod(to, from, "initialize");
         },
 
         // Helper method to extend an already existing method
@@ -43,5 +43,5 @@ define("backboneExtensions", ["backbone"], function(Backbone) {
         }
     };
 
-    Backbone.View.mixin = Utils.viewMixin;
+    return BackboneExtensions;
 });
