@@ -127,11 +127,11 @@ define("economyModels", ["backbone"], function(Backbone) {
         // Assign empty item ID pointers as defaults
         defaults : $.extend(true, {prev_itemId : "", next_itemId : ""}, VirtualGood.prototype.defaults),
 
-        getUpgradeImageAssetId : function() {
-            return this.id;
+        getUpgradeImageAssetId : function(id) {
+            return id || this.id;
         },
-        getUpgradeBarAssetId : function() {
-            return this.getUpgradeImageAssetId() + Upgrade.barSuffix;
+        getUpgradeBarAssetId : function(id) {
+            return this.getUpgradeImageAssetId(id) + Upgrade.barSuffix;
         }
     }, {
         generateNameFor : function(name, i) {
@@ -160,6 +160,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         initialize : function() {
             this.on("add:upgrades remove:upgrades", this.reorderUpgrades, this);
             this.on("add:upgrades remove:upgrades", this.resetUpgrades, this);
+            this.on("change:itemId", this.reorderUpgrades, this);
         },
         getUpgrades : function() {
             return this.get("upgrades");
@@ -197,8 +198,8 @@ define("economyModels", ["backbone"], function(Backbone) {
         isComplete : function() {
             return (this.getUpgrades().last().id === this.getCurrentUpgrade().id);
         },
-        getEmptyUpgradeBarAssetId : function() {
-            return Upgrade.generateNameFor(this.id, 0) + Upgrade.barSuffix;
+        getEmptyUpgradeBarAssetId : function(id) {
+            return Upgrade.generateNameFor(id || this.id, 0) + Upgrade.barSuffix;
         },
         getCurrentUpgradeBarAssetId : function() {
             var upgradeId = this.get("upgradeId");

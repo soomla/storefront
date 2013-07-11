@@ -53,7 +53,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             }
         ],
         initialize : function() {
-            _.bindAll(this, "getBalance", "setBalance", "updateVirtualGoods");
+            _.bindAll(this, "getBalance", "setBalance", "updateUpgradeModelAssets", "updateVirtualGoods");
 
             // Create a {ID : good} map with goods from all categories
             var goodsMap 		= this.goodsMap 		= {};
@@ -85,6 +85,16 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
                         // If a good has upgrade levels, instantiate it as a different object
                         good = new UpgradableGood(rawGood);
+
+                        // Update upgradable model assets whenever an item ID changes
+                        this.listenTo(good, "change:itemId", function(model, newItemId) {
+
+                            // This if is for protecting against this event firing when the store is first initialized
+                            // TODO: Investigate
+                            if (model.previous("itemId")) {
+                                this.updateUpgradeModelAssets(model, newItemId);
+                            }
+                        });
                     } else {
                         switch (type) {
                             case "equippable":
@@ -103,8 +113,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
                     // Keep a reference to the goods in a map
                     goodsMap[good.id] = good;
-                });
-            });
+                }, this);
+            }, this);
 
 
             // Now, add upgrades to existing upgradable goods
@@ -190,6 +200,32 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
         },
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
+        },
+        updateUpgradeModelAssets : function(model, newItemId) {
+
+            newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
+            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId),
+                modelAssets = this.getModelAssets();
+
+            modelAssets.items[newItemId] = modelAssets.items[oldItemId];
+            delete modelAssets.items[oldItemId];
+
+            // Update upgrades' model assets with new IDs
+
+            model.getUpgrades().each(function(upgrade, i) {
+
+                var oldItemId   = Upgrade.generateNameFor(model.previous("itemId"), i + 1),
+                    oldImageId 	= upgrade.getUpgradeImageAssetId(oldItemId),
+                    oldBarId 	= upgrade.getUpgradeBarAssetId(oldItemId),
+                    newImageId 	= upgrade.getUpgradeImageAssetId(),
+                    newBarId 	= upgrade.getUpgradeBarAssetId();
+
+
+                modelAssets.items[newImageId] 	= modelAssets.items[oldImageId];
+                modelAssets.items[newBarId] 	= modelAssets.items[oldBarId];
+                delete modelAssets.items[oldImageId];
+                delete modelAssets.items[oldBarId];
+            });
         },
         updateItemId : function(oldItemId, newItemId) {
 
@@ -309,6 +345,10 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             });
             good.setCurrencyId(firstCurrencyId);
 
+            // Update upgradable model assets whenever an item ID changes
+            if (options.type === "upgradable") {
+                this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
+            }
 
             // Ensure the model has an asset in the `modelAssets`
             // before adding it to the collection (which triggers a render)
@@ -420,6 +460,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
                 for (var i = upgrades.length - 1; i >= 0; i--) {
                     this.removeUpgrade(upgrades.at(i));
                 }
+
+                // Remove listeners that were in charge of updating item IDs in model assets map
+                this.stopListening(good);
 
                 // Remove zero-index bar
                 this.removeItemId(good.getEmptyUpgradeBarAssetId());
