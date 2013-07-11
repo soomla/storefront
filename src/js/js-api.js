@@ -94,6 +94,6 @@ define("jsAPI", {
     // Private methods
     _getItemName: function(itemId) {
         var item = SoomlaJS.store.getItem(itemId);
-        return item.get("name") || "item";
+        return (item && item.get) ? item.get("name") : "item";
     }
 });
