@@ -371,9 +371,11 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // For upgradable goods, enforce at least one level.
             // Assumes that the good is already mapped in the goods map
             if (options.type === "upgradable") {
+                var progressBarAssetUrl = options.progressBarAssetUrl || assetUrl;
                 this.addUpgrade({
-                    goodItemId  : good.id,
-                    assetUrl    : assetUrl
+                    goodItemId          : good.id,
+                    assetUrl            : assetUrl,
+                    progressBarAssetUrl : progressBarAssetUrl
                 });
             }
 
@@ -398,7 +400,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // before triggering the `change` event
             var modelAssets = this.getModelAssets();
             modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl;
-            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.assetUrl;
+            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.progressBarAssetUrl;
 
             // Manually trigger the event for rendering
             good.trigger("change");
