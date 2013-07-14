@@ -302,8 +302,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
-            var firstCurrencyId = this.getFirstCurrency().id,
-                assetUrl        = options.assetUrl || "";
+            var firstCurrencyId     = this.getFirstCurrency().id,
+                assetUrl            = options.assetUrl || "",
+                progressBarAssetUrl = options.progressBarAssetUrl || assetUrl;
 
             var GoodType;
 
@@ -338,7 +339,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             var modelAssets = this.getModelAssets();
 
             if (options.type === "upgradable") {
-                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = assetUrl;
+                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
             } else {
                 modelAssets.items[good.id] = assetUrl;
             }
@@ -354,7 +355,6 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // For upgradable goods, enforce at least one level.
             // Assumes that the good is already mapped in the goods map
             if (options.type === "upgradable") {
-                var progressBarAssetUrl = options.progressBarAssetUrl || assetUrl;
                 this.addUpgrade({
                     goodItemId          : good.id,
                     assetUrl            : assetUrl,
