@@ -468,7 +468,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(pack.id);
 
             // Remove from category
-            currency.get("packs").remove(pack);
+            pack.trigger('destroy', pack, pack.collection, {});
         },
         // TODO: Deal with upgradables
         removeCategory : function(category) {
@@ -488,7 +488,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(category.id);
 
             // Remove the category model
-            this.get("categories").remove(category);
+            category.trigger('destroy', category, category.collection, {});
         },
         removeCurrency : function(currency) {
 
@@ -499,13 +499,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
                 if (good.getCurrencyId() === currency.id) {
 
-                    // Keep the category before deleting the mapping to it
-                    var category        = this.categoryMap[good.id],
-                    categoryGoods   = category.get("goods");
-
                     // First remove from mappings, then remove from collection
                     this.removeItemId(good.id);
-                    categoryGoods.remove(good);
+                    good.trigger('destroy', good, good.collection, {});
                 }
             }, this));
 
@@ -524,7 +520,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(currency.id);
 
             // Remove the currency model
-            this.get("currencies").remove(currency);
+            currency.trigger('destroy', currency, currency.collection, {});
         },
         getFirstCategory : function() {
             return this.get("categories").first();
