@@ -162,9 +162,17 @@ define("economyModels", ["backbone"], function(Backbone) {
         defaults : $.extend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
 
         initialize : function() {
-            this.on("add:upgrades remove:upgrades", this.reorderUpgrades, this);
-            this.on("add:upgrades remove:upgrades", this.resetUpgrades, this);
-            this.on("change:itemId", this.reorderUpgrades, this);
+            _.bindAll(this, "reorderUpgrades", "resetUpgrades");
+
+            //
+            // Reorder and reset upgrades every time an upgrade
+            // is added, removed or reordered
+            //
+            this.on("add:upgrades remove:upgrades", this.reorderUpgrades);
+            this.on("add:upgrades remove:upgrades", this.resetUpgrades);
+
+            this.get("upgrades").on("reset", this.reorderUpgrades);
+            this.get("upgrades").on("reset", this.resetUpgrades);
         },
         getUpgrades : function() {
             return this.get("upgrades");
