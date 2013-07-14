@@ -209,23 +209,6 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             modelAssets.items[newItemId] = modelAssets.items[oldItemId];
             delete modelAssets.items[oldItemId];
-
-            // Update upgrades' model assets with new IDs
-
-            model.getUpgrades().each(function(upgrade, i) {
-
-                var oldItemId   = Upgrade.generateNameFor(model.previous("itemId"), i + 1),
-                    oldImageId 	= upgrade.getUpgradeImageAssetId(oldItemId),
-                    oldBarId 	= upgrade.getUpgradeBarAssetId(oldItemId),
-                    newImageId 	= upgrade.getUpgradeImageAssetId(),
-                    newBarId 	= upgrade.getUpgradeBarAssetId();
-
-
-                modelAssets.items[newImageId] 	= modelAssets.items[oldImageId];
-                modelAssets.items[newBarId] 	= modelAssets.items[oldBarId];
-                delete modelAssets.items[oldImageId];
-                delete modelAssets.items[oldBarId];
-            });
         },
         updateItemId : function(oldItemId, newItemId) {
 
@@ -340,7 +323,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             }
 
             var good = new GoodType({
-                itemId  : _.uniqueId("untitled_good_"),
+                itemId  : _.uniqueId("item_"),
                 type    : options.type || "singleUse"
             });
             good.setCurrencyId(firstCurrencyId);
@@ -432,7 +415,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
                     purchaseType    : "market"
                 },
                 name                : "Untitled",
-                itemId              : _.uniqueId("untitled_currency_pack_"),
+                itemId              : _.uniqueId("item_"),
                 currency_itemId     : options.currency_itemId,
                 currency_amount     : 1000
             });
