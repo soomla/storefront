@@ -127,6 +127,10 @@ define("economyModels", ["backbone"], function(Backbone) {
         // Assign empty item ID pointers as defaults
         defaults : $.extend(true, {prev_itemId : "", next_itemId : ""}, VirtualGood.prototype.defaults),
 
+        initialize : function() {
+            if (!this.has("itemId")) this.set("itemId", _.uniqueId("item_"));
+        },
+
         getUpgradeImageAssetId : function(id) {
             return id || this.id;
         },
@@ -158,9 +162,17 @@ define("economyModels", ["backbone"], function(Backbone) {
         defaults : $.extend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
 
         initialize : function() {
-            this.on("add:upgrades remove:upgrades", this.reorderUpgrades, this);
-            this.on("add:upgrades remove:upgrades", this.resetUpgrades, this);
-            this.on("change:itemId", this.reorderUpgrades, this);
+            _.bindAll(this, "reorderUpgrades", "resetUpgrades");
+
+            //
+            // Reorder and reset upgrades every time an upgrade
+            // is added, removed or reordered
+            //
+            this.on("add:upgrades remove:upgrades", this.reorderUpgrades);
+            this.on("add:upgrades remove:upgrades", this.resetUpgrades);
+
+            this.get("upgrades").on("reset", this.reorderUpgrades);
+            this.get("upgrades").on("reset", this.resetUpgrades);
         },
         getUpgrades : function() {
             return this.get("upgrades");
@@ -208,12 +220,10 @@ define("economyModels", ["backbone"], function(Backbone) {
         addUpgrade : function(options) {
 
             var upgrades    = this.getUpgrades(),
-                index       = upgrades.size() + 1,
                 upgrade     = new Upgrade();
 
             // Update upgrade
             upgrade.setCurrencyId(options.firstCurrencyId);
-            upgrade.set("itemId", Upgrade.generateNameFor(this.id, index));
 
             // Keep ordered references of upgrades:
             // Update its previous pointer to the item that's currently last in the list
@@ -230,11 +240,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         reorderUpgrades : function() {
             var upgrades = this.getUpgrades();
-
-            // First run: assign correct IDs to all upgrades
-            upgrades.each(function(upgrade, i) {
-                upgrade.set("itemId", Upgrade.generateNameFor(this.id, i + 1));
-            }, this);
 
             // Second run: assign correct references to previous \ next items
             upgrades.each(function(upgrade, i, upgrades) {
