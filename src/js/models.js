@@ -209,23 +209,6 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             modelAssets.items[newItemId] = modelAssets.items[oldItemId];
             delete modelAssets.items[oldItemId];
-
-            // Update upgrades' model assets with new IDs
-
-            model.getUpgrades().each(function(upgrade, i) {
-
-                var oldItemId   = Upgrade.generateNameFor(model.previous("itemId"), i + 1),
-                    oldImageId 	= upgrade.getUpgradeImageAssetId(oldItemId),
-                    oldBarId 	= upgrade.getUpgradeBarAssetId(oldItemId),
-                    newImageId 	= upgrade.getUpgradeImageAssetId(),
-                    newBarId 	= upgrade.getUpgradeBarAssetId();
-
-
-                modelAssets.items[newImageId] 	= modelAssets.items[oldImageId];
-                modelAssets.items[newBarId] 	= modelAssets.items[oldBarId];
-                delete modelAssets.items[oldImageId];
-                delete modelAssets.items[oldBarId];
-            });
         },
         updateItemId : function(oldItemId, newItemId) {
 
@@ -319,8 +302,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
-            var firstCurrencyId = this.getFirstCurrency().id,
-                assetUrl        = options.assetUrl || "";
+            var firstCurrencyId     = this.getFirstCurrency().id,
+                assetUrl            = options.assetUrl || "",
+                progressBarAssetUrl = options.progressBarAssetUrl || assetUrl;
 
             var GoodType;
 
@@ -340,7 +324,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             }
 
             var good = new GoodType({
-                itemId  : _.uniqueId("untitled_good_"),
+                itemId  : _.uniqueId("item_"),
                 type    : options.type || "singleUse"
             });
             good.setCurrencyId(firstCurrencyId);
@@ -355,7 +339,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             var modelAssets = this.getModelAssets();
 
             if (options.type === "upgradable") {
-                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = assetUrl;
+                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
             } else {
                 modelAssets.items[good.id] = assetUrl;
             }
@@ -372,8 +356,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // Assumes that the good is already mapped in the goods map
             if (options.type === "upgradable") {
                 this.addUpgrade({
-                    goodItemId  : good.id,
-                    assetUrl    : assetUrl
+                    goodItemId          : good.id,
+                    assetUrl            : assetUrl,
+                    progressBarAssetUrl : progressBarAssetUrl
                 });
             }
 
@@ -398,7 +383,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // before triggering the `change` event
             var modelAssets = this.getModelAssets();
             modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl;
-            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.assetUrl;
+            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.progressBarAssetUrl;
 
             // Manually trigger the event for rendering
             good.trigger("change");
@@ -430,7 +415,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
                     purchaseType    : "market"
                 },
                 name                : "Untitled",
-                itemId              : _.uniqueId("untitled_currency_pack_"),
+                itemId              : _.uniqueId("item_"),
                 currency_itemId     : options.currency_itemId,
                 currency_amount     : 1000
             });
@@ -483,7 +468,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(pack.id);
 
             // Remove from category
-            currency.get("packs").remove(pack);
+            pack.trigger('destroy', pack, pack.collection, {});
         },
         // TODO: Deal with upgradables
         removeCategory : function(category) {
@@ -503,7 +488,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(category.id);
 
             // Remove the category model
-            this.get("categories").remove(category);
+            category.trigger('destroy', category, category.collection, {});
         },
         removeCurrency : function(currency) {
 
@@ -514,13 +499,9 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
                 if (good.getCurrencyId() === currency.id) {
 
-                    // Keep the category before deleting the mapping to it
-                    var category        = this.categoryMap[good.id],
-                    categoryGoods   = category.get("goods");
-
                     // First remove from mappings, then remove from collection
                     this.removeItemId(good.id);
-                    categoryGoods.remove(good);
+                    good.trigger('destroy', good, good.collection, {});
                 }
             }, this));
 
@@ -539,7 +520,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.removeItemId(currency.id);
 
             // Remove the currency model
-            this.get("currencies").remove(currency);
+            currency.trigger('destroy', currency, currency.collection, {});
         },
         getFirstCategory : function() {
             return this.get("categories").first();
