@@ -40,7 +40,7 @@ module.exports = function (grunt) {
     };
 
     // Uncomment to prevent code obfuscation
-    config.requirejs.optimize = "none";
+    // config.requirejs.optimize = "none";
 
 
     grunt.initConfig(config);
