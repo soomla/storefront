@@ -534,11 +534,11 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
                 // Create a hash with all the iscrolls
                 this.iscrolls = {};
                 _.each(this.iscrollRegions, function (value, region) {
-                    var $this = this,
+                    var _this = this,
                         options = $.extend({}, value.options);
                     options.onScrollEndBinded = options.onScrollEnd;
                     options.onScrollEnd = function () {
-                        options.onScrollEndBinded($this, this);
+                        options.onScrollEndBinded(_this, this);
                     };
                     this.iscrolls[region] = new iScroll(this.$(value.el)[0], options);
                 }, this);
@@ -554,9 +554,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
         finalizeRendering : function() {
             // When all store images are loaded, trigger an event
             // TODO: Preload images that aren't visible at first
-            var $this = this;
+            var _this = this;
             this.$el.imagesLoaded(function() {
-                $this.trigger("imagesLoaded");
+                _this.trigger("imagesLoaded");
             });
 
             this.addSoomlaInfoModal();
@@ -567,16 +567,32 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             if (this.zoomFunction) {
                 // Adjust zoom to fit nicely in viewport
                 // This helps cope with various viewports, i.e. mobile, tablet...
-                var $this = this;
+                var _this = this,
+                	$body = $("body"),
+                    isIphone = $body.hasClass("iphone");
                 var adjustBodySize = function() {
-                    var zoomFactor      = $this.zoomFunction(),
-                    zoomPercentage  = (zoomFactor * 100) + "%";
-                    $("body").css({
-                        "zoom"                      : zoomFactor,
-                        "-ms-text-size-adjust"      : zoomPercentage,
-                        "-moz-text-size-adjust"     : zoomPercentage,
-                        "-webkit-text-size-adjust"  : zoomPercentage
-                    });
+                    var zoomFactor      = _this.zoomFunction(),
+                        zoomPercentage  = (zoomFactor * 100) + "%";
+
+                    var attrs = {
+                        "zoom": zoomFactor,
+                        "-ms-text-size-adjust": zoomPercentage,
+                        "-moz-text-size-adjust": zoomPercentage,
+                        "-webkit-text-size-adjust": zoomPercentage
+                    };
+
+                    //
+                    // Adjust the line height for the entire store view.
+                    // Since the text-size-adjust property is applied to a certain zoom factor,
+                    // it is imperative to set the line-height with the inverse factor to compensate
+                    // for the text size changes.
+                    //
+                    // This injection stipulates that the entire CSS of the given store
+                    // doesn't use the line-height property at all
+                    //
+                    if (isIphone) attrs["line-height"] =  (1 / zoomFactor);
+
+                    $body.css(attrs);
                 };
                 $(window).resize(adjustBodySize);
                 adjustBodySize();
