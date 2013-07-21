@@ -245,10 +245,12 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
                 good = _this.goodsMap[good];
                 if (attributes.balance){
                     good.set("balance", attributes.balance);
+
+                    // TODO: Move this code out of here: separate model and view concerns!!!
                     // add animation
-                    $(".expanded .balance-wrap").addClass("changed");
+                    $(".expanded .item-balance-wrap").addClass("changed");
                     setTimeout(function(){
-                        $(".balance-wrap").removeClass("changed");
+                        $(".item-balance-wrap").removeClass("changed");
                     }, 1500);
 
                 }
