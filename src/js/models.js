@@ -298,6 +298,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             try {
                 options.itemId = Currency.generateNameFor(options.name);
                 currency = new Currency(options);
+                var assetUrl = options.assetUrl || "";
+                this.getModelAssets().items[currency.id] = assetUrl;
                 this.get("currencies").add(currency);
             } catch (e) {
                 throw new Error(duplicateCurrencyErrorMessage);
@@ -308,6 +310,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             var category;
             try {
                 category = new Category(options);
+                var assetUrl = options.assetUrl || "";
+                this.getModelAssets().categories[category.id] = assetUrl;
                 this.get("categories").add(category);
             } catch(e) {
                 throw new Error(duplicateCategoryErrorMessage);
