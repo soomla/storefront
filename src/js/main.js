@@ -27,7 +27,7 @@ require.config({
         "jquery.preload"        : "libs/jquery/jquery.preload",
         fastbutton              : "libs/google.fastbutton",
         modernizr               : "libs/modernizr-2.5.3.min",
-        less                	: "libs/less-1.3.0",
+        less                	: "libs/less-1.3.3",
         iscroll                 : "libs/iscroll",
         underscore          	: "libs/underscore-1.4.4",
         backboneFramework       : "libs/backbone/backbone-1.0.0",

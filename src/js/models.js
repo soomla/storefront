@@ -20,6 +20,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
         NonConsumablesCollection    = EconomyModels.NonConsumablesCollection;
 
 
+    var duplicateCategoryErrorMessage = "A category with that name already exists.",
+        duplicateCurrencyErrorMessage = "A currency with that name already exists.";
 
 
     var Store = RelationalModel.extend({
@@ -292,14 +294,24 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.updateNonConsumables(nonConsumables);
         },
         addNewCurrency : function(options) {
-            options.itemId = Currency.generateNameFor(options.name);
-            var currency = new Currency(options);
-            this.get("currencies").add(currency);
+            var currency;
+            try {
+                options.itemId = Currency.generateNameFor(options.name);
+                currency = new Currency(options);
+                this.get("currencies").add(currency);
+            } catch (e) {
+                throw new Error(duplicateCurrencyErrorMessage);
+            }
             return currency;
         },
         addNewCategory : function(options) {
-            var category = new Category(options);
-            this.get("categories").add(category);
+            var category;
+            try {
+                category = new Category(options);
+                this.get("categories").add(category);
+            } catch(e) {
+                throw new Error(duplicateCategoryErrorMessage);
+            }
             return category;
         },
         // TODO: Deal with upgradables
@@ -534,7 +546,11 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             var oldItemId   = id,
                 newItemId   = newName,
-                category    = this.get("categories").get(id);
+                categories  = this.get("categories"),
+                category    = categories.get(id);
+
+            // If the new item ID is a duplicate, throw an error
+            if (categories.get(newItemId)) throw new Error(duplicateCategoryErrorMessage);
 
             // TODO: conditionally do this - only if store has category assets
             // First ensure model assets are updated
@@ -549,7 +565,11 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             var oldItemId   = id,
                 newItemId   = Currency.generateNameFor(newName),
-                currency    = this.get("currencies").get(id);
+                currencies  = this.get("currencies"),
+                currency    = currencies.get(id);
+
+            // If the new item ID is a duplicate, throw an error
+            if (currencies.get(newItemId)) throw new Error(duplicateCurrencyErrorMessage);
 
             // First ensure model assets are updated
             this.updateItemId(oldItemId, newItemId);
