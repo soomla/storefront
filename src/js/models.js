@@ -292,14 +292,24 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.updateNonConsumables(nonConsumables);
         },
         addNewCurrency : function(options) {
-            options.itemId = Currency.generateNameFor(options.name);
-            var currency = new Currency(options);
-            this.get("currencies").add(currency);
+            var currency;
+            try {
+                options.itemId = Currency.generateNameFor(options.name);
+                currency = new Currency(options);
+                this.get("currencies").add(currency);
+            } catch (e) {
+                throw new Error("A currency with that name already exists.");
+            }
             return currency;
         },
         addNewCategory : function(options) {
-            var category = new Category(options);
-            this.get("categories").add(category);
+            var category;
+            try {
+                category = new Category(options);
+                this.get("categories").add(category);
+            } catch(e) {
+                throw new Error("A category with that name already exists.");
+            }
             return category;
         },
         // TODO: Deal with upgradables
