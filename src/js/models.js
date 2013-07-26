@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils"], function(Backbone, EconomyModels, Utils) {
+define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbone, EconomyModels, Utils, Urls) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -20,6 +20,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
         NonConsumablesCollection    = EconomyModels.NonConsumablesCollection;
 
 
+    var duplicateCategoryErrorMessage = "A category with that name already exists.",
+        duplicateCurrencyErrorMessage = "A currency with that name already exists.";
 
 
     var Store = RelationalModel.extend({
@@ -292,21 +294,35 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             this.updateNonConsumables(nonConsumables);
         },
         addNewCurrency : function(options) {
-            options.itemId = Currency.generateNameFor(options.name);
-            var currency = new Currency(options);
-            this.get("currencies").add(currency);
+            var currency;
+            try {
+                options.itemId = Currency.generateNameFor(options.name);
+                currency = new Currency(options);
+                var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                this.getModelAssets().items[currency.id] = assetUrl;
+                this.get("currencies").add(currency);
+            } catch (e) {
+                throw new Error(duplicateCurrencyErrorMessage);
+            }
             return currency;
         },
         addNewCategory : function(options) {
-            var category = new Category(options);
-            this.get("categories").add(category);
+            var category;
+            try {
+                category = new Category(options);
+                var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                this.getModelAssets().categories[category.id] = assetUrl;
+                this.get("categories").add(category);
+            } catch(e) {
+                throw new Error(duplicateCategoryErrorMessage);
+            }
             return category;
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
             var firstCurrencyId     = this.getFirstCurrency().id,
-                assetUrl            = options.assetUrl || "",
-                progressBarAssetUrl = options.progressBarAssetUrl || assetUrl;
+                assetUrl            = options.assetUrl || Urls.imagePlaceholder,
+                progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
 
             var GoodType;
 
@@ -384,8 +400,8 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // Ensure the upgrade has its assets in the `modelAssets`
             // before triggering the `change` event
             var modelAssets = this.getModelAssets();
-            modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl;
-            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.progressBarAssetUrl;
+            modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl || Urls.imagePlaceholder;
+            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.progressBarAssetUrl || Urls.progressBarPlaceholder;
 
             // Manually trigger the event for rendering
             good.trigger("change");
@@ -425,7 +441,7 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
             // Ensure the model has an asset assigned directly and in the `modelAssets`
             // before adding it to the collection (which triggers a render)
             var modelAssets = this.getModelAssets();
-            modelAssets.items[currencyPack.id] = options.assetUrl || "";
+            modelAssets.items[currencyPack.id] = options.assetUrl || Urls.imagePlaceholder;
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
@@ -534,7 +550,11 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             var oldItemId   = id,
                 newItemId   = newName,
-                category    = this.get("categories").get(id);
+                categories  = this.get("categories"),
+                category    = categories.get(id);
+
+            // If the new item ID is a duplicate, throw an error
+            if (categories.get(newItemId)) throw new Error(duplicateCategoryErrorMessage);
 
             // TODO: conditionally do this - only if store has category assets
             // First ensure model assets are updated
@@ -549,7 +569,11 @@ define("models", ["backbone", "economyModels", "utils"], function(Backbone, Econ
 
             var oldItemId   = id,
                 newItemId   = Currency.generateNameFor(newName),
-                currency    = this.get("currencies").get(id);
+                currencies  = this.get("currencies"),
+                currency    = currencies.get(id);
+
+            // If the new item ID is a duplicate, throw an error
+            if (currencies.get(newItemId)) throw new Error(duplicateCurrencyErrorMessage);
 
             // First ensure model assets are updated
             this.updateItemId(oldItemId, newItemId);

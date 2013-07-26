@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "jquery.fastbutton", "marionetteExtensions", "jquery.imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils) {
+define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtils", "urls", "jquery.fastbutton", "marionetteExtensions", "imagesloaded", "iscroll"], function($, Backbone, ViewMixins, Marionette, CssUtils, Urls) {
 
 
     var transitionendEvent = CssUtils.getTransitionendEvent();
@@ -31,7 +31,10 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
     ///////////////////////   Views   ///////////////////////
 
-    var BaseView = Marionette.ItemView;
+    var BaseView = Marionette.ItemView.extend({
+        _imagePlaceholder       : Urls.imagePlaceholder,
+        _progressBarPlaceholder : Urls.progressBarPlaceholder
+    });
 
 
     // TODO: Separate into several views that are template specific

@@ -2,14 +2,15 @@ define("economyModels", ["backbone"], function(Backbone) {
 
 
     // Cache base classes.
-    var RelationalModel = Backbone.RelationalModel,
-        Collection 		= Backbone.Collection;
-
-
-    var setName = function(name) {
-        this.set("name", name);
-    };
-
+    var RelationalModel = Backbone.RelationalModel.extend({
+        setName: function (name) {
+            this.set("name", name);
+        },
+        getName: function () {
+            this.get("name");
+        }
+    }),
+    Collection = Backbone.Collection;
 
 
     var CurrencyPack = RelationalModel.extend({
@@ -36,7 +37,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
         },
-        setName : setName,
         getIosId : function() {
             return this.get("purchasableItem").marketItem.iosId;
         },
@@ -94,7 +94,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         setPrice : function(price) {
             return this._setPurchasableItem({pvi_amount : price});
         },
-        setName : setName,
         _setPurchasableItem : function (options) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
