@@ -309,6 +309,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
     var IScrollCollectionView = BaseCompositeView.extend({
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
+        initialize : function() {
+            _.bindAll(this, "refreshIScroll");
+        },
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
         },
@@ -340,6 +343,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
     var ExpandableIScrollCollectionView = IScrollCollectionView.extend({
         itemView : ExpandableEquipppableItemView,
+        initialize : function() {
+            _.bindAll(this, "onItemviewExpandCollapseTransitionend");
+        },
         onItemviewExpand : function(view) {
             if (this.expandedChild) this.expandedChild.collapse({noSound: true});
             this.expandedChild = view;
