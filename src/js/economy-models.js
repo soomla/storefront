@@ -86,8 +86,9 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.get("purchasableItem").pvi_itemId;
         },
         getPrice : function() {
-            return this.get("purchasableItem").pvi_amount;
-        },
+            var pi = this.get("purchasableItem");
+            return this.isMarketPurchaseType() ? pi.marketItem.price : pi.pvi_amount;
+            },
         setCurrencyId : function(currencyId) {
             return this._setPurchasableItem({pvi_itemId : currencyId});
         },
@@ -104,6 +105,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         is : function(type) {
             if (type === "upgradable") return this.has("upgradeId");
             return this.get("type") === type;
+        },
+        isMarketPurchaseType : function() {
+            return this.get("purchasableItem").purchaseType === "market";
         }
     });
 

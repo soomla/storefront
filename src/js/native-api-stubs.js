@@ -22,25 +22,29 @@ define("nativeApiStubs", function(){
             }
         },
         _wantsToBuyVirtualGoods : function(model, createMap) {
-            var goods       = {},
-                balances    = {},
-                currencyId  = model.getCurrencyId(),
-                newBalance  = SoomlaJS.store.getBalance(currencyId) - model.getPrice(currencyId);
+            var goods = {};
 
-            // Check if there's enough balance for the purchase
-            if (newBalance < 0) {
-                _jsAPI.errInsufficientFunds(currencyId);
-                return;
+            if (!model.isMarketPurchaseType()) {
+
+                // The good is purchased via other virtual items
+                var balances    = {},
+                    currencyId  = model.getCurrencyId(),
+                    newBalance  = SoomlaJS.store.getBalance(currencyId) - model.getPrice(currencyId);
+
+                // Check if there's enough balance for the purchase
+                if (newBalance < 0) {
+                    _jsAPI.errInsufficientFunds(currencyId);
+                    return;
+                }
+
+                // Update currency balance
+                balances[currencyId] = {balance: newBalance};
+                _jsAPI.currenciesUpdated(balances);
             }
 
-            // Increment good balance
+            // Increment and update good balance
             goods[model.id] = createMap(model);
-
-            // Update currency balance
-            balances[currencyId] = {balance: newBalance};
-
             _jsAPI.goodsUpdated(goods);
-            _jsAPI.currenciesUpdated(balances);
         },
         _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
