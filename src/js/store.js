@@ -225,8 +225,12 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     // Expose UI and notify application when all conditions are met:
                     // 1. The store is rendered (and all regular images are preloaded)
                     // 2. Background images were preloaded
+                    //
+                    // Even if these conditions fail, always proceed to load the store by using $.always.
+                    // Worst case - some images will be missing in the UI
+                    //
                     // TODO: Add condition when the injected CSS is loaded
-                    $.when(backgroundImagesPromise, storeViewDeferred.promise()).then(function() {
+                    $.when(backgroundImagesPromise, storeViewDeferred.promise()).always(function() {
 
                         $("#preroll-cover").remove();
 
