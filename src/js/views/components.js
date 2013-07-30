@@ -472,6 +472,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
             // Balance currency balance changes
             this.model.get("currencies").on("change:balance", this.updateBalance, this);
+
+            // Listen to market purchase events
+            this.listenTo(this.model, "goods:update:before currencies:update:before", this.closeDialog, this);
         },
         serializeData : function() {
             var currencies  = this.model.get("currencies").toJSON(),

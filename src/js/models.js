@@ -232,16 +232,27 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             });
         },
         setBalance : function(balances) {
+
+            // Notify listeners before updating currencies
+            this.trigger("currencies:update:before");
+
             var currencies = this.get("currencies");
             _.each(balances, function(attributes, currency) {
                 currencies.get(currency).set("balance", attributes.balance);
             });
+
+            // Notify listeners after updating goods
+            this.trigger("currencies:update:after");
             return this;
         },
         getBalance : function(currency) {
             return this.get("currencies").get(currency).get("balance");
         },
         updateVirtualGoods : function(goods) {
+
+            // Notify listeners before updating goods
+            this.trigger("goods:update:before");
+
             var _this = this;
             _.each(goods, function(attributes, good) {
                 good = _this.goodsMap[good];
@@ -274,6 +285,8 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                     good.upgrade(attributes.currentUpgrade);
                 }
             });
+
+            // Notify listeners after updating goods
             this.trigger("goods:update:after");
             return this;
         },
