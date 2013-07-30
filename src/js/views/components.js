@@ -614,8 +614,10 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
                 dialog.show();
             });
         },
-        leaveStore : function() {
-            this.playSound().wantsToLeaveStore();
+        leaveStore : function(options) {
+            options || (options = {});
+            if (!options.silent) this.playSound();
+            this.wantsToLeaveStore();
         },
         conditionalPlaySound : function(view, options) {
             if (!(options && options.noSound)) return this.playSound();

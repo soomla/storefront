@@ -274,6 +274,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                     good.upgrade(attributes.currentUpgrade);
                 }
             });
+            this.trigger("goods:update:after");
             return this;
         },
         updateNonConsumables : function(nonConsumables) {
