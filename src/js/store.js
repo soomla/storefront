@@ -134,7 +134,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 */
 
                 // Define which CSS, JS and Handlebars files need to be fetched
-                // The template folder is either overriden externally in the JSON or is hardcoded
+                // The template folder is either overridden externally in the JSON or is hardcoded
                 // to the location of the template on the device
                 var templateName        = json.template.name,
                     templatesFolder     = json.template.baseUrl || "../template",

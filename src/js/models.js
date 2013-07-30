@@ -722,7 +722,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             delete json.supportedFeatures;
 
 
-            // Remove the base URL that was injected by the store bridge (only for loading assets in the dashboard)
+            // Remove the injected base URL (only for loading assets in the dashboard)
             // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
             // a shallow clone.  See http://underscorejs.org/#clone
             // This is why cloning the template object first is necessary.  Manipulating it directly will
