@@ -8,6 +8,12 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getName: function () {
             this.get("name");
+        },
+        getIosId : function() {
+            return this.get("purchasableItem").marketItem.iosId;
+        },
+        getAndroidId : function() {
+            return this.get("purchasableItem").marketItem.androidId;
         }
     }),
     Collection = Backbone.Collection;
@@ -36,12 +42,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
-        },
-        getIosId : function() {
-            return this.get("purchasableItem").marketItem.iosId;
-        },
-        getAndroidId : function() {
-            return this.get("purchasableItem").marketItem.androidId;
         },
         setMarketItemId : function(type, id) {
             switch (type) {
@@ -86,10 +86,34 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.get("purchasableItem").pvi_itemId;
         },
         getPrice : function() {
-            return this.get("purchasableItem").pvi_amount;
+            var pi = this.get("purchasableItem");
+            return pi.purchaseType === "virtualItem" ? pi.pvi_amount : pi.marketItem.price;
         },
         setCurrencyId : function(currencyId) {
             return this._setPurchasableItem({pvi_itemId : currencyId});
+        },
+        setPurchaseType : function(options) {
+            var purchasableItem;
+
+            if (options.type === "market") {
+                purchasableItem = {
+                    marketItem : {
+                        consumable  : 1,
+                        price       : this.getPrice(),
+                        androidId   : this.id,
+                        iosId       : this.id
+                    },
+                    purchaseType : "market"
+                };
+            } else {
+                purchasableItem = {
+                    pvi_itemId  : options.currencyId,
+                    pvi_amount  : this.getPrice(),
+                    purchaseType: "virtualItem"
+                };
+            }
+
+            this.set("purchasableItem", purchasableItem);
         },
         setPrice : function(price) {
             return this._setPurchasableItem({pvi_amount : price});
