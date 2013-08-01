@@ -58,15 +58,15 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             _.bindAll(this, "getBalance", "setBalance", "updateUpgradeModelAssets", "updateVirtualGoods");
 
             // Create a {ID : good} map with goods from all categories
-            var goodsMap 		= this.goodsMap 		= {};
-            var marketItemsMap 	= this.marketItemsMap 	= {};
-            var categoryMap 	= this.categoryMap 		= {};
+            var goodsMap    = this.goodsMap     = {};
+            var packsMap    = this.packsMap     = {};
+            var categoryMap = this.categoryMap  = {};
 
 
             // Populate market items map
             _.each(this.get("currencyPacks"), function(rawPack) {
                 var pack = new CurrencyPack(rawPack);
-                marketItemsMap[pack.id] = pack;
+                packsMap[pack.id] = pack;
             });
 
             //
@@ -135,7 +135,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             var currencies = this.get("currencies");
             _.each(this.get("currencyPacks"), function(pack) {
                 var packs = currencies.get(pack.currency_itemId).get("packs");
-                packs.add(marketItemsMap[pack.itemId]);
+                packs.add(packsMap[pack.itemId]);
             });
 
             // Fill goods from the raw categories into category buckets (collections)
@@ -197,8 +197,8 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },
-        getMarketItem : function(itemId) {
-            return this.marketItemsMap[itemId];
+        getCurrencyPack : function(itemId) {
+            return this.packsMap[itemId];
         },
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
@@ -216,7 +216,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             var modelAssets = this.getModelAssets();
 
-            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
+            _.each([this.goodsMap, this.packsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
                 if (_.has(map, oldItemId)) {
                     map[newItemId] = map[oldItemId];
                     delete map[oldItemId];
@@ -227,7 +227,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             var modelAssets = this.getModelAssets();
 
-            _.each([this.goodsMap, this.marketItemsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
+            _.each([this.goodsMap, this.packsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
                 if (_.has(map, id)) delete map[id];
             });
         },
@@ -448,7 +448,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             this.get("currencies").get(currency_itemId).get("packs").add(currencyPack, {at: 0});
 
             // Add pack to other maps
-            this.marketItemsMap[currencyPack.id] = currencyPack;
+            this.packsMap[currencyPack.id] = currencyPack;
 
             return currencyPack;
         },
@@ -584,7 +584,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             });
 
             // Update all currency packs associated with this currency
-            _.each(this.marketItemsMap, function(currencyPack) {
+            _.each(this.packsMap, function(currencyPack) {
                 if (currencyPack.getCurrencyId() === oldItemId) currencyPack.setCurrencyId(newItemId);
             });
 
