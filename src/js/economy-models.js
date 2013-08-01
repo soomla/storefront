@@ -122,7 +122,17 @@ define("economyModels", ["backbone"], function(Backbone) {
             this.set("purchasableItem", purchasableItem);
         },
         setPrice : function(price) {
-            return this._setPurchasableItem({pvi_amount : price});
+            if (this.isMarketPurchaseType()) {
+
+                // Deep clone the purchasable item and set the market item's price
+                var pi =  this.get("purchasableItem"),
+                    purchasableItem = _.extend({}, pi);
+                purchasableItem.marketItem = _.extend({}, pi.marketItem);
+                purchasableItem.marketItem.price = price;
+                return this.set("purchasableItem", purchasableItem);
+            } else {
+                return this._setPurchasableItem({pvi_amount : price});
+            }
         },
         _setPurchasableItem : function (options) {
 
