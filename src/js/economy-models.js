@@ -1,5 +1,8 @@
 define("economyModels", ["backbone"], function(Backbone) {
 
+    var marketPurchaseType      = "market",
+        virtualItemPurchaseType = "virtualItem";
+
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel.extend({
@@ -14,6 +17,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getAndroidId : function() {
             return this.get("purchasableItem").marketItem.androidId;
+        },
+        isMarketPurchaseType : function() {
+            return this.get("purchasableItem").purchaseType === marketPurchaseType;
         }
     }),
     Collection = Backbone.Collection;
@@ -79,7 +85,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             purchasableItem : {
                 pvi_itemId: "currency_coins",
                 pvi_amount: 100,
-                purchaseType: "virtualItem"
+                purchaseType: virtualItemPurchaseType
             }
         },
         getCurrencyId : function() {
@@ -87,7 +93,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getPrice : function() {
             var pi = this.get("purchasableItem");
-            return pi.purchaseType === "virtualItem" ? pi.pvi_amount : pi.marketItem.price;
+            return pi.purchaseType === virtualItemPurchaseType ? pi.pvi_amount : pi.marketItem.price;
         },
         setCurrencyId : function(currencyId) {
             return this._setPurchasableItem({pvi_itemId : currencyId});
@@ -95,7 +101,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         setPurchaseType : function(options) {
             var purchasableItem;
 
-            if (options.type === "market") {
+            if (options.type === marketPurchaseType) {
                 purchasableItem = {
                     marketItem : {
                         consumable  : 1,
@@ -103,13 +109,13 @@ define("economyModels", ["backbone"], function(Backbone) {
                         androidId   : this.id,
                         iosId       : this.id
                     },
-                    purchaseType : "market"
+                    purchaseType : marketPurchaseType
                 };
             } else {
                 purchasableItem = {
                     pvi_itemId  : options.currencyId,
                     pvi_amount  : this.getPrice(),
-                    purchaseType: "virtualItem"
+                    purchaseType: virtualItemPurchaseType
                 };
             }
 
