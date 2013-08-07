@@ -1,5 +1,8 @@
 define("economyModels", ["backbone"], function(Backbone) {
 
+    var marketPurchaseType      = "market",
+        virtualItemPurchaseType = "virtualItem";
+
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel.extend({
@@ -8,6 +11,15 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getName: function () {
             this.get("name");
+        },
+        getIosId : function() {
+            return this.get("purchasableItem").marketItem.iosId;
+        },
+        getAndroidId : function() {
+            return this.get("purchasableItem").marketItem.androidId;
+        },
+        isMarketPurchaseType : function() {
+            return this.get("purchasableItem").purchaseType === marketPurchaseType;
         }
     }),
     Collection = Backbone.Collection;
@@ -36,12 +48,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
-        },
-        getIosId : function() {
-            return this.get("purchasableItem").marketItem.iosId;
-        },
-        getAndroidId : function() {
-            return this.get("purchasableItem").marketItem.androidId;
         },
         setMarketItemId : function(type, id) {
             switch (type) {
@@ -79,7 +85,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             purchasableItem : {
                 pvi_itemId: "currency_coins",
                 pvi_amount: 100,
-                purchaseType: "virtualItem"
+                purchaseType: virtualItemPurchaseType
             }
         },
         getCurrencyId : function() {
@@ -88,12 +94,45 @@ define("economyModels", ["backbone"], function(Backbone) {
         getPrice : function() {
             var pi = this.get("purchasableItem");
             return this.isMarketPurchaseType() ? pi.marketItem.price : pi.pvi_amount;
-            },
+        },
         setCurrencyId : function(currencyId) {
             return this._setPurchasableItem({pvi_itemId : currencyId});
         },
+        setPurchaseType : function(options) {
+            var purchasableItem;
+
+            if (options.type === marketPurchaseType) {
+                purchasableItem = {
+                    marketItem : {
+                        consumable  : 1,
+                        price       : this.getPrice(),
+                        androidId   : this.id,
+                        iosId       : this.id
+                    },
+                    purchaseType : marketPurchaseType
+                };
+            } else {
+                purchasableItem = {
+                    pvi_itemId  : options.currencyId,
+                    pvi_amount  : this.getPrice(),
+                    purchaseType: virtualItemPurchaseType
+                };
+            }
+
+            this.set("purchasableItem", purchasableItem);
+        },
         setPrice : function(price) {
-            return this._setPurchasableItem({pvi_amount : price});
+            if (this.isMarketPurchaseType()) {
+
+                // Deep clone the purchasable item and set the market item's price
+                var pi =  this.get("purchasableItem"),
+                    purchasableItem = _.extend({}, pi);
+                purchasableItem.marketItem = _.extend({}, pi.marketItem);
+                purchasableItem.marketItem.price = price;
+                return this.set("purchasableItem", purchasableItem);
+            } else {
+                return this._setPurchasableItem({pvi_amount : price});
+            }
         },
         _setPurchasableItem : function (options) {
 

@@ -17,7 +17,7 @@ define("nativeApiStubs", function(){
                 this._wantsToBuyVirtualGoods(model, function(model) {
                     return {balance: model.get("balance") + 1};
                 });
-            } else if (model = SoomlaJS.store.getMarketItem(itemId)) {
+            } else if (model = SoomlaJS.store.getCurrencyPack(itemId)) {
                 this._wantsToBuyMarketItem(model);
             }
         },
@@ -52,7 +52,6 @@ define("nativeApiStubs", function(){
                     _jsAPI.goodsUpdated(goods);
                 }, 1000);
             }
-
         },
         _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
