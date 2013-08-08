@@ -334,64 +334,97 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
-            var firstCurrencyId     = this.getFirstCurrency().id,
-                assetUrl            = options.assetUrl || Urls.imagePlaceholder,
+
+            var modelAssets = this.getModelAssets(),
+                assetUrl    = options.assetUrl || Urls.imagePlaceholder,
+                type        = options.type || "singleUse",
+                GoodType,
+                good,
+                category;
+
+            if (this.supportsMarketPurchaseTypeOnly()) {
+
+                // For market purchase only stores, no need to consider all good types, categories or currencies
+                switch(type) {
+                    case "lifetime":
+                        GoodType = LifetimeGood;
+                        break;
+                    default:
+                        GoodType = SingleUseGood;
+                        break;
+                }
+
+                good = new GoodType({
+                    itemId  : _.uniqueId("item_"),
+                    type    : type
+                });
+                good.setPurchaseType({type: "market"});
+
+                // Ensure the model has an asset in the `modelAssets`
+                // before adding it to the collection (which triggers a render)
+                modelAssets.items[good.id] = assetUrl;
+
+                category = this.getFirstCategory();
+
+                // Add good to other maps
+                this.goodsMap[good.id] = good;
+                this.categoryMap[good.id] = category;
+            } else {
+
+                var firstCurrencyId     = this.getFirstCurrency().id,
                 progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
 
-            var GoodType;
+                switch(type) {
+                    case "equippable":
+                        GoodType = EquippableGood;
+                        break;
+                    case "lifetime":
+                        GoodType = LifetimeGood;
+                        break;
+                    case "upgradable":
+                        GoodType = UpgradableGood;
+                        break;
+                    default:
+                        GoodType = SingleUseGood;
+                        break;
+                }
 
-            switch(options.type) {
-                case "equippable":
-                    GoodType = EquippableGood;
-                    break;
-                case "lifetime":
-                    GoodType = LifetimeGood;
-                    break;
-                case "upgradable":
-                    GoodType = UpgradableGood;
-                    break;
-                default:
-                    GoodType = SingleUseGood;
-                    break;
-            }
-
-            var good = new GoodType({
-                itemId  : _.uniqueId("item_"),
-                type    : options.type || "singleUse"
-            });
-            good.setCurrencyId(firstCurrencyId);
-
-            // Update upgradable model assets whenever an item ID changes
-            if (options.type === "upgradable") {
-                this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
-            }
-
-            // Ensure the model has an asset in the `modelAssets`
-            // before adding it to the collection (which triggers a render)
-            var modelAssets = this.getModelAssets();
-
-            if (options.type === "upgradable") {
-                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
-            } else {
-                modelAssets.items[good.id] = assetUrl;
-            }
-
-            var categoryId  = options.categoryId || this.getFirstCategory().id,
-                category    = this.getCategory(categoryId);
-
-            // Add good to other maps
-            this.goodsMap[good.id] = good;
-            this.categoryMap[good.id] = category;
-
-
-            // For upgradable goods, enforce at least one level.
-            // Assumes that the good is already mapped in the goods map
-            if (options.type === "upgradable") {
-                this.addUpgrade({
-                    goodItemId          : good.id,
-                    assetUrl            : assetUrl,
-                    progressBarAssetUrl : progressBarAssetUrl
+                good = new GoodType({
+                    itemId  : _.uniqueId("item_"),
+                    type    : type
                 });
+                good.setCurrencyId(firstCurrencyId);
+
+                // Update upgradable model assets whenever an item ID changes
+                if (type === "upgradable") {
+                    this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
+                }
+
+                // Ensure the model has an asset in the `modelAssets`
+                // before adding it to the collection (which triggers a render)
+                if (type === "upgradable") {
+                    modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
+                } else {
+                    modelAssets.items[good.id] = assetUrl;
+                }
+
+                var categoryId = options.categoryId || this.getFirstCategory().id;
+                category = this.getCategory(categoryId);
+
+                // Add good to other maps
+                this.goodsMap[good.id] = good;
+                this.categoryMap[good.id] = category;
+
+
+                // For upgradable goods, enforce at least one level.
+                // Assumes that the good is already mapped in the goods map
+                if (type === "upgradable") {
+                    this.addUpgrade({
+                        goodItemId          : good.id,
+                        assetUrl            : assetUrl,
+                        progressBarAssetUrl : progressBarAssetUrl
+                    });
+                }
             }
 
             // Add good to category
@@ -618,6 +651,10 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             });
 
             return currency;
+        },
+        supportsMarketPurchaseTypeOnly : function() {
+            var purchaseTypes = this.get("supportedFeatures").purchaseTypes;
+            return (purchaseTypes && purchaseTypes.market && ! purchaseTypes.virtualItem);
         },
         toJSON : function(options) {
 
