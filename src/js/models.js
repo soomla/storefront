@@ -132,7 +132,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
 
             // Fill currency packs into currency buckets (collections)
-            var currencies = this.get("currencies");
+            var currencies = this.getCurrencies();
             _.each(this.get("currencyPacks"), function(pack) {
                 var packs = currencies.get(pack.currency_itemId).get("packs");
                 packs.add(packsMap[pack.itemId]);
@@ -149,7 +149,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                     categoryMap[goodItemId] = category;
                 });
 
-                this.get("categories").add(category);
+                this.getCategories().add(category);
             }, this);
 
             // Clean fields that are not unnecessary to prevent duplicate data
@@ -236,7 +236,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             // Notify listeners before updating currencies
             this.trigger("currencies:update:before");
 
-            var currencies = this.get("currencies");
+            var currencies = this.getCurrencies();
             _.each(balances, function(attributes, currency) {
                 currencies.get(currency).set("balance", attributes.balance);
             });
@@ -245,8 +245,8 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             this.trigger("currencies:update:after");
             return this;
         },
-        getBalance : function(currency) {
-            return this.get("currencies").get(currency).get("balance");
+        getBalance : function(currencyId) {
+            return this.getCurrency(currencyId).get("balance");
         },
         updateVirtualGoods : function(goods) {
 
@@ -314,7 +314,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                 currency = new Currency(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
                 this.getModelAssets().items[currency.id] = assetUrl;
-                this.get("currencies").add(currency);
+                this.getCurrencies().add(currency);
             } catch (e) {
                 throw new Error(duplicateCurrencyErrorMessage);
             }
@@ -326,7 +326,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                 category = new Category(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
                 this.getModelAssets().categories[category.id] = assetUrl;
-                this.get("categories").add(category);
+                this.getCategories().add(category);
             } catch(e) {
                 throw new Error(duplicateCategoryErrorMessage);
             }
@@ -376,8 +376,8 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                 modelAssets.items[good.id] = assetUrl;
             }
 
-            var categoryId  = options.categoryId || this.get("categories").first().id,
-                category    = this.get("categories").get(categoryId);
+            var categoryId  = options.categoryId || this.getFirstCategory().id,
+                category    = this.getCategory(categoryId);
 
             // Add good to other maps
             this.goodsMap[good.id] = good;
@@ -459,7 +459,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
-            this.get("currencies").get(currency_itemId).get("packs").add(currencyPack, {at: 0});
+            this.getCurrency(currency_itemId).get("packs").add(currencyPack, {at: 0});
 
             // Add pack to other maps
             this.packsMap[currencyPack.id] = currencyPack;
@@ -492,9 +492,6 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             good.trigger('destroy', good, good.collection, {});
         },
         removeCurrencyPack : function(pack) {
-
-            var currencyId  = pack.getCurrencyId(),
-            currency    = this.get("currencies").get(currencyId);
 
             // Remove from mappings
             this.removeItemId(pack.id);
@@ -554,17 +551,29 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             // Remove the currency model
             currency.trigger('destroy', currency, currency.collection, {});
         },
+        getCategories : function() {
+            return this.get("categories");
+        },
+        getCategory : function(id) {
+            return this.getCategories().get(id);
+        },
         getFirstCategory : function() {
-            return this.get("categories").first();
+            return this.getCategories().first();
+        },
+        getCurrencies : function() {
+            return this.get("currencies");
+        },
+        getCurrency : function(id) {
+            return this.getCurrencies().get(id);
         },
         getFirstCurrency: function() {
-            return this.get("currencies").first();
+            return this.getCurrencies().first();
         },
         changeCategoryName : function(id, newName) {
 
             var oldItemId   = id,
                 newItemId   = newName,
-                categories  = this.get("categories"),
+                categories  = this.getCategories(),
                 category    = categories.get(id);
 
             // If the new item ID is a duplicate, throw an error
@@ -583,7 +592,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             var oldItemId   = id,
                 newItemId   = Currency.generateNameFor(newName),
-                currencies  = this.get("currencies"),
+                currencies  = this.getCurrencies(),
                 currency    = currencies.get(id);
 
             // If the new item ID is a duplicate, throw an error
