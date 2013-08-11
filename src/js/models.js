@@ -132,7 +132,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
 
             // Fill currency packs into currency buckets (collections)
-            var currencies = this.get("currencies");
+            var currencies = this.getCurrencies();
             _.each(this.get("currencyPacks"), function(pack) {
                 var packs = currencies.get(pack.currency_itemId).get("packs");
                 packs.add(packsMap[pack.itemId]);
@@ -149,7 +149,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                     categoryMap[goodItemId] = category;
                 });
 
-                this.get("categories").add(category);
+                this.getCategories().add(category);
             }, this);
 
             // Clean fields that are not unnecessary to prevent duplicate data
@@ -232,16 +232,27 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             });
         },
         setBalance : function(balances) {
-            var currencies = this.get("currencies");
+
+            // Notify listeners before updating currencies
+            this.trigger("currencies:update:before");
+
+            var currencies = this.getCurrencies();
             _.each(balances, function(attributes, currency) {
                 currencies.get(currency).set("balance", attributes.balance);
             });
+
+            // Notify listeners after updating goods
+            this.trigger("currencies:update:after");
             return this;
         },
-        getBalance : function(currency) {
-            return this.get("currencies").get(currency).get("balance");
+        getBalance : function(currencyId) {
+            return this.getCurrency(currencyId).get("balance");
         },
         updateVirtualGoods : function(goods) {
+
+            // Notify listeners before updating goods
+            this.trigger("goods:update:before");
+
             var _this = this;
             _.each(goods, function(attributes, good) {
                 good = _this.goodsMap[good];
@@ -274,6 +285,9 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                     good.upgrade(attributes.currentUpgrade);
                 }
             });
+
+            // Notify listeners after updating goods
+            this.trigger("goods:update:after");
             return this;
         },
         updateNonConsumables : function(nonConsumables) {
@@ -300,7 +314,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                 currency = new Currency(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
                 this.getModelAssets().items[currency.id] = assetUrl;
-                this.get("currencies").add(currency);
+                this.getCurrencies().add(currency);
             } catch (e) {
                 throw new Error(duplicateCurrencyErrorMessage);
             }
@@ -312,7 +326,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
                 category = new Category(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
                 this.getModelAssets().categories[category.id] = assetUrl;
-                this.get("categories").add(category);
+                this.getCategories().add(category);
             } catch(e) {
                 throw new Error(duplicateCategoryErrorMessage);
             }
@@ -320,64 +334,97 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
         },
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
-            var firstCurrencyId     = this.getFirstCurrency().id,
-                assetUrl            = options.assetUrl || Urls.imagePlaceholder,
+
+            var modelAssets = this.getModelAssets(),
+                assetUrl    = options.assetUrl || Urls.imagePlaceholder,
+                type        = options.type || "singleUse",
+                GoodType,
+                good,
+                category;
+
+            if (this.supportsMarketPurchaseTypeOnly()) {
+
+                // For market purchase only stores, no need to consider all good types, categories or currencies
+                switch(type) {
+                    case "lifetime":
+                        GoodType = LifetimeGood;
+                        break;
+                    default:
+                        GoodType = SingleUseGood;
+                        break;
+                }
+
+                good = new GoodType({
+                    itemId  : _.uniqueId("item_"),
+                    type    : type
+                });
+                good.setPurchaseType({type: "market"});
+
+                // Ensure the model has an asset in the `modelAssets`
+                // before adding it to the collection (which triggers a render)
+                modelAssets.items[good.id] = assetUrl;
+
+                category = this.getFirstCategory();
+
+                // Add good to other maps
+                this.goodsMap[good.id] = good;
+                this.categoryMap[good.id] = category;
+            } else {
+
+                var firstCurrencyId     = this.getFirstCurrency().id,
                 progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
 
-            var GoodType;
+                switch(type) {
+                    case "equippable":
+                        GoodType = EquippableGood;
+                        break;
+                    case "lifetime":
+                        GoodType = LifetimeGood;
+                        break;
+                    case "upgradable":
+                        GoodType = UpgradableGood;
+                        break;
+                    default:
+                        GoodType = SingleUseGood;
+                        break;
+                }
 
-            switch(options.type) {
-                case "equippable":
-                    GoodType = EquippableGood;
-                    break;
-                case "lifetime":
-                    GoodType = LifetimeGood;
-                    break;
-                case "upgradable":
-                    GoodType = UpgradableGood;
-                    break;
-                default:
-                    GoodType = SingleUseGood;
-                    break;
-            }
-
-            var good = new GoodType({
-                itemId  : _.uniqueId("item_"),
-                type    : options.type || "singleUse"
-            });
-            good.setCurrencyId(firstCurrencyId);
-
-            // Update upgradable model assets whenever an item ID changes
-            if (options.type === "upgradable") {
-                this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
-            }
-
-            // Ensure the model has an asset in the `modelAssets`
-            // before adding it to the collection (which triggers a render)
-            var modelAssets = this.getModelAssets();
-
-            if (options.type === "upgradable") {
-                modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
-            } else {
-                modelAssets.items[good.id] = assetUrl;
-            }
-
-            var categoryId  = options.categoryId || this.get("categories").first().id,
-                category    = this.get("categories").get(categoryId);
-
-            // Add good to other maps
-            this.goodsMap[good.id] = good;
-            this.categoryMap[good.id] = category;
-
-
-            // For upgradable goods, enforce at least one level.
-            // Assumes that the good is already mapped in the goods map
-            if (options.type === "upgradable") {
-                this.addUpgrade({
-                    goodItemId          : good.id,
-                    assetUrl            : assetUrl,
-                    progressBarAssetUrl : progressBarAssetUrl
+                good = new GoodType({
+                    itemId  : _.uniqueId("item_"),
+                    type    : type
                 });
+                good.setCurrencyId(firstCurrencyId);
+
+                // Update upgradable model assets whenever an item ID changes
+                if (type === "upgradable") {
+                    this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
+                }
+
+                // Ensure the model has an asset in the `modelAssets`
+                // before adding it to the collection (which triggers a render)
+                if (type === "upgradable") {
+                    modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
+                } else {
+                    modelAssets.items[good.id] = assetUrl;
+                }
+
+                var categoryId = options.categoryId || this.getFirstCategory().id;
+                category = this.getCategory(categoryId);
+
+                // Add good to other maps
+                this.goodsMap[good.id] = good;
+                this.categoryMap[good.id] = category;
+
+
+                // For upgradable goods, enforce at least one level.
+                // Assumes that the good is already mapped in the goods map
+                if (type === "upgradable") {
+                    this.addUpgrade({
+                        goodItemId          : good.id,
+                        assetUrl            : assetUrl,
+                        progressBarAssetUrl : progressBarAssetUrl
+                    });
+                }
             }
 
             // Add good to category
@@ -445,7 +492,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
-            this.get("currencies").get(currency_itemId).get("packs").add(currencyPack, {at: 0});
+            this.getCurrency(currency_itemId).get("packs").add(currencyPack, {at: 0});
 
             // Add pack to other maps
             this.packsMap[currencyPack.id] = currencyPack;
@@ -478,9 +525,6 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             good.trigger('destroy', good, good.collection, {});
         },
         removeCurrencyPack : function(pack) {
-
-            var currencyId  = pack.getCurrencyId(),
-            currency    = this.get("currencies").get(currencyId);
 
             // Remove from mappings
             this.removeItemId(pack.id);
@@ -540,17 +584,29 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             // Remove the currency model
             currency.trigger('destroy', currency, currency.collection, {});
         },
+        getCategories : function() {
+            return this.get("categories");
+        },
+        getCategory : function(id) {
+            return this.getCategories().get(id);
+        },
         getFirstCategory : function() {
-            return this.get("categories").first();
+            return this.getCategories().first();
+        },
+        getCurrencies : function() {
+            return this.get("currencies");
+        },
+        getCurrency : function(id) {
+            return this.getCurrencies().get(id);
         },
         getFirstCurrency: function() {
-            return this.get("currencies").first();
+            return this.getCurrencies().first();
         },
         changeCategoryName : function(id, newName) {
 
             var oldItemId   = id,
                 newItemId   = newName,
-                categories  = this.get("categories"),
+                categories  = this.getCategories(),
                 category    = categories.get(id);
 
             // If the new item ID is a duplicate, throw an error
@@ -569,7 +625,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             var oldItemId   = id,
                 newItemId   = Currency.generateNameFor(newName),
-                currencies  = this.get("currencies"),
+                currencies  = this.getCurrencies(),
                 currency    = currencies.get(id);
 
             // If the new item ID is a duplicate, throw an error
@@ -595,6 +651,10 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             });
 
             return currency;
+        },
+        supportsMarketPurchaseTypeOnly : function() {
+            var purchaseTypes = this.get("supportedFeatures").purchaseTypes;
+            return (purchaseTypes && purchaseTypes.market && ! purchaseTypes.virtualItem);
         },
         toJSON : function(options) {
 
@@ -708,7 +768,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             delete json.supportedFeatures;
 
 
-            // Remove the base URL that was injected by the store bridge (only for loading assets in the dashboard)
+            // Remove the injected base URL (only for loading assets in the dashboard)
             // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
             // a shallow clone.  See http://underscorejs.org/#clone
             // This is why cloning the template object first is necessary.  Manipulating it directly will
