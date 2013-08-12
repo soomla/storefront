@@ -8,10 +8,6 @@ define("jsAPI", {
         SoomlaJS.store.set("isCurrencyStoreDisabled", true);
     },
     currenciesUpdated : function(balances) {
-        // TODO: Test if this condition is needed
-        if (!!SoomlaJS.storeView) {
-            SoomlaJS.storeView.closeDialog();
-        }
         SoomlaJS.store.setBalance(balances);
     },
     goodsUpdated : function(virtualGoods) {

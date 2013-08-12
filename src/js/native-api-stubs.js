@@ -22,7 +22,10 @@ define("nativeApiStubs", function(){
             }
         },
         _wantsToBuyVirtualGoods : function(model, createMap) {
+
+            // Increment and update good balance
             var goods = {};
+            goods[model.id] = createMap(model);
 
             if (!model.isMarketPurchaseType()) {
 
@@ -37,14 +40,18 @@ define("nativeApiStubs", function(){
                     return;
                 }
 
-                // Update currency balance
+                // Update currency and goods balance
                 balances[currencyId] = {balance: newBalance};
                 _jsAPI.currenciesUpdated(balances);
-            }
+                _jsAPI.goodsUpdated(goods);
+            } else {
 
-            // Increment and update good balance
-            goods[model.id] = createMap(model);
-            _jsAPI.goodsUpdated(goods);
+                // Start market purchase and simulate a delay before actually giving the good
+                _jsAPI.marketPurchaseStarted();
+                setTimeout(function() {
+                    _jsAPI.goodsUpdated(goods);
+                }, 1000);
+            }
         },
         _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);

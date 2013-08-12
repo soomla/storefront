@@ -309,6 +309,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
     var IScrollCollectionView = BaseCompositeView.extend({
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
+        initialize : function() {
+            _.bindAll(this, "refreshIScroll");
+        },
         onRender : function() {
             this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
         },
@@ -340,6 +343,9 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
 
     var ExpandableIScrollCollectionView = IScrollCollectionView.extend({
         itemView : ExpandableEquipppableItemView,
+        initialize : function() {
+            _.bindAll(this, "onItemviewExpandCollapseTransitionend");
+        },
         onItemviewExpand : function(view) {
             if (this.expandedChild) this.expandedChild.collapse({noSound: true});
             this.expandedChild = view;
@@ -465,10 +471,13 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             BaseView.prototype.constructor.apply(this, arguments);
 
             // Balance currency balance changes
-            this.model.get("currencies").on("change:balance", this.updateBalance, this);
+            this.model.getCurrencies().on("change:balance", this.updateBalance, this);
+
+            // Listen to market purchase events
+            this.listenTo(this.model, "goods:update:before currencies:update:before", this.closeDialog, this);
         },
         serializeData : function() {
-            var currencies  = this.model.get("currencies").toJSON(),
+            var currencies  = this.model.getCurrencies().toJSON(),
                 modelAssets = this.model.getModelAssets();
 
             _.each(currencies, function(currency) {
@@ -608,8 +617,10 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
                 dialog.show();
             });
         },
-        leaveStore : function() {
-            this.playSound().wantsToLeaveStore();
+        leaveStore : function(options) {
+            options || (options = {});
+            if (!options.silent) this.playSound();
+            this.wantsToLeaveStore();
         },
         conditionalPlaySound : function(view, options) {
             if (!(options && options.noSound)) return this.playSound();
