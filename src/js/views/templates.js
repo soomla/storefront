@@ -88,6 +88,4 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
         var res = Handlebars.partials[context.type](context);
         return new Handlebars.SafeString(res);
     });
-    Handlebars.registerPartial("image", Handlebars.compile('<img class="title-image" src="{{src}}">'));
-    Handlebars.registerPartial("text", Handlebars.compile('<div class="title-image">{{text}}</div>'));
 });
