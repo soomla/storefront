@@ -77,10 +77,20 @@
     transform: @args;
 }
 
+.hardware-accelerate() {
+    .transform(translate3d(0,0,0));
+}
+
 
 // Backgrounds
 // -------------------------
-.centralizedBackground() {
+.centralizedCoveringBackground() {
     .background-size(cover);
     background-position: center;
 }
+
+.centralizedBackground() {
+    background-position: center;
+    background-repeat: no-repeat;
+}
+

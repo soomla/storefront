@@ -313,7 +313,8 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             _.bindAll(this, "refreshIScroll");
         },
         onRender : function() {
-            this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
+			this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
+            this.bindIscrollRefresh();
         },
         refreshIScroll: refreshIScroll,
         scrollToItemByModel: function (model, time) {
@@ -337,6 +338,13 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             } else {
                 $container.append(iv.el);
             }
+        },
+
+        // Support adding and removing items from the view
+        // while maintaining correct iscroll height
+        bindIscrollRefresh : function() {
+            this.listenTo(this, "after:item:added", this.refreshIScroll, this);
+            this.listenTo(this, "item:removed", this.refreshIScroll, this);
         }
     });
 
@@ -531,7 +539,10 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             $(balanceHolder).text(currency.get("balance"));
             // 
 			if(currency.previous("balance") < currency.get("balance")){
-				this.dialog.close();
+
+                // In the case of external balance injection, the dialog might not be defined
+                if (this.dialog) this.dialog.close();
+
                 $(balanceHolder).addClass("changed"); 
                 setTimeout(function(){
                     $(balanceHolder).removeClass("changed");
