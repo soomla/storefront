@@ -539,7 +539,10 @@ define("components", ["jquery", "backbone", "viewMixins", "marionette", "cssUtil
             $(balanceHolder).text(currency.get("balance"));
             // 
 			if(currency.previous("balance") < currency.get("balance")){
-				this.dialog.close();
+
+                // In the case of external balance injection, the dialog might not be defined
+                if (this.dialog) this.dialog.close();
+
                 $(balanceHolder).addClass("changed"); 
                 setTimeout(function(){
                     $(balanceHolder).removeClass("changed");
