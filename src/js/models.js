@@ -256,7 +256,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             var _this = this;
             _.each(goods, function(attributes, good) {
                 good = _this.goodsMap[good];
-                if (attributes.balance){
+                if (attributes.hasOwnProperty("balance")) {
                     good.set("balance", attributes.balance);
 
                     // TODO: Move this code out of here: separate model and view concerns!!!
