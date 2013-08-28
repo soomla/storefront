@@ -1,4 +1,4 @@
-define("itemViews", ["marionette", "urls", "marionetteExtensions"], function(Marionette, Urls) {
+define("itemViews", ["marionette", "urls", "marionetteExtensions", "jquery.fastbutton"], function(Marionette, Urls) {
 
     var BaseView = Marionette.ItemView.extend({
         _imagePlaceholder       : Urls.imagePlaceholder,
@@ -146,9 +146,6 @@ define("itemViews", ["marionette", "urls", "marionetteExtensions"], function(Mar
             this.onEquippingChange();
         }
     });
-
-
-
 
 
     return {
