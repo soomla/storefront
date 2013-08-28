@@ -85,7 +85,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
         initialize : function() {
-            _.bindAll(this, "refreshIScroll");
+            _.bindAll(this, "refreshIScroll", "scrollToItemByModel");
         },
         onRender : function() {
             this.createIScroll();
