@@ -1,4 +1,4 @@
-define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fastbutton", "marionetteExtensions"], function(Marionette, ItemViews, CssUtils) {
+define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fastbutton"], function(Marionette, ItemViews, CssUtils) {
 
 
     var ExpandableModule = {

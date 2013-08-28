@@ -1,4 +1,4 @@
-define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "marionetteExtensions", "iscroll"], function(Marionette, ItemViews, ExpandableItemViews) {
+define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "iscroll"], function(Marionette, ItemViews, ExpandableItemViews) {
 
 
     // Save a local copy

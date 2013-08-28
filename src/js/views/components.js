@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "marionette", "jquery.fastbutton", "marionetteExtensions", "imagesloaded", "iscroll"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins, Marionette) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "jquery.fastbutton", "imagesloaded", "iscroll"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins) {
 
 
     // Save a local copy
