@@ -1,0 +1,4 @@
+define("collectionViews", [], function() {
+
+    return {};
+});
