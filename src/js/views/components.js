@@ -85,11 +85,14 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         itemView : ItemView,
         itemViewContainer : "[data-iscroll='true']",
         initialize : function() {
-            _.bindAll(this, "refreshIScroll");
+            _.bindAll(this, "refreshIScroll", "scrollToItemByModel");
         },
         onRender : function() {
-			this.iscroll = new iScroll(this.getIScrollWrapper(), {hScroll: false, vScrollbar: false});
-            this.bindIscrollRefresh();
+            this.createIScroll();
+            this.bindIScrollRefresh();
+        },
+        createIScroll : function() {
+            this.iscroll = new iScroll(this.getIScrollWrapper(), this.getIScrollOptions());
         },
         refreshIScroll: refreshIScroll,
         scrollToItemByModel: function (model, time) {
@@ -99,6 +102,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         },
         getIScrollWrapper : function() {
             return Marionette.getOption(this, "iscrollWrapper") || this.el;
+        },
+        getIScrollOptions : function() {
+            var defaults = {hScroll: false, vScrollbar: false};
+            return _.extend(defaults, Marionette.getOption(this, "iscrollOptions"));
         },
 
         //
@@ -117,9 +124,34 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         // Support adding and removing items from the view
         // while maintaining correct iscroll height
-        bindIscrollRefresh : function() {
+        bindIScrollRefresh : function() {
             this.listenTo(this, "after:item:added", this.refreshIScroll, this);
             this.listenTo(this, "item:removed", this.refreshIScroll, this);
+        }
+    });
+
+    var HorizontalIScrollCollectionView = IScrollCollectionView.extend({
+        iscrollOptions : {
+            hScroll     : true,
+            vScroll     : false,
+            vScrollbar  : false,
+            hScrollbar  : false
+        },
+        createIScroll : function() {
+
+            // Calculate iscroll container width
+            // Needs to be deferred to next tick because otherwise the
+            // DOM children aren't fully rendered yet and don't have a width
+            setTimeout(_.bind(function() {
+                var children    = this.$itemViewContainer.children(),
+                    childCount  = children.length,
+                    childWidth  = children.first().outerWidth(true) + 20;
+
+                this.$itemViewContainer.width(childCount * childWidth);
+                this.iscroll.refresh();
+            }, this), 0);
+
+            this.iscroll = new iScroll(this.getIScrollWrapper(), this.getIScrollOptions());
         }
     });
 
@@ -423,6 +455,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         BaseCompositeView               : BaseCompositeView,
         CollectionView                  : CollectionView,
         IScrollCollectionView           : IScrollCollectionView,
+        HorizontalIScrollCollectionView : HorizontalIScrollCollectionView,
         ExpandableIScrollCollectionView : ExpandableIScrollCollectionView,
         CarouselView                    : CarouselView,
         BaseStoreView                   : BaseStoreView
