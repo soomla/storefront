@@ -1,4 +1,4 @@
-define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "iscroll"], function(Marionette, ItemViews, ExpandableItemViews) {
+define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "iscroll", "jquery.fastbutton"], function(Marionette, ItemViews, ExpandableItemViews) {
 
 
     // Save a local copy
