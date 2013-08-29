@@ -61,42 +61,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
     });
 
 
-    var NewLifetimeItemView = ItemView.extend({
-        className: "item lifetime",
-
-        // In this view type we don't want the view to entirely re-render on
-        // balance changes, so we override the parent initialize to avoid its events
-        initialize : function() {
-
-            // Balance changes affect the state of the view
-            this.listenTo(this.model, {
-                "change:purchasableItem"    : this.render,
-                "change:balance"            : this.onBalanceChange
-            }, this);
-        },
-        triggers : {
-            "fastclick" : "buy"
-        },
-        onBalanceChange : function() {
-            if (this.model.get("balance") >  0) {
-
-                // Disable further interaction with this view
-                this.undelegateEvents();
-                this.$el.addClass("owned");
-            } else {
-
-                // When the balance changed to 0 externally, reflect it in the UI
-                this.$el.removeClass("owned");
-            }
-        },
-        onRender : function() {
-
-            // Check the state of the view's virtual good and update the view accordingly
-            this.onBalanceChange();
-        }
-    });
-
-
     /**
      * Assumes initialization with an upgradable model
      * @type {*}
@@ -129,10 +93,14 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         triggers : {
             "fastclick .buy" : "buy"
         },
+
+
+        // In this view type we don't want the view to entirely re-render on
+        // balance changes, so we override the parent initialize to avoid its events
         initialize : function() {
 
-            // TODO: Check if this listener is necessary: might be duplicate with ItemView
-            this.model.on({
+            // Balance changes affect the state of the view
+            this.listenTo(this.model, {
                 "change:purchasableItem"    : this.render,
                 "change:balance"            : this.onBalanceChange
             }, this);
@@ -140,8 +108,10 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         onBalanceChange : function() {
             if (this.model.get("balance") >  0) {
                 this.$el.addClass("owned");
-                if (this.expanded) this.collapse({noSound: true});
+                this.onItemOwned();
             } else {
+
+                // When the balance is changed to 0 externally, reflect it in the UI
                 this.$el.removeClass("owned");
             }
         },
@@ -149,6 +119,11 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
 
             // Check the state of the view's virtual good and update the view accordingly
             this.onBalanceChange();
+        },
+        onItemOwned : function() {
+
+            // Disable further interaction with this view
+            this.undelegateEvents();
         }
     });
 
@@ -192,7 +167,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
-        NewLifetimeItemView : NewLifetimeItemView,
         EquippableItemView  : EquippableItemView
     };
 });

@@ -64,7 +64,11 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableLifetimeItemView = ItemViews.LifetimeItemView.extend();
+    var ExpandableLifetimeItemView = ItemViews.LifetimeItemView.extend({
+        onItemOwned : function() {
+            if (this.expanded) this.collapse({noSound: true});
+        }
+    });
 
 
     //
