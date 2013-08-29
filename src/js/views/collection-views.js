@@ -69,6 +69,7 @@ define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "is
             this.bindIScrollRefresh();
         },
         createIScroll : function() {
+            this.triggerMethod("before:iscroll:create");
             this.iscroll = new iScroll(this.getIScrollWrapper(), this.getIScrollOptions());
         },
         refreshIScroll: refreshIScroll,
@@ -115,21 +116,19 @@ define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "is
             vScrollbar  : false,
             hScrollbar  : false
         },
-        createIScroll : function() {
+        onBeforeIscrollCreate : function() {
 
             // Calculate iscroll container width
             // Needs to be deferred to next tick because otherwise the
             // DOM children aren't fully rendered yet and don't have a width
             setTimeout(_.bind(function() {
                 var children    = this.$itemViewContainer.children(),
-                childCount  = children.length,
-                childWidth  = children.first().outerWidth(true) + 20;
+                    childCount  = children.length,
+                    childWidth  = children.first().outerWidth(true);
 
                 this.$itemViewContainer.width(childCount * childWidth);
                 this.iscroll.refresh();
             }, this), 0);
-
-            this.iscroll = new iScroll(this.getIScrollWrapper(), this.getIScrollOptions());
         }
     });
 
