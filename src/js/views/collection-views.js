@@ -134,7 +134,7 @@ define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "is
 
 
     var ExpandableIScrollCollectionView = IScrollCollectionView.extend({
-        itemView : ExpandableItemViews.ExpandableEquipppableItemView,
+        itemView : ExpandableItemViews.ExpandableEquippableItemView,
         initialize : function() {
             _.bindAll(this, "onItemviewExpandCollapseTransitionend");
         },

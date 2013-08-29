@@ -38,7 +38,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableEquipppableItemView = ItemViews.EquippableItemView.extend({
+    var ExpandableEquippableItemView = ItemViews.EquippableItemView.extend({
         onBalanceChange : function() {
             if (this.model.get("balance") >  0) {
                 this.$el.addClass("owned");
@@ -70,7 +70,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     //
     // Extend functionality with expandable module and vendor prefixed transitionend event
     //
-    _.each([ExpandableUpgradableItemView, ExpandableEquipppableItemView, ExpandableSingleUseItemView, ExpandableLifetimeItemView], function(View) {
+    _.each([ExpandableUpgradableItemView, ExpandableEquippableItemView, ExpandableSingleUseItemView, ExpandableLifetimeItemView], function(View) {
         View.mixin = Backbone.View.mixin; // TODO: Solve this hack
         View.mixin(ExpandableModule);
         View.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
@@ -79,7 +79,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
     return {
         ExpandableUpgradableItemView    : ExpandableUpgradableItemView,
-        ExpandableEquipppableItemView   : ExpandableEquipppableItemView,
+        ExpandableEquippableItemView   : ExpandableEquippableItemView,
         ExpandableSingleUseItemView     : ExpandableSingleUseItemView,
         ExpandableLifetimeItemView      : ExpandableLifetimeItemView
     };
