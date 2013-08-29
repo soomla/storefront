@@ -37,7 +37,8 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         }
     });
 
-
+    // Used for non-consumables
+    // TODO: Review if necessary
     var BuyOnceItemView = ItemView.extend({
         initialize : function() {
             this.model.on("change", this.render, this);
@@ -56,6 +57,42 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
 
             // Check the state of the view's virtual good and update the view accordingly
             if (this.model.get("owned") === true) this.disable();
+        }
+    });
+
+
+    var NewLifetimeItemView = ItemView.extend({
+        className: "item lifetime",
+
+        // In this view type we don't want the view to entirely re-render on
+        // balance changes, so we override the parent initialize to avoid its events
+        initialize : function() {
+
+            // Balance changes affect the state of the view
+            this.listenTo(this.model, {
+                "change:purchasableItem"    : this.render,
+                "change:balance"            : this.onBalanceChange
+            }, this);
+        },
+        triggers : {
+            "fastclick" : "buy"
+        },
+        onBalanceChange : function() {
+            if (this.model.get("balance") >  0) {
+
+                // Disable further interaction with this view
+                this.undelegateEvents();
+                this.$el.addClass("owned");
+            } else {
+
+                // When the balance changed to 0 externally, reflect it in the UI
+                this.$el.removeClass("owned");
+            }
+        },
+        onRender : function() {
+
+            // Check the state of the view's virtual good and update the view accordingly
+            this.onBalanceChange();
         }
     });
 
@@ -155,6 +192,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
+        NewLifetimeItemView : NewLifetimeItemView,
         EquippableItemView  : EquippableItemView
     };
 });
