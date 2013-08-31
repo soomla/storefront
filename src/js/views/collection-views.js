@@ -124,9 +124,10 @@ define("collectionViews", ["marionette", "itemViews", "expandableItemViews", "is
             setTimeout(_.bind(function() {
                 var children    = this.$itemViewContainer.children(),
                     childCount  = children.length,
-                    childWidth  = children.first().outerWidth(true);
+                    childWidth  = children.first().outerWidth(true),
+                    width       = this.calculateIscrollWidth ? this.calculateIscrollWidth(childCount, childWidth) : childCount * childWidth;
 
-                this.$itemViewContainer.width(childCount * childWidth);
+                this.$itemViewContainer.width(width);
                 this.iscroll.refresh();
             }, this), 0);
         }
