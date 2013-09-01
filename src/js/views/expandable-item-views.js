@@ -53,9 +53,6 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
             // TODO: Check if this listener is necessary: might be duplicate with ItemView
             this.model.on("change:balance", this.render);
-        },
-        triggers : {
-            "fastclick .buy" : "buy"
         }
     });
 

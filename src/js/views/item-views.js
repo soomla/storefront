@@ -34,15 +34,23 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         },
         addEvents : function() {
             this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
+        },
+
+        // This is the basic set of triggers common to all purchasable items.
+        // It should be overridden or extended by views extend ItemView
+        triggers : {
+            "fastclick .buy" : "buy"
         }
     });
 
 
     var SingleUseItemView = ItemView.extend({
-        className : "item single-use",
-        triggers : {
-            "fastclick .buy" : "buy"
-        }
+        className : "item single-use"
+    });
+
+
+    var CurrencyPackView = ItemView.extend({
+        className : "item currency-pack"
     });
 
 
@@ -53,6 +61,8 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
             this.model.on("change", this.render, this);
             this.model.on("change:owned", this.disable, this);
         },
+
+        // Override triggers
         triggers : {
             "fastclick" : "buy"
         },
@@ -85,6 +95,8 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         ui : {
             upgradeBar : ".upgrade-bar"
         },
+
+        // Override triggers
         triggers : {
             "fastclick .upgrade" : "upgrade"
         },
@@ -99,10 +111,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
 
     var LifetimeItemView = ItemView.extend({
         className: "item lifetime",
-        triggers : {
-            "fastclick .buy" : "buy"
-        },
-
 
         // In this view type we don't want the view to entirely re-render on
         // balance changes, so we override the parent initialize to avoid its events
@@ -150,10 +158,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
                 "change:equipped"           : this.onEquippingChange
             }, this);
         },
-        triggers : {
-            "fastclick .buy"    : "buy",
-            "fastclick .equip"  : "equip"
-        },
         onBalanceChange : function() {
             (this.model.get("balance") >  0) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
         },
@@ -168,12 +172,20 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         }
     });
 
+    // Extend triggers
+    EquippableItemView.mixin({
+        triggers : {
+            "fastclick .equip"  : "equip"
+        }
+    });
+
 
     return {
         BaseView            : BaseView,
         LinkView            : LinkView,
         ItemView            : ItemView,
         SingleUseItemView   : SingleUseItemView,
+        CurrencyPackView    : CurrencyPackView,
         BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
