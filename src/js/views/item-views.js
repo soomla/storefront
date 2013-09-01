@@ -37,6 +37,15 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         }
     });
 
+
+    var SingleUseItemView = ItemView.extend({
+        className : "item single-use",
+        triggers : {
+            "fastclick .buy" : "buy"
+        }
+    });
+
+
     // Used for non-consumables
     // TODO: Review if necessary
     var BuyOnceItemView = ItemView.extend({
@@ -164,6 +173,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         BaseView            : BaseView,
         LinkView            : LinkView,
         ItemView            : ItemView,
+        SingleUseItemView   : SingleUseItemView,
         BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,

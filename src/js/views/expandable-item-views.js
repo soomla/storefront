@@ -26,9 +26,6 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     // Use the vendor specific transitionend event
     var transitionendEvent = CssUtils.getTransitionendEvent();
 
-    // Save local instance of ItemView
-    var ItemView = ItemViews.ItemView;
-
 
     var ExpandableUpgradableItemView = ItemViews.UpgradableItemView.extend({
         onUpgradeChange : function() {
@@ -50,10 +47,9 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableSingleUseItemView = ItemView.extend({
-        className : "item single-use",
+    var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend({
         constructor : function(options) {
-            ItemView.prototype.constructor.apply(this, arguments);
+            ItemViews.SingleUseItemView.prototype.constructor.apply(this, arguments);
 
             // TODO: Check if this listener is necessary: might be duplicate with ItemView
             this.model.on("change:balance", this.render);
