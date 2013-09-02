@@ -20,6 +20,36 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         isMarketPurchaseType : function() {
             return this.get("purchasableItem").purchaseType === marketPurchaseType;
+        },
+        // Functions for market purchase type items.
+        // These are common between goods and currency packs
+        // because some goods can be purchased directly from the market.
+        setMarketItemId : function(type, id) {
+            switch (type) {
+                case "iosId" :
+                    this.setIosId(id);
+                    break;
+                case "androidId" :
+                    this.setAndroidId(id);
+                    break;
+                default :
+                    this.setIosId(id);
+                    break;
+            }
+        },
+        setIosId : function(id) {
+            return this._setMarketItem({iosId : id});
+        },
+        setAndroidId : function(id) {
+            return this._setMarketItem({androidId : id});
+        },
+        _setMarketItem : function (options) {
+
+            // Instead of mutating the model's attribute, clone it to a new one and mutate that.
+            // Backbone will trigger the change event only this way.
+            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
+            _.extend(purchasableItem.marketItem, options);
+            return this.set("purchasableItem", purchasableItem);
         }
     }),
     Collection = Backbone.Collection;
@@ -48,33 +78,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
-        },
-        setMarketItemId : function(type, id) {
-            switch (type) {
-                case "iosId" :
-                    this.setIosId(id);
-                    break;
-                case "androidId" :
-                    this.setAndroidId(id);
-                    break;
-                default :
-                    this.setIosId(id);
-                    break;
-            }
-        },
-        setIosId : function(id) {
-            return this._setMarketItem({iosId : id});
-        },
-        setAndroidId : function(id) {
-            return this._setMarketItem({androidId : id});
-        },
-        _setMarketItem : function (options) {
-
-            // Instead of mutating the model's attribute, clone it to a new one and mutate that.
-            // Backbone will trigger the change event only this way.
-            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
-            _.extend(purchasableItem.marketItem, options);
-            return this.set("purchasableItem", purchasableItem);
         }
     });
 

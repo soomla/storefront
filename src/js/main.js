@@ -10,9 +10,11 @@ require.config({
         models                  : "models",
         jsAPI                   : "js-api",
         components              : "views/components",
+        itemViews               : "views/item-views",
+        expandableItemViews     : "views/expandable-item-views",
+        collectionViews         : "views/collection-views",
         helperViews             : "views/helper-views",
         viewMixins          	: "views/view-mixins",
-        marionetteExtensions    : "views/marionette-extensions",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
         utils                   : "utils",
@@ -29,18 +31,21 @@ require.config({
         eventie                 : "libs/eventie-1.0.3",
         eventEmitter            : "libs/event-emitter-4.2.0",
         fastbutton              : "libs/google.fastbutton",
-        modernizr               : "libs/modernizr-2.5.3.min",
         less                	: "libs/less-1.3.3",
         iscroll                 : "libs/iscroll",
         underscore          	: "libs/underscore-1.4.4",
         backboneFramework       : "libs/backbone/backbone-1.0.0",
-        backbone            	: "libs/backbone/backbone",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.5",
         backboneExtensions      : "libs/backbone/backbone-extensions",
-        marionette          	: "libs/backbone/backbone.marionette.core-1.0.3",
+        marionetteFramework 	: "libs/backbone/backbone.marionette.core-1.0.3",
+        marionetteExtensions    : "libs/backbone/marionette-extensions",
         "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
-        handlebars          	: "libs/handlebars-1.0.rc.2"
+        handlebars          	: "libs/handlebars-1.0.rc.2",
+
+        // Aggregative modules
+        backbone            	: "libs/backbone/backbone",
+        marionette            	: "libs/backbone/marionette"
     },
     shim: {
         underscore: {
@@ -62,11 +67,12 @@ require.config({
         backbone : {
             deps: ['backboneFramework']
         },
-        marionette : {
-            deps: ['backbone']
+        marionetteFramework : {
+            deps: ['backbone'],
+            exports: 'Marionette'
         },
-        marionetteExtensions : {
-            deps: ['marionette']
+        marionette : {
+            deps: ['marionetteFramework']
         },
         handlebars : {
             exports : "Handlebars"

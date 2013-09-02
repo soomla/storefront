@@ -255,35 +255,40 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
             var _this = this;
             _.each(goods, function(attributes, good) {
-                good = _this.goodsMap[good];
-                if (attributes.balance){
-                    good.set("balance", attributes.balance);
 
-                    // TODO: Move this code out of here: separate model and view concerns!!!
-                    // add animation
-                    $(".expanded .item-balance-wrap").addClass("changed");
-                    setTimeout(function(){
-                        $(".item-balance-wrap").removeClass("changed");
-                    }, 1500);
+                // Safe-guard from goods that aren't in the goods map
+                // i.e. upgrade levels
+                if (good = _this.goodsMap[good]) {
 
-                }
+                    if (attributes.hasOwnProperty("balance")) {
+                        good.set("balance", attributes.balance);
 
-                if (attributes.hasOwnProperty("equipped")) {
-                    if (attributes.equipped)
-                        if (good.get("balance") >  0) {
+                        // TODO: Move this code out of here: separate model and view concerns!!!
+                        // add animation
+                        $(".expanded .item-balance-wrap").addClass("changed");
+                        setTimeout(function(){
+                            $(".item-balance-wrap").removeClass("changed");
+                        }, 1500);
+
+                    }
+
+                    if (attributes.hasOwnProperty("equipped")) {
+                        if (attributes.equipped)
+                            if (good.get("balance") >  0) {
+                                good.set("equipped", attributes.equipped);
+                            } else {
+                                // Don't allow equipping goods that aren't owned
+                                good.set("equipped", false);
+                                SoomlaJS.notEnoughGoods(good.id);
+                            }
+                        else
                             good.set("equipped", attributes.equipped);
-                        } else {
-                            // Don't allow equipping goods that aren't owned
-                            good.set("equipped", false);
-                            SoomlaJS.notEnoughGoods(good.id);
-                        }
-                    else
-                        good.set("equipped", attributes.equipped);
-                }
+                    }
 
-                if (attributes.currentUpgrade && attributes.currentUpgrade !== "none") {
-                    good.upgrade(attributes.currentUpgrade);
-                }
+                    if (attributes.currentUpgrade && attributes.currentUpgrade !== "none") {
+                        good.upgrade(attributes.currentUpgrade);
+                    }
+                 }
             });
 
             // Notify listeners after updating goods

@@ -1,4 +1,4 @@
-define("helperViews", ["marionette", "marionetteExtensions", "jquery.fastbutton"], function(Marionette) {
+define("helperViews", ["marionette", "jquery.fastbutton"], function(Marionette) {
 
     var HeaderView = Marionette.View.extend({
         initialize : function(options) {
