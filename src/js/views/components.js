@@ -155,10 +155,14 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 _.each(this.iscrollRegions, function (value, region) {
                     var _this = this,
                         options = $.extend({}, value.options);
-                    options.onScrollEndBinded = options.onScrollEnd;
-                    options.onScrollEnd = function () {
-                        options.onScrollEndBinded(_this, this);
-                    };
+
+                    // If the end callback is passed, wrap it. Part of Ran's work.
+                    if (options.onScrollEnd) {
+                        options.onScrollEndBinded = options.onScrollEnd;
+                        options.onScrollEnd = function () {
+                            options.onScrollEndBinded(_this, this);
+                        };
+                    }
                     this.iscrolls[region] = new iScroll(this.$(value.el)[0], options);
                 }, this);
 
