@@ -17,6 +17,23 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             "fastclick .buy-more" : "buyMore",
             "fastclick .cancel"   : "cancel"
         },
+        events : {
+            "touchstart a" : "onTouchStart",
+            "touchend a"   : "onTouchEnd",
+            "touchcancel a": "onTouchEnd"
+        },
+        onTouchStart : function() {
+
+            // For some reason, the current target wasn't the <a> tag but the
+            // modal container, so work with the target and fetch its parent node
+            this.$(event.target).parent().addClass("emulate-active");
+        },
+        onTouchEnd: function() {
+
+            // For some reason, the current target wasn't the <a> tag but the
+            // modal container, so work with the target and fetch its parent node
+            this.$(event.target).parent().removeClass("emulate-active");
+        },
         onRender : function() {
             this.options.parent.append(this.$el);
         },
@@ -237,6 +254,50 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             if (!(options && options.noSound)) return this.playSound();
             return this;
         }
+    }, {
+
+        // Explanation:
+        // Most <a> elements in the templates have an ":active" state
+        // which transitions or highlights the tapped \ clicked element somehow,
+        // Android webkit doesn't support the ":active" CSS pseudo-selector, so instead
+        // we emulate the same behavior by adding the ".emulate-active" class when the element
+        // is tapped and removing it when the tap is released.
+        // TODO: Eliminate inherent the 300ms delay when tapping (like the "fastclick" event does)
+        mixinActiveTouchEmulation : (function() {
+
+            var EmulateActiveModule = {
+                onTouchStart : function(event) {
+                    $(event.currentTarget).addClass("emulate-active");
+                },
+                onTouchEnd : function(event) {
+                    $(event.currentTarget).removeClass("emulate-active");
+                }
+            };
+
+            return function(overrideModule) {
+
+                var to      = this.prototype,
+                    els     = to.emulateActiveElements,
+                    events  = {};
+
+                // Proceed only if a valid selector string is found
+                if (_.isString(els) && els.length > 0) {
+
+                    // Make sure the target object has an events hash
+                    if (!_.isObject(to.events)) to.events = {};
+
+                    events["touchstart "    + els] = "onTouchStart";
+                    events["touchend "      + els] = "onTouchEnd";
+                    events["touchcancel "   + els] = "onTouchEnd";
+
+                    // Inject the events into the target's events hash
+                    _.defaults(to.events, events);
+
+                    // Inject event handlers
+                    _.extend(to, EmulateActiveModule, overrideModule);
+                }
+            };
+        })()
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
 

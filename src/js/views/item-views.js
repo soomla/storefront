@@ -23,6 +23,21 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
         tagName : "li",
         triggers : {
             fastclick : "select"
+        },
+
+        // Android webkit doesn't recognize the :active pseudo-class like iOS
+        // To overcome this, we add a special helper class to the buy link when
+        // it is tapped and apply the same CSS rules that apply to :active.
+        events : {
+            "touchstart  a"   : "onTouchStart",
+            "touchend    a"   : "onTouchEnd",
+            "touchcancel a"   : "onTouchEnd"
+        },
+        onTouchStart : function(event) {
+            this.$(event.currentTarget).addClass("emulate-active");
+        },
+        onTouchEnd: function(event) {
+            this.$(event.currentTarget).removeClass("emulate-active");
         }
     });
 
