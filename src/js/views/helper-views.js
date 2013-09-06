@@ -15,7 +15,16 @@ define("helperViews", ["marionette", "jquery.fastbutton"], function(Marionette) 
                     this.changeStateTo(this.initialState);
                     this.trigger("back");
                 }
-            }
+            },
+            "touchstart  #back-button,#quit-button" : "onTouchStart",
+            "touchend    #back-button,#quit-button" : "onTouchEnd",
+            "touchcancel #back-button,#quit-button" : "onTouchEnd"
+        },
+        onTouchStart : function(event) {
+            this.$(event.currentTarget).addClass("emulate-active");
+        },
+        onTouchEnd : function(event) {
+            this.$(event.currentTarget).removeClass("emulate-active");
         },
         ui : {
             backButton : "#back-button",
