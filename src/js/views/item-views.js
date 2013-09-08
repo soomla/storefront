@@ -1,4 +1,4 @@
-define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marionette, Urls) {
+define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], function(Marionette, Urls) {
 
     var BaseView = Marionette.ItemView.extend({
         _imagePlaceholder       : Urls.imagePlaceholder,
@@ -44,11 +44,18 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton"], function(Marion
 
     var ItemView = LinkView.extend({
         initialize : function() {
+
             // TODO: Remove change:balance => this.render
-            this.model.on("change:balance change:purchasableItem", this.render);
+            this.listenTo(this.model, "change:balance change:purchasableItem", this.render, this);
+
+            // Animate balance if it changes
+            if (_.isString(this.animateBalanceClass)) this.listenTo(this.model, "change:balance", this.animateBalance, this);
         },
         addEvents : function() {
             this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
+        },
+        animateBalance : function() {
+            this.$el.animateOnce(this.animateBalanceClass);
         },
 
         // This is the basic set of triggers common to all purchasable items.
