@@ -328,7 +328,13 @@ define("economyModels", ["backbone"], function(Backbone) {
                 }
             }
         ],
-        idAttribute : "itemId"
+        idAttribute : "itemId",
+        getBalance : function() {
+            return this.get("balance");
+        },
+        balanceIncreased : function() {
+            return this.previous("balance") < this.getBalance();
+        }
 
     }, {
         generateNameFor : function(name) {

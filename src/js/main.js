@@ -27,6 +27,7 @@ require.config({
         jquery              	: "libs/jquery/jquery-1.9.1.min",
         "jquery.fastbutton"     : "libs/jquery/jquery.google.fastbutton",
         "jquery.preload"        : "libs/jquery/jquery.preload",
+        jqueryUtils             : "libs/jquery/jquery-utils",
         imagesloaded            : "libs/imagesloaded-3.0.4",
         eventie                 : "libs/eventie-1.0.3",
         eventEmitter            : "libs/event-emitter-4.2.0",

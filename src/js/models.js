@@ -246,7 +246,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             return this;
         },
         getBalance : function(currencyId) {
-            return this.getCurrency(currencyId).get("balance");
+            return this.getCurrency(currencyId).getBalance();
         },
         updateVirtualGoods : function(goods) {
 

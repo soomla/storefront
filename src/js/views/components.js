@@ -1,11 +1,10 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "jquery.fastbutton", "imagesloaded", "iscroll"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "jquery.fastbutton", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins) {
 
 
     // Save a local copy
     var BaseView = ItemViews.BaseView;
 
 
-    // TODO: Separate into several views that are template specific
     var ModalDialog = BaseView.extend({
         className : "modal-container",
         initialize : function() {
@@ -92,7 +91,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             BaseView.prototype.constructor.apply(this, arguments);
 
             // Balance currency balance changes
-            this.model.getCurrencies().on("change:balance", this.updateBalance, this);
+            this.listenTo(this.model.getCurrencies(), "change:balance", this.updateBalance, this);
 
             // Listen to market purchase events
             this.listenTo(this.model, "goods:update:before currencies:update:before", this.closeDialog, this);
@@ -148,18 +147,22 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             if (this.dialog) this.dialog.close();
         },
         updateBalance : function(currency) {
-            var balanceHolder = this.$("#balance-container label[data-currency='" + currency.id + "']");
-            $(balanceHolder).text(currency.get("balance"));
-            // 
-			if(currency.previous("balance") < currency.get("balance")){
+
+            // Get the balance holder element
+            var balanceHolder = (this._getBalanceHolder && _.isFunction(this._getBalanceHolder)) ?
+            					this._getBalanceHolder(currency) :
+								this.$("#balance-container label[data-currency='" + currency.id + "']");
+
+            // Update label
+            balanceHolder.text(currency.getBalance());
+
+            // Animate currency label if balance was increased
+			if (currency.balanceIncreased()) {
 
                 // In the case of external balance injection, the dialog might not be defined
                 if (this.dialog) this.dialog.close();
 
-                $(balanceHolder).addClass("changed"); 
-                setTimeout(function(){
-                    $(balanceHolder).removeClass("changed");
-                }, 1000);
+                balanceHolder.animateOnce("changed");
             }
 
 
