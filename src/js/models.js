@@ -246,7 +246,7 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             return this;
         },
         getBalance : function(currencyId) {
-            return this.getCurrency(currencyId).get("balance");
+            return this.getCurrency(currencyId).getBalance();
         },
         updateVirtualGoods : function(goods) {
 
@@ -262,14 +262,6 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
 
                     if (attributes.hasOwnProperty("balance")) {
                         good.set("balance", attributes.balance);
-
-                        // TODO: Move this code out of here: separate model and view concerns!!!
-                        // add animation
-                        $(".expanded .item-balance-wrap").addClass("changed");
-                        setTimeout(function(){
-                            $(".item-balance-wrap").removeClass("changed");
-                        }, 1500);
-
                     }
 
                     if (attributes.hasOwnProperty("equipped")) {
