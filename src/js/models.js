@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbone, EconomyModels, Utils, Urls) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template"], function(Backbone, EconomyModels, Utils, Urls, Template) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -156,6 +156,9 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             this.unset("rawCategories");
             this.unset("goods");
             this.unset("currencyPacks");
+        },
+        buildTemplate : function(json) {
+            this.template = new Template(json);
         },
         setCategoryAsset : function(category, url) {
 

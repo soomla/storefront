@@ -19,6 +19,7 @@ require.config({
         templates           	: "views/templates",
         utils                   : "utils",
         urls                    : "urls",
+        template                : "template",
         userAgent               : "user-agent",
         nativeApiStubs          : "native-api-stubs",
         soomlaiOS               : "soomla-ios",

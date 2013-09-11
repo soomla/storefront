@@ -262,6 +262,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 // Inject the supported features to the store model once they're loaded
                 templateRequest.done(function(template) {
                     $this.store.set("supportedFeatures", template.supportedFeatures);
+                    $this.store.buildTemplate(template);
                 });
 
 
