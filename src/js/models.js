@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbone, EconomyModels, Utils, Urls) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template"], function(Backbone, EconomyModels, Utils, Urls, Template) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -156,6 +156,12 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
             this.unset("rawCategories");
             this.unset("goods");
             this.unset("currencyPacks");
+        },
+        buildTemplate : function(json) {
+            this.template = new Template(json);
+        },
+        getTemplate : function() {
+            return this.template;
         },
         setCategoryAsset : function(category, url) {
 
@@ -652,6 +658,26 @@ define("models", ["backbone", "economyModels", "utils", "urls"], function(Backbo
         supportsMarketPurchaseTypeOnly : function() {
             var purchaseTypes = this.get("supportedFeatures").purchaseTypes;
             return (purchaseTypes && purchaseTypes.market && ! purchaseTypes.virtualItem);
+        },
+        getModelAssetDimensions : function(model) {
+            if (model instanceof EconomyModels.VirtualGood) {
+
+                if (model.is("upgradable")) {
+                    return this.template.getVirtualGoodAssetDimensions("goodUpgrades");
+                } else {
+                    return this.template.getVirtualGoodAssetDimensions(model.get("type"));
+                }
+
+            } else if (model instanceof EconomyModels.Currency) {
+                return this.template.getCurrencyAssetDimensions();
+            } else if (model instanceof EconomyModels.CurrencyPack) {
+                return this.template.getCurrencyPackAssetDimensions();
+            } else {
+                throw "Unknown model type";
+            }
+        },
+        getCategoryAssetDimensions : function() {
+            return this.template.getCategoryAssetDimensions();
         },
         toJSON : function(options) {
 

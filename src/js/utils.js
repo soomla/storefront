@@ -90,6 +90,28 @@ define("utils", function() {
                     obj = obj[key];
                 }
             });
+        },
+        // Gets the value at any depth in a nested object based on the
+        // path described by the given keychain.
+        //
+        // Example: {a : {b : c : "10"}}, "a[b][c]"   ==>  "10"
+        //
+        // Based on https://github.com/documentcloud/underscore-contrib
+        //
+        getByKeychain: function getPath (obj, keychain) {
+            // If we have reached an undefined property
+            // then stop executing and return undefined
+            if (obj === undefined) return void 0;
+
+            // If the path array has no more elements, we've reached
+            // the intended property and return its value
+            if (keychain.length === 0) return obj;
+
+            // If we still have elements in the path array and the current
+            // value is null, stop executing and return undefined
+            if (obj === null) return void 0;
+
+            return getPath(obj[_.first(keychain)], _.rest(keychain));
         }
     };
 });
