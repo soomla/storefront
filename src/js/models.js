@@ -160,6 +160,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
         buildTemplate : function(json) {
             this.template = new Template(json);
         },
+        getTemplate : function() {
+            return this.template;
+        },
         setCategoryAsset : function(category, url) {
 
             // First assign image path to modelAssets hash, so that when the item view
