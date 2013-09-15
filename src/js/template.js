@@ -10,8 +10,13 @@ define("template", ["underscore", "utils"], function(_, Utils) {
     var Template = function(json) {
 
         // Save the raw JSON internally
-        this.json = json;
+        this._json = json;
     };
+
+    // Define getters
+    Template.prototype.__defineGetter__("json", function() { return this._json; });
+    Template.prototype.__defineGetter__("sections", function() { return this._json.sections; });
+    Template.prototype.__defineGetter__("supportedFeatures", function() { return this.json.supportedFeatures; });
 
     _.extend(Template.prototype, {
         getTemplateImageDimensions : function(keychain) {
@@ -21,9 +26,6 @@ define("template", ["underscore", "utils"], function(_, Utils) {
             } catch (e) {
                 return undefined;
             }
-        },
-        getSections : function() {
-            return this.json.sections;
         },
         getVirtualGoodAssetDimensions : function(type) {
 
