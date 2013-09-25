@@ -162,7 +162,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var EquippableGood = SingleUseGood.extend({
 
         // Equippable goods should, by default, have a balance of 0 and not be equipped
-        defaults : $.extend(true, {equipped : false}, SingleUseGood.prototype.defaults)
+        defaults : $.extend(true, {equipped : false, equipping : "category"}, SingleUseGood.prototype.defaults)
     });
 
     var LifetimeGood = SingleUseGood.extend();
