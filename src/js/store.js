@@ -271,10 +271,11 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     // Initialize view
                     $this.storeView = Theme.createStoreView({
                         storeViewOptions : {
-                            model : $this.store,
-                            el : $("#main"),
-                            template : Handlebars.getTemplate("template"),
-                            initViewItemId: options.initViewItemId
+                            model 			: $this.store,
+                            el 				: $("#main"),
+                            template 		: Handlebars.getTemplate("template"),
+                            initViewItemId 	: options.initViewItemId,
+                            deviceId 		: options.deviceId
                         },
                         imagesLoadedCallback : storeViewDeferred.resolve
                     });

@@ -67,6 +67,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         initialize : function(options) {
             this.$soomlaInfoDialog = this.$("#soomla-info-dialog");
             this.updateZoomFactor(options.zoom);
+
+            if (options.deviceId && !_.isEmpty(options.deviceId)) {
+                this.$("#device-id").html(options.deviceId);
+                this.$soomlaInfoDialog.addClass("show-device-id");
+            }
         },
         updateZoomFactor : function(zoom) {
             var zoomFactor = calculateTransformedZoomFactor(zoom, 460, 0.8);
@@ -283,7 +288,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             }
         },
         addSoomlaInfoModal : function() {
-            var dialog = this.soomlaInfoDialog = new SoomlaInfoModalDialog({ el : $("#soomla-info-modal"), zoom : this.zoomFunction() });
+            var dialog = this.soomlaInfoDialog = new SoomlaInfoModalDialog({
+                el          : $("#soomla-info-modal"),
+                zoom        : this.zoomFunction(),
+                deviceId    : this.options.deviceId
+            });
             var selector = this.model.get("template").noBranding ? ".nobrand" : ".soombot";
             $(selector).show().on("fastclick", function(event) {
                 dialog.show();
