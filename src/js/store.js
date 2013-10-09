@@ -275,7 +275,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                             el 				: $("#main"),
                             template 		: Handlebars.getTemplate("template"),
                             initViewItemId 	: options.initViewItemId,
-                            deviceId 		: options.deviceId
+                            deviceId 		: json.deviceId
                         },
                         imagesLoadedCallback : storeViewDeferred.resolve
                     });
