@@ -87,6 +87,15 @@ define("jsAPI", {
     },
 
 
+    //
+    // User messaging functions
+    //
+
+    openMessageDialog : function(text) {
+        SoomlaJS.storeView.openMessageDialog(text);
+    },
+
+
     // Private methods
     _getItemName: function(itemId) {
         var item = SoomlaJS.store.getItem(itemId);

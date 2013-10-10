@@ -657,7 +657,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
         },
         supportsMarketPurchaseTypeOnly : function() {
             var purchaseTypes = this.get("supportedFeatures").purchaseTypes;
-            return (purchaseTypes && purchaseTypes.market && ! purchaseTypes.virtualItem);
+            return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
         },
         getModelAssetDimensions : function(model) {
             if (model instanceof EconomyModels.VirtualGood) {

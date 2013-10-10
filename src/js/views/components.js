@@ -43,7 +43,49 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
     });
 
 
+
+    // Explanation:
+    //
+    // The idea is to manipulate an element's zoom factor so that it is perceived as big
+    // and showing up on a significant portion of the screen, but not too big and not too small.
+    // For this, we calculate as follows, using an example of a 460px wide modal that
+    // should accommodate 80% of the screen:
+    //
+    // 1. Choose the dominant axis between height and width (the smaller one)
+    // 2. Divide its size by the zoom factor to transform it to the template's dimensions
+    // 3. Multiply it by the target ratio (80%), i.e. we want the dialog to have 80% width \ height of the viewport.
+    // 4. This gives us the target width.  Then divide it by the original modal width to get the desired zoom factor
+    //
+    var calculateTransformedZoomFactor = function(bodyZoom, originalWidth, targetScreenWidthPortion) {
+        var axisSize = innerWidth < innerHeight ? innerWidth : innerHeight;
+
+        return ((axisSize / bodyZoom) * targetScreenWidthPortion) / originalWidth;
+    };
+
+
     var SoomlaInfoModalDialog = Backbone.View.extend({
+        initialize : function(options) {
+            this.$soomlaInfoDialog = this.$("#soomla-info-dialog");
+            this.updateZoomFactor(options.zoom);
+
+            if (options.deviceId && !_.isEmpty(options.deviceId)) {
+                this.$("#device-id").html(options.deviceId);
+                this.$soomlaInfoDialog.addClass("show-device-id");
+            }
+        },
+        updateZoomFactor : function(zoom) {
+            var zoomFactor = calculateTransformedZoomFactor(zoom, 460, 0.8);
+
+            var attrs = {
+                "zoom": zoomFactor,
+
+                // Use "auto" instead of the zoom factor, because it was buggy on iPhone
+                "-ms-text-size-adjust" 		: "auto",
+                "-moz-text-size-adjust" 	: "auto",
+                "-webkit-text-size-adjust" 	: "auto"
+            };
+            this.$soomlaInfoDialog.css(attrs);
+        },
         events : {
             "fastclick" : function(event) { if (event && event.target === event.currentTarget) this.hide(); },
             "fastclick .close" : "hide"
@@ -210,9 +252,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             if (this.zoomFunction) {
                 // Adjust zoom to fit nicely in viewport
                 // This helps cope with various viewports, i.e. mobile, tablet...
-                var _this = this,
-                	$body = $("body"),
-                    isIphone = $body.hasClass("iphone");
+                var _this 		= this,
+                	$body 		= $("body"),
+                    $soombot 	= $(".soombot"),
+                    isIphone 	= $body.hasClass("iphone");
+
                 var adjustBodySize = function() {
                     var zoomFactor      = _this.zoomFunction(),
                         zoomPercentage  = (zoomFactor * 100) + "%";
@@ -236,13 +280,19 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                     if (isIphone) attrs["line-height"] =  (1 / zoomFactor);
 
                     $body.css(attrs);
+                    $soombot.css({zoom : calculateTransformedZoomFactor(zoomFactor, 75, 0.15)});
+                    _this.soomlaInfoDialog.updateZoomFactor(zoomFactor);
                 };
                 $(window).resize(adjustBodySize);
                 adjustBodySize();
             }
         },
         addSoomlaInfoModal : function() {
-            var dialog = new SoomlaInfoModalDialog({ el : $("#soomla-info-modal") });
+            var dialog = this.soomlaInfoDialog = new SoomlaInfoModalDialog({
+                el          : $("#soomla-info-modal"),
+                zoom        : this.zoomFunction(),
+                deviceId    : this.options.deviceId
+            });
             var selector = this.model.get("template").noBranding ? ".nobrand" : ".soombot";
             $(selector).show().on("fastclick", function(event) {
                 dialog.show();

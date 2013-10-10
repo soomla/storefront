@@ -144,5 +144,30 @@ ul {
             .box-shadow(~"inset 0 1px 2px rgba(0,0,0,.3)");
         }
     }
+
+    #device-id-container {
+        margin-top: 20px;
+        display: none;
+        border: 1px solid #CCCBCB;
+        background-color: #EEEDED;
+        padding: 5px;
+        max-width: 380px;
+        .border-radius(5px);
+        font-size: 16px;
+    }
+
+    #device-id-label, #device-id {
+        display: inline-block;
+    }
+
+    #device-id-label {
+        font-weight: bold;
+    }
+
+    &.show-device-id {
+        #device-id-container {
+            display: block;
+        }
+    }
 }
 

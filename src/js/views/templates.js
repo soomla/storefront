@@ -59,6 +59,7 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
             return Handlebars.templates[name];
         },
         getPartial : function (path, name) {
+
             // Normalize arguments
             if (!name) {
                 name = path;
@@ -67,7 +68,7 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
 
             if (Handlebars.partials === undefined || Handlebars.partials[name] === undefined) {
                 $.ajax({
-                    url : path + "/" + name + '.handlebars',
+                    url : path + "/_" + name + '.handlebars',
                     success : function (data) {
                         if (Handlebars.partials === undefined) {
                             Handlebars.partials = {};
@@ -77,7 +78,7 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
                     async : false
                 });
             }
-            return Handlebars.templates[name];
+            return Handlebars.partials[name];
         }
     });
     _.bindAll(Handlebars, "getTemplate", "getPartial");
