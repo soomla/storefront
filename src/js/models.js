@@ -17,7 +17,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
         VirtualCurrencyCollection   = EconomyModels.VirtualCurrencyCollection,
         CurrencyPacksCollection     = EconomyModels.CurrencyPacksCollection,
         NonConsumable               = EconomyModels.NonConsumable,
-        NonConsumablesCollection    = EconomyModels.NonConsumablesCollection;
+        NonConsumablesCollection    = EconomyModels.NonConsumablesCollection,
+        OfferWall                   = EconomyModels.OfferWall,
+        OfferWallCollection         = EconomyModels.OfferWallCollection;
 
 
     var duplicateCategoryErrorMessage = "A category with that name already exists.",
@@ -49,6 +51,15 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
                 key: 'nonConsumables',
                 relatedModel: NonConsumable,
                 collectionType: NonConsumablesCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            },
+            {
+                type: Backbone.HasMany,
+                key: 'offerWalls',
+                relatedModel: OfferWall,
+                collectionType: OfferWallCollection,
                 reverseRelation: {
                     includeInJSON: 'id'
                 }

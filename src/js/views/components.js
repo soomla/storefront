@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "jquery.fastbutton", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "offerWallsAPI", "jquery.fastbutton", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins, OfferWallsAPI) {
 
 
     // Save a local copy
@@ -187,6 +187,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         },
         closeDialog: function () {
             if (this.dialog) this.dialog.close();
+            return this;
         },
         updateBalance : function(currency) {
 
@@ -353,6 +354,14 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         })()
     });
     _.extend(BaseStoreView.prototype, ViewMixins);
+    _.extend(BaseStoreView.prototype, OfferWallsAPI);
+
+    // Wrap the function that calls the native API.
+    // Open a message dialog whenever the user selects an offer wall
+    _.wrap(BaseStoreView.prototype.wantsToOpenOfferWall, function(func) {
+        this.openDialog();
+        func.call(this);
+    });
 
 
     return _.extend({}, ItemViews, ExpandableItemViews, CollectionViews, {

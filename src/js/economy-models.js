@@ -363,6 +363,8 @@ define("economyModels", ["backbone"], function(Backbone) {
     var CategoryCollection          = Collection.extend({ model : Category }),
         VirtualCurrencyCollection   = Collection.extend({ model : Currency });
 
+    var OfferWall           = RelationalModel.extend(),
+        OfferWallCollection = Collection.extend({model : OfferWall});
 
     return {
         VirtualGood                 : VirtualGood,
@@ -380,7 +382,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         CurrencyPacksCollection     : CurrencyPacksCollection,
         NonConsumable               : NonConsumable,
         NonConsumablesCollection    : NonConsumablesCollection,
-        RelationalModel             : RelationalModel
+        RelationalModel             : RelationalModel,
+        OfferWall                   : OfferWall,
+        OfferWallCollection         : OfferWallCollection
     };
 
 });

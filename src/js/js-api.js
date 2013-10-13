@@ -96,6 +96,15 @@ define("jsAPI", {
     },
 
 
+    //
+    // Offer wall functions
+    //
+
+    openOfferWall : function(options) {
+        SoomlaJS.storeView.closeDialog().openOfferWall(options);
+    },
+
+
     // Private methods
     _getItemName: function(itemId) {
         var item = SoomlaJS.store.getItem(itemId);

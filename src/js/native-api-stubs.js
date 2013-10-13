@@ -115,6 +115,17 @@ define("nativeApiStubs", function(){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
+        wantsToOpenOfferWall : function(id) {
+            if (id === "sponsorpay") {
+                SoomlaJS.storeView.openDialog();
+                var options = SoomlaJS.store.get("offerWalls").get("sponsorpay").toJSON();
+                options = _.omit(options, "id", "name");
+
+                setTimeout(function() {
+                    _jsAPI.openOfferWall(options);
+                }, 1000);
+            }
+        },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
         requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },

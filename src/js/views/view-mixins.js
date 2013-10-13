@@ -35,5 +35,8 @@ define("viewMixins", {
     },
     wantsToUpgradeVirtualGood : function(model) {
         this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
+    },
+    wantsToOpenOfferWall : function(id) {
+        this.nativeAPI.wantsToOpenOfferWall(id);
     }
 });

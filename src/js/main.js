@@ -23,6 +23,7 @@ require.config({
         userAgent               : "user-agent",
         nativeApiStubs          : "native-api-stubs",
         soomlaiOS               : "soomla-ios",
+        offerWallsAPI           : "offer-walls-api",
 
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.9.1.min",
