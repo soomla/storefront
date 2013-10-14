@@ -33,6 +33,8 @@ define("soomlaiOS", {
     wantsToUnequipGoods : function(itemId) {
         this._callNative("wantsToUnequipGoods:" + itemId);
     },
+
+    // TODO: Check if used, if not - remove
     requestEarnedCurrency : function(provider) {
         this._callNative("requestEarnedCurrency:" + provider);
     },

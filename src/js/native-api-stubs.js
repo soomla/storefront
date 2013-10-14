@@ -128,6 +128,8 @@ define("nativeApiStubs", function(){
         },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
+
+        // TODO: Check if used, if not - remove
         requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },
         playSound                       : function()        { this.log("playSound", arguments); return this;    },
         injectJsApi : function(jsAPI) {
