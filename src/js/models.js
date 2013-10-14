@@ -690,6 +690,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
         },
+        getOfferWalls : function() {
+            return this.get("offerWalls");
+        },
         toJSON : function(options) {
 
             (options) || (options = {});
