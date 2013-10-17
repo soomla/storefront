@@ -140,10 +140,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         },
         serializeData : function() {
             var currencies  = this.model.getCurrencies().toJSON(),
-                modelAssets = this.model.getModelAssets();
+                assets      = this.model.assets;
 
             _.each(currencies, function(currency) {
-                currency.imgFilePath = modelAssets.items[currency.itemId];
+                currency.imgFilePath = assets.getItemAsset(currency.itemId);
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },

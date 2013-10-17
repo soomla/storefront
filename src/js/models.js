@@ -66,7 +66,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
         ],
         initialize : function() {
-            _.bindAll(this, "getBalance", "setBalance", "updateUpgradeModelAssets", "updateVirtualGoods");
+            _.bindAll(this, "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
 
             // Create a {ID : good} map with goods from all categories
             var goodsMap    = this.goodsMap     = {};
@@ -105,7 +105,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                             // This if is for protecting against this event firing when the store is first initialized
                             // TODO: Investigate
                             if (model.previous("itemId")) {
-                                this.updateUpgradeModelAssets(model, newItemId);
+                                this.updateUpgradeAssets(model, newItemId);
                             }
                         });
                     } else {
@@ -176,7 +176,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
 
             // Create theme object
-            this.assetManager = new AssetManager({
+            this.assets = new AssetManager({
                 theme 		: this.get("theme"),
                 modelAssets : this.getModelAssets()
             });
@@ -194,9 +194,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         setCategoryAsset : function(category, url) {
 
-            // First assign image path to modelAssets hash, so that when the item view
+            // First assign category asset, so that when the item view
             // in the store renders, it will have it accessible as a template helper
-            this.getModelAssets().categories[category.id] = url;
+            this.assets.setCategoryAsset(category.id, url);
 
             // Force the preview to update by triggering a change event on the model
             category.trigger("change:asset");
@@ -218,7 +218,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
 
             // Update asset map
-            this.getModelAssets().items[id] = url;
+            this.assets.setItemAsset(id, url);
 
             // Force the preview to update by triggering a change event on the model
             model.trigger("change:asset");
@@ -238,14 +238,11 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
         },
-        updateUpgradeModelAssets : function(model, newItemId) {
+        updateUpgradeAssets : function(model, newItemId) {
 
             newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
-            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId),
-                modelAssets = this.getModelAssets();
-
-            modelAssets.items[newItemId] = modelAssets.items[oldItemId];
-            delete modelAssets.items[oldItemId];
+            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
+            this.assets.changeItemId(oldItemId, newItemId)
         },
         updateItemId : function(oldItemId, newItemId) {
 
@@ -345,7 +342,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 options.itemId = Currency.generateNameFor(options.name);
                 currency = new Currency(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
-                this.getModelAssets().items[currency.id] = assetUrl;
+                this.assets.setItemAsset(currency.id, assetUrl);
                 this.getCurrencies().add(currency);
             } catch (e) {
                 throw new Error(duplicateCurrencyErrorMessage);
@@ -357,7 +354,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             try {
                 category = new Category(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
-                this.getModelAssets().categories[category.id] = assetUrl;
+                this.assets.setCategoryAsset(category.id, assetUrl);
                 this.getCategories().add(category);
             } catch(e) {
                 throw new Error(duplicateCategoryErrorMessage);
@@ -367,8 +364,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // TODO: Deal with upgradables
         addNewVirtualGood : function(options) {
 
-            var modelAssets = this.getModelAssets(),
-                assetUrl    = options.assetUrl || Urls.imagePlaceholder,
+            var assetUrl    = options.assetUrl || Urls.imagePlaceholder,
                 type        = options.type || "singleUse",
                 GoodType,
                 good,
@@ -392,9 +388,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 });
                 good.setPurchaseType({type: "market"});
 
-                // Ensure the model has an asset in the `modelAssets`
+                // Ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
-                modelAssets.items[good.id] = assetUrl;
+                this.assets.setItemAsset(good.id, assetUrl);
 
                 category = this.getFirstCategory();
 
@@ -429,15 +425,15 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 // Update upgradable model assets whenever an item ID changes
                 if (type === "upgradable") {
-                    this.listenTo(good, "change:itemId", this.updateUpgradeModelAssets);
+                    this.listenTo(good, "change:itemId", this.updateUpgradeAssets);
                 }
 
-                // Ensure the model has an asset in the `modelAssets`
+                // Ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
                 if (type === "upgradable") {
-                    modelAssets.items[good.getEmptyUpgradeBarAssetId()] = progressBarAssetUrl;
+                    this.assets.setUpgradeBarAsset(good.getEmptyUpgradeBarAssetId(), progressBarAssetUrl)
                 } else {
-                    modelAssets.items[good.id] = assetUrl;
+                    this.assets.setItemAsset(good.id, assetUrl);
                 }
 
                 var categoryId = options.categoryId || this.getFirstCategory().id;
@@ -476,11 +472,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             //
             var upgrade = good.addUpgrade(_.extend({firstCurrencyId : firstCurrencyId}, options));
 
-            // Ensure the upgrade has its assets in the `modelAssets`
+            // Ensure the upgrade has its assets assigned
             // before triggering the `change` event
-            var modelAssets = this.getModelAssets();
-            modelAssets.items[upgrade.getUpgradeImageAssetId()] = options.assetUrl || Urls.imagePlaceholder;
-            modelAssets.items[upgrade.getUpgradeBarAssetId()]   = options.progressBarAssetUrl || Urls.progressBarPlaceholder;
+            this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
+            this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);
 
             // Manually trigger the event for rendering
             good.trigger("change");
@@ -491,12 +486,11 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             return upgrade;
         },
         removeUpgrade : function(upgrade) {
-            var modelAssets = this.getModelAssets();
 
             // Remove from mappings and delete upgrade-specific assets
             this.removeItemId(upgrade.id);
-            delete modelAssets.items[upgrade.getUpgradeImageAssetId()];
-            delete modelAssets.items[upgrade.getUpgradeBarAssetId()];
+            this.assets.removeUpgradeAsset(upgrade.getUpgradeImageAssetId());
+            this.assets.removeUpgradeBarAsset(upgrade.getUpgradeBarAssetId());
 
             // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
             upgrade.trigger('destroy', upgrade, upgrade.collection, {});
@@ -517,10 +511,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 currency_amount     : 1000
             });
 
-            // Ensure the model has an asset assigned directly and in the `modelAssets`
+            // Ensure the model has an asset assigned
             // before adding it to the collection (which triggers a render)
-            var modelAssets = this.getModelAssets();
-            modelAssets.items[currencyPack.id] = options.assetUrl || Urls.imagePlaceholder;
+            this.assets.setItemAsset(currencyPack.id, options.assetUrl || Urls.imagePlaceholder);
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
