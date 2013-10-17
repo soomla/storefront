@@ -819,6 +819,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "the
             delete json.nonConsumables;
             delete json.supportedFeatures;
 
+            // Delete fields that were added
+            delete json.hooks
+
 
             // Remove the injected base URL (only for loading assets in the dashboard)
             // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
