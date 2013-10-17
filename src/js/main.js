@@ -19,7 +19,7 @@ require.config({
         templates           	: "views/templates",
         utils                   : "utils",
         urls                    : "urls",
-        theme                   : "theme",
+        assetManager            : "asset-manager",
         template                : "template",
         userAgent               : "user-agent",
         nativeApiStubs          : "native-api-stubs",

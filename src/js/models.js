@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "theme"], function(Backbone, EconomyModels, Utils, Urls, Template, Theme) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager"], function(Backbone, EconomyModels, Utils, Urls, Template, AssetManager) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -176,7 +176,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "the
 
 
             // Create theme object
-            this.theme = new Theme(this.get("theme"));
+            this.assetManager = new AssetManager({
+                theme 		: this.get("theme"),
+                modelAssets : this.getModelAssets()
+            });
 
             // Clean fields that are not unnecessary to prevent duplicate data
             this.unset("rawCategories");
