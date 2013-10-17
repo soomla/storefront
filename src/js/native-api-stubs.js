@@ -116,15 +116,13 @@ define("nativeApiStubs", function(){
             });
         },
         wantsToOpenOfferWall : function(id) {
-            if (id === "sponsorpay") {
-                SoomlaJS.storeView.openDialog();
-                var options = SoomlaJS.store.get("offerWalls").get("sponsorpay").toJSON();
-                options = _.omit(options, "id", "name");
+            SoomlaJS.storeView.openDialog();
+            var options = SoomlaJS.store.getOfferWalls().get(id).toJSON();
+            options = _.omit(options, "id", "name");
 
-                setTimeout(function() {
-                    _jsAPI.openOfferWall(options);
-                }, 1000);
-            }
+            setTimeout(function() {
+                _jsAPI.openOfferWall(options);
+            }, 1000);
         },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },

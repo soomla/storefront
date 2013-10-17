@@ -14,6 +14,8 @@ define("viewMixins", {
     wantsToUnequipGoods : function(model) {
         this.nativeAPI.wantsToUnequipGoods(model.toJSON().itemId);
     },
+
+    // TODO: Check if used, if not - remove
     requestEarnedCurrency : function(provider) {
         this.nativeAPI.requestEarnedCurrency(provider);
     },

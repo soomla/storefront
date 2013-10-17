@@ -353,8 +353,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             };
         })()
     });
-    _.extend(BaseStoreView.prototype, ViewMixins);
-    _.extend(BaseStoreView.prototype, OfferWallsAPI);
+    _.extend(BaseStoreView.prototype, ViewMixins, OfferWallsAPI);
+    BaseStoreView.Const = {
+        offerWallsId : "__offerWalls__",
+        offerWallsTitle : "Offer Walls"
+    };
 
     // Wrap the function that calls the native API.
     // Open a message dialog whenever the user selects an offer wall

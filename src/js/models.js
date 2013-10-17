@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template"], function(Backbone, EconomyModels, Utils, Urls, Template) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "theme"], function(Backbone, EconomyModels, Utils, Urls, Template, Theme) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -162,6 +162,21 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
 
                 this.getCategories().add(category);
             }, this);
+
+
+            // Process hooks
+            // TODO: Select relevant hooks that are actually offer walls, once the hooks object contains more stuff
+            var offerWallHooks = this.has("hooks") ? this.get("hooks").sponsorpay : [];
+            var offerWalls = _.map(offerWallHooks, function(offer, itemId) {
+                offer.id = itemId;
+                return offer;
+            });
+            offerWalls = new OfferWallCollection(offerWalls);
+            this.hooks = { offerWalls : offerWalls };
+
+
+            // Create theme object
+            this.theme = new Theme(this.get("theme"));
 
             // Clean fields that are not unnecessary to prevent duplicate data
             this.unset("rawCategories");
@@ -691,7 +706,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template"], fun
             return this.template.getCategoryAssetDimensions();
         },
         getOfferWalls : function() {
-            return this.get("offerWalls");
+            return this.hooks.offerWalls;
         },
         toJSON : function(options) {
 
