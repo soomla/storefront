@@ -24,6 +24,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         // Functions for market purchase type items.
         // These are common between goods and currency packs
         // because some goods can be purchased directly from the market.
+        setItemId : function(id) {
+            return this.set("itemId", id);
+        },
         setMarketItemId : function(type, id) {
             switch (type) {
                 case "iosId" :
@@ -97,6 +100,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         getPrice : function() {
             var pi = this.get("purchasableItem");
             return this.isMarketPurchaseType() ? pi.marketItem.price : pi.pvi_amount;
+        },
+        getType : function() {
+            return this.get("type");
         },
         setCurrencyId : function(currencyId) {
             return this._setPurchasableItem({pvi_itemId : currencyId});
@@ -221,6 +227,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getUpgrades : function() {
             return this.get("upgrades");
+        },
+        getUpgradeIds : function() {
+            return this.getUpgrades().map(function(u) { return u.id; });
         },
         getUpgradeCount : function() {
             return this.getUpgrades().size();
