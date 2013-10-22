@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "stringUtils", "offerWallsAPI", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins, StringUtils, OfferWallsAPI) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "stringUtils", "offerWallsAPI", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, StringUtils, OfferWallsAPI) {
 
 
     // Save a local copy
@@ -353,7 +353,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             };
         })()
     });
-    _.extend(BaseStoreView.prototype, ViewMixins, OfferWallsAPI);
+    _.extend(BaseStoreView.prototype, SoomlaAndroid, OfferWallsAPI);
     BaseStoreView.Const = {
         offerWallsId : "__offerWalls__",
         offerWallsTitle : "Offer Walls"

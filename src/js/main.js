@@ -14,7 +14,6 @@ require.config({
         expandableItemViews     : "views/expandable-item-views",
         collectionViews         : "views/collection-views",
         helperViews             : "views/helper-views",
-        viewMixins          	: "views/view-mixins",
         cssUtils                : "views/css-utils",
         templates           	: "views/templates",
         utils                   : "utils",
@@ -24,8 +23,11 @@ require.config({
         template                : "template",
         userAgent               : "user-agent",
         nativeApiStubs          : "native-api-stubs",
-        soomlaiOS               : "soomla-ios",
         offerWallsAPI           : "offer-walls-api",
+
+        // Native APIs
+        soomlaAndroid           : "native-api/soomla-android",
+        soomlaiOS               : "native-api/soomla-ios",
 
         // 3rd party modules
         jquery              	: "libs/jquery/jquery-1.9.1.min",

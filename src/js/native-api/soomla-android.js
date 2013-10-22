@@ -1,4 +1,4 @@
-define("viewMixins", {
+define("soomlaAndroid", {
     wantsToLeaveStore : function() {
         this.nativeAPI.wantsToLeaveStore();
     },
