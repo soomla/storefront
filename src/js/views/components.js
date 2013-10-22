@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "offerWallsAPI", "jquery.fastbutton", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins, OfferWallsAPI) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "stringUtils", "offerWallsAPI", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins, StringUtils, OfferWallsAPI) {
 
 
     // Save a local copy
@@ -364,6 +364,27 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
     _.wrap(BaseStoreView.prototype.wantsToOpenOfferWall, function(func) {
         this.openDialog();
         func.call(this);
+    });
+
+
+    _.extend(BaseStoreView.prototype, {
+        handleMessage : function(options) {
+            if (options.type === "sponsorpay") {
+                var itemName = (this.model.getCurrency(options.itemId) || this.model.getItem(options.itemId)).getName(),
+                    amount = options.amount;
+
+                $.pnotify({
+                    title: 'Congratulations!',
+                    text: "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName,
+                    hide: false,
+                    addclass: "stack-bar-bottom",
+                    type: "info",
+                    cornerclass: "",
+                    animate_speed: "fast",
+                    stack: {"dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0}
+                });
+            }
+        }
     });
 
 

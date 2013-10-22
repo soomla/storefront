@@ -57,7 +57,7 @@ define("soomlaiOS", {
     wantsToUpgradeVirtualGood : function(itemId) {
         this._callNative("wantsToUpgradeVirtualGood:" + itemId);
     },
-    wantsToOpenOfferWall : function(id) {
-        this._callNative("wantsToOpenOfferWall:" + id);
+    wantsToOpenOfferWall : function(itemId) {
+        this._callNative("wantsToInitiateHook:" + "sponsorpay" + ":" + "offerwall" + ":" + itemId);
     }
 });

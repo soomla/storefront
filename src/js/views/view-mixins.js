@@ -38,7 +38,7 @@ define("viewMixins", {
     wantsToUpgradeVirtualGood : function(model) {
         this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     },
-    wantsToOpenOfferWall : function(id) {
-        this.nativeAPI.wantsToOpenOfferWall(id);
+    wantsToOpenOfferWall : function(itemId) {
+        this.nativeAPI.wantsToInitiateHook("sponsorpay", "offerwall", itemId);
     }
 });

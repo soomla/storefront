@@ -115,9 +115,12 @@ define("nativeApiStubs", function(){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
-        wantsToOpenOfferWall : function(id) {
+        wantsToOpenOfferWall : function(itemId) {
+
+            // No conditional checks on provider since
+            // only SponsorPay is supported
             SoomlaJS.storeView.openDialog();
-            var options = SoomlaJS.store.getOfferWalls().get(id).toJSON();
+            var options = SoomlaJS.store.getOfferWalls().get(itemId).toJSON();
             options = _.omit(options, "id", "name");
 
             setTimeout(function() {
