@@ -10,7 +10,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             this.set("name", name);
         },
         getName: function () {
-            this.get("name");
+            return this.get("name");
         },
         getIosId : function() {
             return this.get("purchasableItem").marketItem.iosId;
