@@ -5,42 +5,57 @@ require.config({
     waitSeconds : 0,
 
     paths: {
+
+        // Initialization
         store                   : "store",
-        economyModels           : "economy-models",
-        models                  : "models",
-        jsAPI                   : "js-api",
+
+        // Models
+        economyModels           : "models/economy-models",
+        models                  : "models/models",
+        assetManager            : "models/asset-manager",
+        template                : "models/template",
+
+        // Views
         components              : "views/components",
         itemViews               : "views/item-views",
         expandableItemViews     : "views/expandable-item-views",
         collectionViews         : "views/collection-views",
         helperViews             : "views/helper-views",
-        cssUtils                : "views/css-utils",
         templates           	: "views/templates",
-        utils                   : "utils",
+
+        // Utilities
+        utils                   : "utils/utils",
         stringUtils             : "utils/string-utils",
-        urls                    : "urls",
-        assetManager            : "asset-manager",
-        template                : "template",
-        userAgent               : "user-agent",
-        nativeApiStubs          : "native-api-stubs",
-        offerWallsAPI           : "offer-walls-api",
+        urls                    : "utils/urls",
+        userAgent               : "utils/user-agent",
+        cssUtils                : "utils/css-utils",
 
         // Native APIs
-        soomlaAndroid           : "native-api/soomla-android",
-        soomlaiOS               : "native-api/soomla-ios",
+        soomlaAndroid           : "api/soomla-android",
+        soomlaiOS               : "api/soomla-ios",
+        nativeApiStubs          : "api/native-api-stubs",
+        jsAPI                   : "api/js-api",
+
+        // Hooks
+        offerWallsAPI           : "hooks/offer-walls-api",
 
         // 3rd party modules
-        jquery              	: "libs/jquery/jquery-1.9.1.min",
-        "jquery.fastbutton"     : "libs/jquery/jquery.google.fastbutton",
-        "jquery.preload"        : "libs/jquery/jquery.preload",
-        "jquery.pnotify"        : "libs/jquery/jquery.pnotify",
-        jqueryUtils             : "libs/jquery/jquery-utils",
         imagesloaded            : "libs/imagesloaded-3.0.4",
         eventie                 : "libs/eventie-1.0.3",
         eventEmitter            : "libs/event-emitter-4.2.0",
         fastbutton              : "libs/google.fastbutton",
         less                	: "libs/less-1.3.3",
         iscroll                 : "libs/iscroll",
+        handlebars          	: "libs/handlebars-1.0.rc.2",
+
+        // jQuery related
+        jquery              	: "libs/jquery/jquery-1.9.1.min",
+        "jquery.fastbutton"     : "libs/jquery/jquery.google.fastbutton",
+        "jquery.preload"        : "libs/jquery/jquery.preload",
+        "jquery.pnotify"        : "libs/jquery/jquery.pnotify",
+        jqueryUtils             : "libs/jquery/jquery-utils",
+
+        // Backbone related
         underscore          	: "libs/underscore-1.4.4",
         backboneFramework       : "libs/backbone/backbone-1.0.0",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.5",
@@ -49,7 +64,6 @@ require.config({
         marionetteExtensions    : "libs/backbone/marionette-extensions",
         "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
-        handlebars          	: "libs/handlebars-1.0.rc.2",
 
         // Aggregative modules
         backbone            	: "libs/backbone/backbone",
