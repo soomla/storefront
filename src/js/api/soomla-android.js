@@ -39,10 +39,10 @@ define("soomlaAndroid", {
         this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     },
     wantsToOpenOfferWall : function(itemId) {
-        this.nativeAPI.wantsToInitiateHook(JSON.stringify({
-            provider: "sponsorpay",
+        var params = JSON.stringify({
             action  : "offerwall",
             itemId  : itemId
-        }));
+        });
+        this.nativeAPI.wantsToInitiateHook("sponsorpay", params);
     }
 });

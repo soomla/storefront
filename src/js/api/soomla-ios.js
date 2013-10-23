@@ -58,10 +58,10 @@ define("soomlaiOS", {
         this._callNative("wantsToUpgradeVirtualGood:" + itemId);
     },
     wantsToOpenOfferWall : function(itemId) {
-        this._callNative("wantsToInitiateHook:" + JSON.stringify({
-            provider: "sponsorpay",
-            action  : "offerwall",
-            itemId  : itemId
-        }));
+        var params = JSON.stringify({
+            action: "offerwall",
+            itemId: itemId
+        });
+        this._callNative("wantsToInitiateHook:" + "sponsorpay" + ":" + params);
     }
 });
