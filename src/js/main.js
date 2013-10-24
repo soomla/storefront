@@ -37,6 +37,7 @@ require.config({
         jsAPI                   : "api/js-api",
 
         // Hooks
+        hooks                   : "hooks/hooks",
         offerWallsAPI           : "hooks/offer-walls-api",
 
         // 3rd party modules

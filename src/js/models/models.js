@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager"], function(Backbone, EconomyModels, Utils, Urls, Template, AssetManager) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks"], function(Backbone, EconomyModels, Utils, Urls, Template, AssetManager, Hooks) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -17,9 +17,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         VirtualCurrencyCollection   = EconomyModels.VirtualCurrencyCollection,
         CurrencyPacksCollection     = EconomyModels.CurrencyPacksCollection,
         NonConsumable               = EconomyModels.NonConsumable,
-        NonConsumablesCollection    = EconomyModels.NonConsumablesCollection,
-        OfferWall                   = EconomyModels.OfferWall,
-        OfferWallCollection         = EconomyModels.OfferWallCollection;
+        NonConsumablesCollection    = EconomyModels.NonConsumablesCollection;
 
 
     var duplicateCategoryErrorMessage = "A category with that name already exists.",
@@ -51,15 +49,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 key: 'nonConsumables',
                 relatedModel: NonConsumable,
                 collectionType: NonConsumablesCollection,
-                reverseRelation: {
-                    includeInJSON: 'id'
-                }
-            },
-            {
-                type: Backbone.HasMany,
-                key: 'offerWalls',
-                relatedModel: OfferWall,
-                collectionType: OfferWallCollection,
                 reverseRelation: {
                     includeInJSON: 'id'
                 }
@@ -164,16 +153,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }, this);
 
 
-            // Process hooks
-            // TODO: Select relevant hooks that are actually offer walls, once the hooks object contains more stuff
-            var offerWallHooks = this.has("hooks") ? this.get("hooks").sponsorpay : [];
-            var offerWalls = _.map(offerWallHooks, function(offer, itemId) {
-                offer.id = itemId;
-                return offer;
-            });
-            offerWalls = new OfferWallCollection(offerWalls);
-            this.hooks = { offerWalls : offerWalls };
-
+            // Create hooks object
+            this.hooks = new Hooks.HookManager({theme : this.get("theme"), hooks : this.get("hooks")});
 
             // Create theme object
             this.assets = new AssetManager({
@@ -701,9 +682,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
         },
-        getOfferWalls : function() {
-            return this.hooks.offerWalls;
-        },
         toJSON : function(options) {
 
             (options) || (options = {});
@@ -789,6 +767,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 delete currency.packs;
             });
 
+            // Assign hooks
+            json.hooks = this.hooks.toJSON();
 
 
             // Update model assets
@@ -815,8 +795,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             delete json.nonConsumables;
             delete json.supportedFeatures;
 
-            // Delete fields that were added
-            delete json.hooks
 
 
             // Remove the injected base URL (only for loading assets in the dashboard)
@@ -831,6 +809,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             return json;
         }
     });
+
+    _.extend(Store.prototype, Hooks.HooksMixin);
 
 
     return {
