@@ -25,16 +25,16 @@ define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
             (this.hooks[provider]) || (this.hooks[provider] = {});
             return this;
         },
-        _addHookOptions : function(provider, options) {
-            _.extend(this.hooks[provider], options);
-        },
         addHook : function(provider, options) {
 
             // TODO: Check if this can be removed
             this._ensureHooks();
 
             if (provider === "sponsorpay") {
-                this._ensureProviderHook(provider)._addHookOptions(provider, options);
+                this._ensureProviderHook(provider);
+                var itemId = options.itemId;
+                (this.hooks[provider][itemId]) || (this.hooks[provider][itemId] = {});
+                _.extend(this.hooks[provider][itemId], _.omit(options, "itemId"));
             }
         },
         getOfferWalls : function() {
