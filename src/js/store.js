@@ -152,9 +152,13 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 }
 
                 // Ensure the correct module is loaded for the template
-                // Use a non-public Require.js API to alter the config paths in runtime
+                // This was previously done with a non-public Require.js API
+                // to alter the config paths in runtime
                 // See: https://groups.google.com/forum/?fromgroups#!topic/requirejs/Hf-qNmM0ceI
-                require.s.contexts._.config.paths[templateModule] = templateModulePath;
+				// require.s.contexts._.config.paths[templateModule] = templateModulePath;
+                var paths = {};
+                paths[templateModule] = templateModulePath;
+                require.config({paths: paths});
 
 
 
