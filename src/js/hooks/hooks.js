@@ -40,6 +40,10 @@ define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
         getOfferWalls : function() {
             return this.offerWalls;
         },
+        getHook : function(provider) {
+            if (provider === "sponsorpay") return this.offerWalls.first();
+            return null;
+        },
         toJSON : function() {
             return this.hooks;
         }

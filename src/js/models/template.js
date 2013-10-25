@@ -47,6 +47,10 @@ define("template", ["underscore", "utils"], function(_, Utils) {
         },
         getCategoryAssetDimensions : function() {
             return normalize(this.json.assetMetadata.economy.categories);
+        },
+        supportsOfferWalls : function() {
+            var hooks = this.supportedFeatures.hooks;
+            return (hooks && hooks.sponsorpay === true);
         }
     });
 
