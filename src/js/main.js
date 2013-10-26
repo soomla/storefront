@@ -57,7 +57,7 @@ require.config({
         jqueryUtils             : "libs/jquery/jquery-utils",
 
         // Backbone related
-        underscore          	: "libs/underscore-1.4.4",
+        underscore          	: "libs/underscore-1.5.2",
         backboneFramework       : "libs/backbone/backbone-1.0.0",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.5",
         backboneExtensions      : "libs/backbone/backbone-extensions",
