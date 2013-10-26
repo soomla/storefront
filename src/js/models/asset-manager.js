@@ -9,11 +9,17 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
     };
 
     _.extend(AssetManager.prototype, {
-        getCategoryAsset : function(categoryId) {
-            return Utils.getByKeychain(this.modelAssets, ["categories", categoryId]) || Urls.imagePlaceholder;
+
+        // `key` is an optional argument.  In case the category has multiple assets
+        // fetch the asset according to the given key.
+        getCategoryAsset : function(categoryId, key) {
+            return this._getAsset("categories", categoryId, key) || Urls.imagePlaceholder;
         },
-        getItemAsset : function(itemId) {
-            return this._getItemAsset(itemId) || Urls.imagePlaceholder;
+
+        // `key` is an optional argument.  In case the item has multiple assets
+        // fetch the asset according to the given key.
+        getItemAsset : function(itemId, key) {
+            return this._getItemAsset(itemId, key) || Urls.imagePlaceholder;
         },
         getUpgradeAsset : function(itemId) {
             return this._getItemAsset(itemId) || Urls.imagePlaceholder;
@@ -55,8 +61,18 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         //
         // Private methods
         //
-        _getItemAsset : function(itemId) {
-            return Utils.getByKeychain(this.modelAssets, ["items", itemId]);
+        _getItemAsset : function(itemId, key) {
+            return this._getAsset("items", itemId, key);
+        },
+        _getAsset : function(section, itemId, key) {
+            var asset = Utils.getByKeychain(this.modelAssets, [section, itemId]);
+
+            // If the asset is an object (i.e. isn't a plain string)
+            // return either the asset with the provided key, or the default asset
+            if (_.isObject(asset)) return key ? asset[key] : asset.default;
+
+            // Otherwise, the asset is a plain string, return it
+            return asset;
         },
         _setItemAsset : function(id, url) {
             this.modelAssets.items[id] = url;
