@@ -55,7 +55,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
         ],
         initialize : function() {
-            _.bindAll(this, "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
+            _.bindAll(this, "buildTemplate", "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
 
             // Create a {ID : good} map with goods from all categories
             var goodsMap    = this.goodsMap     = {};
@@ -659,7 +659,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             return currency;
         },
         supportsMarketPurchaseTypeOnly : function() {
-            var purchaseTypes = this.get("supportedFeatures").purchaseTypes;
+            var purchaseTypes = this.template.getSupportedPurchaseTypes();
             return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
         },
         getModelAssetDimensions : function(model) {
@@ -793,7 +793,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // TODO: Check if needed
             delete json.rawCategories;
             delete json.nonConsumables;
-            delete json.supportedFeatures;
 
 
 

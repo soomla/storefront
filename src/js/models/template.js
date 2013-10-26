@@ -48,9 +48,24 @@ define("template", ["underscore", "utils"], function(_, Utils) {
         getCategoryAssetDimensions : function() {
             return normalize(this.json.assetMetadata.economy.categories);
         },
-        supportsOfferWalls : function() {
+        supportsHooks : function() {
+
+            // Checks both that `hooks` is defined,
+            // and that there's at least one hook defined
+            return !_.isEmpty(this.supportedFeatures.hooks);
+        },
+        supportsHook : function(provider) {
             var hooks = this.supportedFeatures.hooks;
-            return (hooks && hooks.sponsorpay === true);
+            return (hooks && hooks[provider] === true);
+        },
+        getSupportedGoods : function() {
+            return this.supportedFeatures.goods;
+        },
+        getSupportedPurchaseTypes : function() {
+            return this.supportedFeatures.purchaseTypes;
+        },
+        supportsCategoryImages : function() {
+            return !_.isUndefined(this.supportedFeatures.categoryImages);
         }
     });
 

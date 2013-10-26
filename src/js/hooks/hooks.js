@@ -56,6 +56,9 @@ define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
         },
         getOfferWalls : function() {
             return this.hooks.getOfferWalls();
+        },
+        getHook : function(provider) {
+            return this.hooks.getHook(provider);
         }
     };
 
