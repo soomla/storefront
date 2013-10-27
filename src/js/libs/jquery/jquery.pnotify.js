@@ -642,7 +642,7 @@
 					pnotify.closer.css("visibility", "hidden");
 				}
 			})
-			.append($("<span />", {"class": styles.closer, "title": opts.labels.close}))
+			.append($("<a />", {"class": styles.closer, "title": opts.labels.close}))
 			.appendTo(pnotify.container);
 			if (!opts.closer || opts.nonblock)
 				pnotify.closer.css("display", "none");

@@ -367,22 +367,38 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
     });
 
 
+
+    // The notification stack must be defined in a variable for it to work properly.
+    // See: https://github.com/sciactive/pnotify#stacks
+    var bottomUpStack = {"dir1": "up", "dir2": "right", "spacing1": 20, "spacing2": 20};
+
     _.extend(BaseStoreView.prototype, {
         handleMessage : function(options) {
             if (options.type === "sponsorpay") {
                 var itemName = (this.model.getCurrency(options.itemId) || this.model.getItem(options.itemId)).getName(),
                     amount = options.amount;
 
-                $.pnotify({
-                    title: 'Congratulations!',
-                    text: "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName,
-                    hide: false,
-                    addclass: "stack-bar-bottom",
-                    type: "info",
-                    cornerclass: "",
-                    animate_speed: "fast",
-                    stack: {"dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0}
+
+                // Safeguard in case things aren't defined properly
+                if (!amount || !itemName) return;
+
+                var notice = $.pnotify({
+                    title 			: 'Congratulations!',
+                    text 			: "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName,
+                    addclass 		: "stack-bar-bottom soomla-hook-notice",
+                    closer_hover 	: false,
+                    type 			: "info",
+                    cornerclass 	: "",
+                    animate_speed 	: "fast",
+                    maxonscreen 	: 2,
+                    history 		: false,
+                    stack 			: bottomUpStack
                 });
+
+
+                if (innerHeight <= 1024) {
+                    notice.css("zoom", innerHeight <= 320 ? 3 : 2);
+                }
             }
         }
     });
