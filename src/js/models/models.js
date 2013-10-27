@@ -812,6 +812,15 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     _.extend(Store.prototype, Hooks.HooksMixin);
 
 
+    // Assign store API version - to be used externally
+    // i.e. when manipulating the store from the dashboard
+    var API_VERSION = "0.0.1";
+    Object.defineProperty(Store.prototype, "API_VERSION", {
+        get : function() { return API_VERSION; }
+    });
+
+
+
     return {
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
