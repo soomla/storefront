@@ -168,7 +168,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this.unset("currencyPacks");
         },
         buildTemplate : function(json) {
-            this.template = new Template(json);
+            this.template = new Template(json, this.get("template").orientation);
         },
         getTemplate : function() {
             return this.template;

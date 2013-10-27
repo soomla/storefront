@@ -7,24 +7,36 @@ define("template", ["underscore", "utils"], function(_, Utils) {
         };
     };
 
-    var Template = function(json) {
+    var Template = (function() {
 
-        // Save the raw JSON internally
-        this._json = json;
-    };
+        var _json, _orientation;
 
-    // Define getters
-    Object.defineProperties(Template.prototype, {
-        json : {
-            get : function() { return this._json; }
-        },
-        sections : {
-            get : function() { return this.json.sections; }
-        },
-        supportedFeatures : {
-            get : function() { return this.json.supportedFeatures; }
-        }
-    });
+        var Template = function(json, orientation) {
+
+            // Save the raw JSON internally
+            _json = json;
+            _orientation = orientation;
+        };
+
+        // Define getters
+        Object.defineProperties(Template.prototype, {
+            json : {
+                get : function() { return _json; }
+            },
+            sections : {
+                get : function() { return this.json.sections; }
+            },
+            supportedFeatures : {
+                get : function() { return this.json.supportedFeatures; }
+            },
+            orientation : {
+                get : function() { return _orientation; }
+            }
+        });
+        return Template;
+    })();
+
+
 
     _.extend(Template.prototype, {
         getTemplateImageDimensions : function(keychain) {
