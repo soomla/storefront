@@ -14,9 +14,17 @@ define("template", ["underscore", "utils"], function(_, Utils) {
     };
 
     // Define getters
-    Template.prototype.__defineGetter__("json", function() { return this._json; });
-    Template.prototype.__defineGetter__("sections", function() { return this._json.sections; });
-    Template.prototype.__defineGetter__("supportedFeatures", function() { return this.json.supportedFeatures; });
+    Object.defineProperties(Template.prototype, {
+        json : {
+            get : function() { return this._json; }
+        },
+        sections : {
+            get : function() { return this.json.sections; }
+        },
+        supportedFeatures : {
+            get : function() { return this.json.supportedFeatures; }
+        }
+    });
 
     _.extend(Template.prototype, {
         getTemplateImageDimensions : function(keychain) {
