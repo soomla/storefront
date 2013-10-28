@@ -37,6 +37,9 @@ define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
                 _.extend(this.hooks[provider][itemId], _.omit(options, "itemId"));
             }
         },
+        removeHook : function(provider) {
+            delete this.hooks[provider];
+        },
         getOfferWalls : function() {
             return this.offerWalls;
         },
@@ -53,6 +56,9 @@ define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
     var HooksMixin = {
         addHook : function(provider, options) {
             this.hooks.addHook(provider, options);
+        },
+        removeHook : function(provider) {
+            this.hooks.removeHook(provider);
         },
         getOfferWalls : function() {
             return this.hooks.getOfferWalls();
