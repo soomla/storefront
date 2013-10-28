@@ -27,6 +27,9 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         getUpgradeBarAsset : function(itemId) {
             return this._getItemAsset(itemId) || Urls.progressBarPlaceholder;
         },
+        getThemeAsset : function(keychain) {
+            return Utils.getByKeychain(this.theme, keychain) || Urls.imagePlaceholder;
+        },
         getOfferWallsLinkAsset : function() {
             return Utils.getByKeychain(this.theme, ["offerWalls", "menuLinkImage"]);
         },
