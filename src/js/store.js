@@ -198,7 +198,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
                     cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
                     templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
-                    $this           	= this,
+                    _this           	= this,
                     storeViewDeferred 	= $.Deferred(),
                     backgroundImagesPromise;
 
@@ -214,6 +214,9 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     // Create an asset map for the theme assets
                     var themeAssetNames = {};
                     createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
+                    _this.store.injectAssets(modelAssetNames, themeAssetNames);
+
+
 
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
@@ -270,9 +273,9 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 require([templateModule], function(Theme) {
 
                     // Initialize view
-                    $this.storeView = Theme.createStoreView({
+                    _this.storeView = Theme.createStoreView({
                         storeViewOptions : {
-                            model 			: $this.store,
+                            model 			: _this.store,
                             el 				: $("#main"),
                             template 		: Handlebars.getTemplate("template"),
                             initViewItemId 	: options.initViewItemId,

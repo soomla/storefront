@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks"], function(Backbone, EconomyModels, Utils, Urls, Template, AssetManager, Hooks) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks) {
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel;
@@ -88,15 +88,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                         // If a good has upgrade levels, instantiate it as a different object
                         good = new UpgradableGood(rawGood);
 
-                        // Update upgradable model assets whenever an item ID changes
-                        this.listenTo(good, "change:itemId", function(model, newItemId) {
-
-                            // This if is for protecting against this event firing when the store is first initialized
-                            // TODO: Investigate
-                            if (model.previous("itemId")) {
-                                this.updateUpgradeAssets(model, newItemId);
-                            }
-                        });
                     } else {
                         switch (type) {
                             case "equippable":
@@ -157,7 +148,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this.hooks = new Hooks.HookManager({theme : this.get("theme"), hooks : this.get("hooks")});
 
             // Create theme object
-            this.assets = new AssetManager({
+            this.assets = new Assets.AssetManager({
                 theme 		: this.get("theme"),
                 modelAssets : this.getModelAssets()
             });
@@ -167,22 +158,28 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this.unset("goods");
             this.unset("currencyPacks");
         },
+        // A function for injecting model and theme assets
+        // externally after the object has been created
+        injectAssets : function(modelAssetNames, themeAssetNames) {
+            this.assets.modelAssetNames = modelAssetNames;
+            this.assets.themeAssetNames = themeAssetNames;
+        },
         buildTemplate : function(json) {
             this.template = new Template(json, this.get("template").orientation);
         },
         getTemplate : function() {
             return this.template;
         },
-        setCategoryAsset : function(category, url) {
+        setCategoryAsset : function(category, url, name) {
 
             // First assign category asset, so that when the item view
             // in the store renders, it will have it accessible as a template helper
-            this.assets.setCategoryAsset(category.id, url);
+            this.assets.setCategoryAsset(category.id, url, name);
 
             // Force the preview to update by triggering a change event on the model
             category.trigger("change:asset");
         },
-        setItemAsset : function(model, url, options) {
+        setItemAsset : function(model, url, name, options) {
 
             var id = model.id;
 
@@ -199,7 +196,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
 
             // Update asset map
-            this.assets.setItemAsset(id, url);
+            this.assets.setItemAsset(id, url, name);
 
             // Force the preview to update by triggering a change event on the model
             model.trigger("change:asset");
@@ -223,26 +220,62 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
             var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
-            this.assets.changeItemId(oldItemId, newItemId)
+            this.assets.updateItemId(oldItemId, newItemId)
         },
-        updateItemId : function(oldItemId, newItemId) {
+        updateItemId : function(item, newItemId) {
 
-            var modelAssets = this.getModelAssets();
+            var oldItemId = item.id;
 
-            _.each([this.goodsMap, this.packsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
+            // Update all maps
+            // Check goods + category maps for virtual goods
+            // Check packs map for currency packs
+            _.each([this.goodsMap, this.packsMap, this.categoryMap], function(map) {
                 if (_.has(map, oldItemId)) {
                     map[newItemId] = map[oldItemId];
                     delete map[oldItemId];
                 }
             });
+
+            // Update asset name maps
+            if (item.is && item.is("upgradable")) {
+
+                // Assume an overriding model asset ID was passed
+                var oldEmptyUpgradeBarAssetId = item.getEmptyUpgradeBarAssetId(),
+                    newEmptyUpgradeBarAssetId = item.getEmptyUpgradeBarAssetId(newItemId);
+
+                this.assets.updateItemId(oldEmptyUpgradeBarAssetId, newEmptyUpgradeBarAssetId);
+                this.assets.updateModelAssetName(oldEmptyUpgradeBarAssetId, newEmptyUpgradeBarAssetId);
+            } else {
+                this.assets.updateItemId(oldItemId, newItemId);
+                this.assets.updateModelAssetName(oldItemId, newItemId);
+            }
+
+            // After all maps and assets have been updated, update the item's ID
+            item.setItemId(newItemId);
+        },
+        updateCategoryId : function(category, newItemId) {
+
+            var oldItemId = category.id;
+            this.assets.updateCategoryId(oldItemId, newItemId);
+            this.assets.updateModelAssetName(oldItemId, newItemId);
+
+            // After all assets have been updated, update the category's name (effectively its ID)
+            category.setName(newItemId);
         },
         removeItemId : function(id) {
 
-            var modelAssets = this.getModelAssets();
-
-            _.each([this.goodsMap, this.packsMap, this.categoryMap, modelAssets.items, modelAssets.categories], function(map) {
+            // Remove ID from all maps
+            // Check goods + category maps for virtual goods
+            // Check packs map for currency packs
+            _.each([this.goodsMap, this.packsMap, this.categoryMap], function(map) {
                 if (_.has(map, id)) delete map[id];
             });
+
+            // Remove the item from the assets
+            this.assets.removeItemAsset(id);
+        },
+        removeCategoryId : function(id) {
+            this.assets.removeCategoryAsset(id);
         },
         setBalance : function(balances) {
 
@@ -317,7 +350,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
             this.updateNonConsumables(nonConsumables);
         },
-        addNewCurrency : function(options) {
+        addCurrency : function(options) {
             var currency;
             try {
                 options.itemId = Currency.generateNameFor(options.name);
@@ -330,20 +363,22 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
             return currency;
         },
-        addNewCategory : function(options) {
+        addCategory : function(options) {
             var category;
             try {
                 category = new Category(options);
                 var assetUrl = options.assetUrl || Urls.imagePlaceholder;
-                this.assets.setCategoryAsset(category.id, assetUrl);
+                this.assets.setCategoryAsset(category.id, assetUrl, "");
                 this.getCategories().add(category);
+
+                // TODO: throw uniqueness error before storing assets
+                // TODO: Do this in all other `add*` functions
             } catch(e) {
                 throw new Error(duplicateCategoryErrorMessage);
             }
             return category;
         },
-        // TODO: Deal with upgradables
-        addNewVirtualGood : function(options) {
+        addVirtualGood : function(options) {
 
             var assetUrl    = options.assetUrl || Urls.imagePlaceholder,
                 type        = options.type || "singleUse",
@@ -371,7 +406,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 // Ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
-                this.assets.setItemAsset(good.id, assetUrl);
+                this.assets.setItemAsset(good.id, assetUrl, "");
 
                 category = this.getFirstCategory();
 
@@ -403,11 +438,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                     type    : type
                 });
                 good.setCurrencyId(firstCurrencyId);
-
-                // Update upgradable model assets whenever an item ID changes
-                if (type === "upgradable") {
-                    this.listenTo(good, "change:itemId", this.updateUpgradeAssets);
-                }
 
                 // Ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
@@ -470,13 +500,14 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Remove from mappings and delete upgrade-specific assets
             this.removeItemId(upgrade.id);
-            this.assets.removeUpgradeAsset(upgrade.getUpgradeImageAssetId());
-            this.assets.removeUpgradeBarAsset(upgrade.getUpgradeBarAssetId());
+            var upgradeImageAssetId = upgrade.getUpgradeImageAssetId(),
+                upgradeBarAssetId   = upgrade.getUpgradeBarAssetId();
+            this.assets.removeUpgradeAssets(upgradeImageAssetId, upgradeBarAssetId);
 
             // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
             upgrade.trigger('destroy', upgrade, upgrade.collection, {});
         },
-        addNewCurrencyPack : function(options) {         var currencyPack = new CurrencyPack({
+        addCurrencyPack : function(options) {         var currencyPack = new CurrencyPack({
                 purchasableItem : {
                     marketItem : {
                         consumable  : 1,
@@ -494,7 +525,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Ensure the model has an asset assigned
             // before adding it to the collection (which triggers a render)
-            this.assets.setItemAsset(currencyPack.id, options.assetUrl || Urls.imagePlaceholder);
+            this.assets.setItemAsset(currencyPack.id, options.assetUrl || Urls.imagePlaceholder, "");
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
@@ -505,23 +536,33 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             return currencyPack;
         },
+        //
+        // Remove all the given collection's items in reverse order.  This prevents:
+        // 1. Removal from a collection while iterating forward
+        // 2. An unclear Backbone Relational bug: "Uncaught TypeError: Cannot call method 'getAssociatedItemId' of undefined"
+        //
+        // Accepts both Backbone collections and plain arrays of Backbone objects
+        _clearReverseOrder : function(collection, removeFunction) {
+            for (var i = collection.length - 1; i >= 0; i--) {
+
+                // Apply condition on `at` function to check if `collection` is
+                // a Backbone collection or a plain array
+                removeFunction.call(this, collection.at ? collection.at(i) : collection[i]);
+            }
+        },
         removeVirtualGood : function(good) {
 
             // Deal with upgradables
             if (good.is("upgradable")) {
 
-                // Remove all upgrades in reverse order to prevent this unclear Backbone Relational bug:
-                // "Uncaught TypeError: Cannot call method 'getAssociatedItemId' of undefined"
-                var upgrades = good.getUpgrades();
-                for (var i = upgrades.length - 1; i >= 0; i--) {
-                    this.removeUpgrade(upgrades.at(i));
-                }
+                // Remove all upgrades associated with this good
+                this._clearReverseOrder(good.getUpgrades(), this.removeUpgrade);
 
                 // Remove listeners that were in charge of updating item IDs in model assets map
                 this.stopListening(good);
 
                 // Remove zero-index bar
-                this.removeItemId(good.getEmptyUpgradeBarAssetId());
+                this.assets.removeItemAsset(good.getEmptyUpgradeBarAssetId());
             }
 
             // Remove from mappings
@@ -538,51 +579,28 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Remove from category
             pack.trigger('destroy', pack, pack.collection, {});
         },
-        // TODO: Deal with upgradables
         removeCategory : function(category) {
 
-            //
             // Remove all goods associated with this currency
-            //
-            var categoryGoods = category.get("goods");
-            categoryGoods.each(_.bind(function(good) {
-
-                // Remove from mappings
-                this.removeItemId(good.id);
-            }, this));
-            categoryGoods.reset();
+            this._clearReverseOrder(category.get("goods"), this.removeVirtualGood);
 
             // Remove the currency mappings
-            this.removeItemId(category.id);
+            this.removeCategoryId(category.id);
+            this.assets.removeCategoryAsset(category.id);
 
             // Remove the category model
             category.trigger('destroy', category, category.collection, {});
         },
         removeCurrency : function(currency) {
 
-            //
             // Remove all goods associated with this currency
-            //
-            _.each(this.goodsMap, _.bind(function(good) {
+            var currencyGoods = _.filter(this.goodsMap, function(good) {
+                return good.getCurrencyId() === currency.id;
+            });
+            this._clearReverseOrder(currencyGoods, this.removeVirtualGood);
 
-                if (good.getCurrencyId() === currency.id) {
-
-                    // First remove from mappings, then remove from collection
-                    this.removeItemId(good.id);
-                    good.trigger('destroy', good, good.collection, {});
-                }
-            }, this));
-
-            //
             // Remove all packs associated with this currency
-            //
-            var currencyPacks = currency.get("packs");
-            currencyPacks.each(_.bind(function(pack) {
-
-                // Remove from mappings
-                this.removeItemId(pack.id);
-            }, this));
-            currencyPacks.reset();
+            this._clearReverseOrder(currency.get("packs"), this.removeCurrencyPack);
 
             // Remove the currency mappings
             this.removeItemId(currency.id);
@@ -608,10 +626,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getFirstCurrency: function() {
             return this.getCurrencies().first();
         },
-        changeCategoryName : function(id, newName) {
+        updateCategoryName : function(id, newName) {
 
-            var oldItemId   = id,
-                newItemId   = newName,
+            var newItemId   = newName,
                 categories  = this.getCategories(),
                 category    = categories.get(id);
 
@@ -620,14 +637,14 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // TODO: conditionally do this - only if store has category assets
             // First ensure model assets are updated
-            this.updateItemId(oldItemId, newItemId);
+            this.updateCategoryId(category, newItemId);
 
             // then set the new values
             category.set("name", newName);
 
             return category;
         },
-        changeCurrencyName : function(id, newName) {
+        updateCurrencyName : function(id, newName) {
 
             var oldItemId   = id,
                 newItemId   = Currency.generateNameFor(newName),
@@ -638,7 +655,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             if (currencies.get(newItemId)) throw new Error(duplicateCurrencyErrorMessage);
 
             // First ensure model assets are updated
-            this.updateItemId(oldItemId, newItemId);
+            this.updateItemId(currency, newItemId);
 
             // Update all goods associated with this currency
             _.each(this.goodsMap, function(good) {
@@ -772,14 +789,13 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
 
             // Update model assets
-            if (options.modelAssetNames) {
-                _.each(json.modelAssets.items, function(name, itemId) {
-                    json.modelAssets.items[itemId] = options.modelAssetNames[itemId];
-                });
-                _.each(json.modelAssets.categories, function(name, itemId) {
-                    json.modelAssets.categories[itemId] = options.modelAssetNames[itemId];
-                });
-            }
+            var modelAssetNames = this.assets.modelAssetNames;
+			_.each(json.modelAssets.items, function(name, itemId) {
+				json.modelAssets.items[itemId] = modelAssetNames[itemId];
+			});
+			_.each(json.modelAssets.categories, function(name, itemId) {
+				json.modelAssets.categories[itemId] = modelAssetNames[itemId];
+			});
 
             // Update model assets
             if (options.themeAssetNames) {
@@ -809,7 +825,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         }
     });
 
-    _.extend(Store.prototype, Hooks.HooksMixin);
+    _.extend(Store.prototype, Hooks.HooksMixin, Assets.AssetsMixin);
 
 
     // Assign store API version - to be used externally

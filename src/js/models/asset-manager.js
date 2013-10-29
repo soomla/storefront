@@ -1,14 +1,38 @@
 define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
 
-    var AssetManager = function(options) {
 
-        // Save the raw JSON internally
-        this.theme      = options.theme;
-        this.modelAssets= options.modelAssets;
+    var AssetManager = (function() {
 
-    };
+        // Private members
+        var _modelAssetNames, _themeAssetNames;
+
+        var AssetManager = function(options) {
+
+            // Save the raw JSON internally
+            this.theme      = options.theme;
+            this.modelAssets= options.modelAssets;
+        };
+
+        // Define getters
+        Object.defineProperties(AssetManager.prototype, {
+            modelAssetNames : {
+                get : function()    { return _modelAssetNames; },
+                set : function(val) { _modelAssetNames = val; }
+            },
+            themeAssetNames : {
+                get : function()    { return _themeAssetNames; },
+                set : function(val) { _themeAssetNames = val; }
+            }
+        });
+
+        return AssetManager;
+    })();
 
     _.extend(AssetManager.prototype, {
+
+        //
+        // Getter functions
+        //
 
         // `key` is an optional argument.  In case the category has multiple assets
         // fetch the asset according to the given key.
@@ -33,31 +57,61 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         getOfferWallsLinkAsset : function() {
             return Utils.getByKeychain(this.theme, ["offerWalls", "menuLinkImage"]);
         },
-
-        setCategoryAsset : function(id, url) {
-            this.modelAssets.categories[id] = url;
-        },
-        setItemAsset : function(id, url) {
-            this._setItemAsset(id, url);
-        },
-        setUpgradeAsset : function(id, url) {
-            this._setItemAsset(id, url);
-        },
-        setUpgradeBarAsset : function(id, url) {
-            this._setItemAsset(id, url);
-        },
-
-        removeUpgradeAsset : function(id) {
-            this._removeItemAsset(id);
-        },
-        removeUpgradeBarAsset : function(id) {
-            this._removeItemAsset(id);
+        getModelAssetName : function(itemId) {
+            return this.modelAssetNames[itemId];
         },
 
 
-        changeItemId : function(oldItemId, newItemId) {
+        //
+        // Setter functions
+        //
+
+        setCategoryAsset : function(id, url, name) {
+            this.modelAssets.categories[id] = url || "";
+            this.modelAssetNames[id] = name || "";
+        },
+        setItemAsset : function(id, url, name) {
+            this._setItemAsset(id, url, name);
+        },
+        setUpgradeAsset : function(id, url, name) {
+            this._setItemAsset(id, url, name);
+        },
+        setUpgradeBarAsset : function(id, url, name) {
+            this._setItemAsset(id, url, name);
+        },
+
+
+        //
+        // Removal functions
+        //
+
+        removeItemAsset : function(id) {
+            return this._removeItemAsset(id);
+        },
+        removeCategoryAsset : function(id) {
+            delete this.modelAssets.categories[id];
+            delete this.modelAssetNames[id];
+        },
+        removeUpgradeAssets : function(upgradeImageAssetId, upgradeBarAssetId) {
+            return this._removeItemAsset(upgradeImageAssetId)._removeItemAsset(upgradeBarAssetId);
+        },
+
+
+        //
+        // Update functions
+        //
+
+        updateModelAssetName : function(oldItemId, newItemId) {
+            this.modelAssetNames[newItemId] = this.modelAssetNames[oldItemId];
+            delete this.modelAssetNames[oldItemId];
+        },
+        updateItemId : function(oldItemId, newItemId) {
             this.modelAssets.items[newItemId] = this.modelAssets.items[oldItemId];
             delete this.modelAssets.items[oldItemId];
+        },
+        updateCategoryId : function(oldItemId, newItemId) {
+            this.modelAssets.categories[newItemId] = this.modelAssets.categories[oldItemId];
+            delete this.modelAssets.categories[oldItemId];
         },
 
 
@@ -77,13 +131,30 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
             // Otherwise, the asset is a plain string, return it
             return asset;
         },
-        _setItemAsset : function(id, url) {
-            this.modelAssets.items[id] = url;
+        _setItemAsset : function(id, url, name) {
+
+            // Default to empty strings and not `undefined`s
+            this.modelAssets.items[id] = url || "";
+            this.modelAssetNames[id] = name || "";
         },
         _removeItemAsset : function(id) {
             delete this.modelAssets.items[id];
+            delete this.modelAssetNames[id];
+            return this;
         }
     });
 
-    return AssetManager;
+    var AssetsMixin = {
+        getImagesPath : function() {
+            return "img";
+        },
+        getAssetPath : function(type) {
+            return (type === "font") ? "fonts" : "img";
+        }
+    };
+
+    return {
+        AssetManager : AssetManager,
+        AssetsMixin  : AssetsMixin
+    };
 });

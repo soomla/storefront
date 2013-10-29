@@ -22,6 +22,7 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
 
     var Template = (function() {
 
+        // Private members
         var _json, _orientation;
 
         var Template = function(json, orientation) {
