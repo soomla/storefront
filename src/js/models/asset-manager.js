@@ -60,6 +60,9 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         getModelAssetName : function(itemId) {
             return this.modelAssetNames[itemId];
         },
+        getThemeAssetName : function(itemId) {
+            return this.themeAssetNames[itemId];
+        },
 
 
         //
@@ -72,6 +75,15 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         },
         setItemAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
+        },
+        setThemeAsset : function(id, url, name) {
+
+            // TODO: Use Backbone Deep \ nested model that will trigger events when changing the theme object.
+            // TODO: Check order of events being triggered and when to re-render views using the asset
+
+            // Default to empty strings and not `undefined`s
+            Utils.setByKeyChain(this.theme, id.split("."), name || "");
+            this.themeAssetNames[id] = name || "";
         },
         setUpgradeAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);

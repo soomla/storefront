@@ -249,9 +249,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                         // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
                         if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
                         triggerEventOnFrame("store:initialized", _.extend({
-                            modelAssetNames : modelAssetNames,
-                            themeAssetNames : themeAssetNames,
-                            template        : template
+                            template : template
                         }, options));
                     });
                 });

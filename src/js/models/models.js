@@ -201,6 +201,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Force the preview to update by triggering a change event on the model
             model.trigger("change:asset");
         },
+        setThemeAsset : function(assetId, url, assetName) {
+            this.assets.setThemeAsset(assetId, url, assetName)
+        },
         getModelAssets : function() {
             return this.get("modelAssets");
         },
@@ -699,9 +702,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
         },
-        toJSON : function(options) {
-
-            (options) || (options = {});
+        toJSON : function() {
 
             // Prepare a JSON using the original prototype's toJSON method
             var json = RelationalModel.prototype.toJSON.apply(this);
@@ -797,12 +798,11 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 				json.modelAssets.categories[itemId] = modelAssetNames[itemId];
 			});
 
-            // Update model assets
-            if (options.themeAssetNames) {
-                _.each(options.themeAssetNames, function(name, keychain) {
-                    Utils.setByKeyChain(json.theme, keychain, name);
-                });
-            }
+            // Update theme assets
+            var themeAssetNames = this.assets.themeAssetNames;
+            _.each(themeAssetNames, function(name, keychain) {
+                Utils.setByKeyChain(json.theme, keychain, name);
+            });
 
 
             // Delete auxiliary fields
