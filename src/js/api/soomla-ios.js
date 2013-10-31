@@ -34,10 +34,6 @@ define("soomlaiOS", {
         this._callNative("wantsToUnequipGoods:" + itemId);
     },
 
-    // TODO: Check if used, if not - remove
-    requestEarnedCurrency : function(provider) {
-        this._callNative("requestEarnedCurrency:" + provider);
-    },
     playSound : function(filePath) {
         filePath || (filePath = "pop.mp3");
         this._callNative("playSound:" + filePath);

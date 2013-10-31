@@ -15,10 +15,6 @@ define("soomlaAndroid", {
         this.nativeAPI.wantsToUnequipGoods(model.toJSON().itemId);
     },
 
-    // TODO: Check if used, if not - remove
-    requestEarnedCurrency : function(provider) {
-        this.nativeAPI.requestEarnedCurrency(provider);
-    },
     playSound :function(filePath) {
         filePath || (filePath = "pop.mp3");
         this.nativeAPI.playSound(filePath);
