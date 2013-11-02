@@ -34,7 +34,7 @@ define("soomlaAndroid", {
     wantsToUpgradeVirtualGood : function(model) {
         this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     },
-    wantsToOpenOfferWall : function(itemId) {
+    wantsToOpenOffer : function(itemId) {
         var params = JSON.stringify({
             action  : "offerwall",
             itemId  : itemId

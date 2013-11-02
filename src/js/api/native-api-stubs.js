@@ -115,16 +115,17 @@ define("nativeApiStubs", function(){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
-        wantsToOpenOfferWall : function(itemId) {
+        wantsToOpenOffer : function(itemId) {
+            this.log("wantsToOpenOffer", arguments);
 
             // No conditional checks on provider since
             // only SponsorPay is supported
             SoomlaJS.storeView.openDialog();
             var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();
             options = _.omit(options, "id", "name");
-
+            alert(JSON.stringify(options));
             setTimeout(function() {
-                _jsAPI.openOfferWall(options);
+                SoomlaJS.storeView.closeDialog();
             }, 1000);
         },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },

@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "stringUtils", "offerWallsAPI", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, StringUtils, OfferWallsAPI) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "stringUtils", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, StringUtils) {
 
 
     // Save a local copy
@@ -353,15 +353,15 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             };
         })()
     });
-    _.extend(BaseStoreView.prototype, SoomlaAndroid, OfferWallsAPI);
+    _.extend(BaseStoreView.prototype, SoomlaAndroid);
     BaseStoreView.Const = {
-        offerWallsId : "__offerWalls__",
-        offerWallsTitle : "Offer Walls"
+        OFFERS_ID       : "__offers__",
+        OFFERS_TITLE    : "Offers"
     };
 
     // Wrap the function that calls the native API.
     // Open a message dialog whenever the user selects an offer wall
-    _.wrap(BaseStoreView.prototype.wantsToOpenOfferWall, function(func) {
+    _.wrap(BaseStoreView.prototype.wantsToOpenOffer, function(func) {
         this.openDialog();
         func.call(this);
     });

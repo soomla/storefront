@@ -53,7 +53,7 @@ define("soomlaiOS", {
     wantsToUpgradeVirtualGood : function(itemId) {
         this._callNative("wantsToUpgradeVirtualGood:" + itemId);
     },
-    wantsToOpenOfferWall : function(itemId) {
+    wantsToOpenOffer : function(itemId) {
         var params = JSON.stringify({
             action: "offerwall",
             itemId: itemId

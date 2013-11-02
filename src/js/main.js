@@ -38,7 +38,6 @@ require.config({
 
         // Hooks
         hooks                   : "hooks/hooks",
-        offerWallsAPI           : "hooks/offer-walls-api",
 
         // 3rd party modules
         imagesloaded            : "libs/imagesloaded-3.0.4",
