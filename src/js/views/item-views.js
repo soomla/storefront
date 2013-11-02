@@ -202,6 +202,16 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     });
 
 
+    /**
+     * An item view designated for offers (offer walls, social offers, etc.)
+     * Supports simplest interaction model of tap to activate, and thus extends the `LinkView`
+     * @type {*}
+     */
+    var OfferItemView = LinkView.extend({
+        className : "item item-offer"
+    });
+
+
     return {
         BaseView            : BaseView,
         LinkView            : LinkView,
@@ -211,6 +221,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
-        EquippableItemView  : EquippableItemView
+        EquippableItemView  : EquippableItemView,
+        OfferItemView       : OfferItemView
     };
 });
