@@ -1,70 +1,105 @@
-define("hooks", ["underscore", "economyModels"], function(_, EconomyModels) {
+define("hooks", ["underscore", "backbone", "economyModels"], function(_, Backbone, EconomyModels) {
+
+    //
+    // Constants
+    //
+    var SPONSORPAY = "sponsorpay";
+
+
+
+    //
+    // Backbone Models
+    //
+    var Hook = Backbone.Model.extend({
+        idAttribute : "itemId"
+    });
+    var HookCollection = Backbone.Collection.extend({
+        model : Hook
+    });
+
+   var SponsorPayCollection = HookCollection.extend({
+       addItemHook : function(options) {
+           return this.add(_.extend({
+               itemId : options.itemId
+           }, _.omit(options, "itemId")));
+       },
+       toJSON : function() {
+           var json = HookCollection.prototype.toJSON.call(this);
+           json = _.object(_.map(json, function(item) {
+               return [item.itemId, _.omit(item, "itemId")];
+           }));
+
+           return json;
+       }
+   });
+
 
     var HookManager = function(options) {
         this.theme = options.theme;
-        this.hooks = options.hooks;
-
-        // Ensure that the passed hooks argument is an object
-        this._ensureHooks();
+        this.hooks = options.hooks || {}; // The passed hooks might be undefined
 
         // Process hooks
         // TODO: Select relevant hooks that are actually offer walls, once the hooks object contains more stuff
-        var offerWallHooks = this.hooks.sponsorpay || [];
-        var offerWalls = _.map(offerWallHooks, function(offer, itemId) {
-            offer.id = itemId;
+        var rawSponsorPayData = _.map(this.hooks.sponsorpay || [], function(offer, itemId) {
+            offer.itemId = itemId;
             return offer;
         });
-        this.offerWalls = new EconomyModels.OfferWallCollection(offerWalls);
+        this.sponsorpayCollection = new SponsorPayCollection(rawSponsorPayData);
     };
 
     _.extend(HookManager.prototype, {
-        _ensureHooks : function() {
-            (this.hooks) || (this.hooks = {});
-        },
-        _ensureProviderHook : function(provider) {
-            (this.hooks[provider]) || (this.hooks[provider] = {});
-            return this;
-        },
         addHook : function(provider, options) {
-
-            // TODO: Check if this can be removed
-            this._ensureHooks();
-
-            if (provider === "sponsorpay") {
-                this._ensureProviderHook(provider);
-                var itemId = options.itemId;
-                (this.hooks[provider][itemId]) || (this.hooks[provider][itemId] = {});
-                _.extend(this.hooks[provider][itemId], _.omit(options, "itemId"));
+            if (provider === SPONSORPAY) {
+                return this.sponsorpayCollection.addItemHook(options);
             }
         },
-        removeHook : function(provider) {
-            delete this.hooks[provider];
+        removeHook : function(provider, options) {
+            if (provider === SPONSORPAY) {
+                this.sponsorpayCollection.removeById(options.itemId, {fallback : "first"});
+            }
         },
-        getOfferWalls : function() {
-            return this.offerWalls;
+        getOfferHooks : function() {
+            return this.sponsorpayCollection;
         },
-        getHook : function(provider) {
-            if (provider === "sponsorpay") return this.offerWalls.first();
+        getHook : function(provider, options) {
+
+            // Ensure options object
+            (options) || (options = {});
+
+            if (provider === SPONSORPAY) {
+                return options.itemId ? this.sponsorpayCollection.get(options.itemId) : this.sponsorpayCollection.first();
+            }
             return null;
         },
         toJSON : function() {
-            return this.hooks;
+            var json = {};
+            if (!this.sponsorpayCollection.isEmpty()) json.sponsorpay = this.sponsorpayCollection.toJSON();
+            return json;
         }
     });
 
     // Assumes that `this.hooks` is an instance of `HookManager`
     var HooksMixin = {
         addHook : function(provider, options) {
-            this.hooks.addHook(provider, options);
+
+            if (provider === SPONSORPAY) {
+                var id = "__" + provider + "__" + options.itemId;
+                this.assets.setHookAsset(id);
+            }
+            return this.hooks.addHook(provider, options || {});
         },
-        removeHook : function(provider) {
-            this.hooks.removeHook(provider);
+        removeHook : function(provider, options) {
+            if (provider === "sponsorpay") {
+                var id = "__" + provider + "__" + options.itemId;
+                this.assets.removeHookAsset(id);
+            }
+            this.hooks.removeHook(provider, options || {});
         },
-        getOfferWalls : function() {
-            return this.hooks.getOfferWalls();
+        getOfferHooks : function() {
+            return this.hooks.getOfferHooks();
         },
-        getHook : function(provider) {
-            return this.hooks.getHook(provider);
+        getHook : function(provider, options) {
+            return this.hooks.getHook(provider, options || {});
         }
     };
 

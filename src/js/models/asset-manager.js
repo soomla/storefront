@@ -1,6 +1,9 @@
 define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
 
 
+    // TODO: Save local references of imagePlaceholder
+    // TODO: Create set,get,update,remove methods for each type of entity \ theme asset
+
     var AssetManager = (function() {
 
         // Private members
@@ -54,14 +57,21 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         getThemeAsset : function(keychain) {
             return Utils.getByKeychain(this.theme, keychain) || Urls.imagePlaceholder;
         },
-        getOfferWallsLinkAsset : function() {
-            return Utils.getByKeychain(this.theme, ["offerWalls", "menuLinkImage"]);
+        getHookAsset : function(itemId, key) {
+            return this._getAsset("hooks", itemId, key) || Urls.imagePlaceholder;
+        },
+        getOffersMenuLinkAsset : function() {
+            return Utils.getByKeychain(this.theme, ["hooks", "common", "offersMenuLinkImage"]) || Urls.imagePlaceholder;
         },
         getModelAssetName : function(itemId) {
             return this.modelAssetNames[itemId];
         },
         getThemeAssetName : function(itemId) {
             return this.themeAssetNames[itemId];
+        },
+        getOffersMenuLinkAssetName : function() {
+            var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
+            return this.modelAssetNames[offersMenuLinkImageKeychain];
         },
 
 
@@ -70,6 +80,11 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         //
 
         setCategoryAsset : function(id, url, name) {
+
+            // Ensure object
+            (this.modelAssets.categories) || (this.modelAssets.categories = {});
+
+            // assign URL and name
             this.modelAssets.categories[id] = url || "";
             this.modelAssetNames[id] = name || "";
         },
@@ -81,15 +96,26 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
             // TODO: Use Backbone Deep \ nested model that will trigger events when changing the theme object.
             // TODO: Check order of events being triggered and when to re-render views using the asset
 
-            // Default to empty strings and not `undefined`s
-            Utils.setByKeyChain(this.theme, id.split("."), name || "");
-            this.themeAssetNames[id] = name || "";
+            this._setThemeAsset(id, url, name);
         },
         setUpgradeAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
         },
         setUpgradeBarAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
+        },
+        setHookAsset : function(id, url, name) {
+
+            // Ensure object
+            (this.modelAssets.hooks) || (this.modelAssets.hooks = {});
+
+            // assign URL and name
+            this.modelAssets.hooks[id] = url || "";
+            this.modelAssetNames[id] = name || "";
+        },
+        setOffersMenuLinkAsset : function(url, name) {
+            var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
+            this._setThemeAsset(offersMenuLinkImageKeychain, url, name);
         },
 
 
@@ -103,9 +129,15 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         removeCategoryAsset : function(id) {
             delete this.modelAssets.categories[id];
             delete this.modelAssetNames[id];
+            if (_.isEmpty(this.modelAssets.categories)) delete this.modelAssets.categories;
         },
         removeUpgradeAssets : function(upgradeImageAssetId, upgradeBarAssetId) {
             return this._removeItemAsset(upgradeImageAssetId)._removeItemAsset(upgradeBarAssetId);
+        },
+        removeHookAsset : function(id) {
+            delete this.modelAssets.hooks[id];
+            delete this.modelAssetNames[id];
+            if (_.isEmpty(this.modelAssets.hooks)) delete this.modelAssets.hooks;
         },
 
 
@@ -148,6 +180,12 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
             // Default to empty strings and not `undefined`s
             this.modelAssets.items[id] = url || "";
             this.modelAssetNames[id] = name || "";
+        },
+        _setThemeAsset : function(id, url, name) {
+
+            // Default to empty strings and not `undefined`s
+            Utils.setByKeyChain(this.theme, id.split("."), url || "");
+            this.themeAssetNames[id] = name || "";
         },
         _removeItemAsset : function(id) {
             delete this.modelAssets.items[id];

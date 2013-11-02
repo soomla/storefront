@@ -120,7 +120,7 @@ define("nativeApiStubs", function(){
             // No conditional checks on provider since
             // only SponsorPay is supported
             SoomlaJS.storeView.openDialog();
-            var options = SoomlaJS.store.getOfferWalls().get(itemId).toJSON();
+            var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();
             options = _.omit(options, "id", "name");
 
             setTimeout(function() {

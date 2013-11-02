@@ -54,7 +54,7 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
 
     _.extend(Template.prototype, {
         getAttributeCollection : function() {
-            var collection = [];
+            var collection  = [];
 
             // Recursive helper function
             (function addRecursive(attributes, collection, keychain) {
@@ -71,11 +71,14 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
 
             return collection;
         },
-        getSectionedAttributes : function() {
+        getAppearancedAttributes : function() {
             var collection = this.getAttributeCollection();
             var groups = _.groupBy(collection, function(attribute) {
                 return attribute.section;
             });
+
+            // Omit hooks
+            delete groups.hooks;
 
             return _.object(_.keys(groups), _.map(_.values(groups), function(objs) { return new AttributeCollection(objs); }));
         },
@@ -108,6 +111,12 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
         getCategoryAssetDimensions : function() {
             return normalize(this.json.assetMetadata.economy.categories);
         },
+        getOfferItemAssetDimensions : function() {
+            return normalize(this.json.assetMetadata.template.hooks.item);
+        },
+        getOffersMenuLinkAssetDimensions : function() {
+            return normalize(this.json.assetMetadata.template.hooks.common.offersMenuLinkImage);
+        },
         supportsHooks : function() {
 
             // Checks both that `hooks` is defined,
@@ -116,7 +125,11 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
         },
         supportsHook : function(provider) {
             var hooks = this.supportedFeatures.hooks;
-            return (hooks && hooks[provider] === true);
+            return !!(hooks && hooks[provider]);
+        },
+        supportsOffersMenuLinkImage : function() {
+            var hooks = this.supportedFeatures.hooks;
+            return !!(hooks && hooks.common && hooks.common.offersMenuLinkImage);
         },
         getSupportedGoods : function() {
             return this.supportedFeatures.goods;

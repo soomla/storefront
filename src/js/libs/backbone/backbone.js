@@ -20,6 +20,28 @@ define("backbone", ["backboneFramework", "backboneExtensions", "backboneRelation
         }
     };
 
+    /**
+     * Finds the model with the given ID and removes it from a collection.
+     * Pass {fallback : "first" \ "last"} to indicate that if the model
+     * isn't found in the collection, default to removing the first \ last model
+     * @param id
+     * @param options
+     * @returns {*}
+     */
+    Backbone.Collection.prototype.removeById = function(id, options) {
+        if (!_.isUndefined(id)) {
+            var model = this.get(id);
+            return this.remove(model);
+        }
+
+        if (options) {
+            if (options.fallback === "first") 	return this.remove(this.first());
+            if (options.fallback === "last") 	return this.remove(this.last());
+        }
+
+        return undefined;
+    };
+
 
     return Backbone;
 });

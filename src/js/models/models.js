@@ -791,12 +791,14 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Update model assets
             var modelAssetNames = this.assets.modelAssetNames;
-			_.each(json.modelAssets.items, function(name, itemId) {
-				json.modelAssets.items[itemId] = modelAssetNames[itemId];
-			});
-			_.each(json.modelAssets.categories, function(name, itemId) {
-				json.modelAssets.categories[itemId] = modelAssetNames[itemId];
-			});
+
+            // Iterate over categories, items and hooks and replace their
+            // assets with the proper asset names
+            _.each(json.modelAssets, function(assets, map) {
+                _.each(json.modelAssets[map], function(name, itemId) {
+                    json.modelAssets[map][itemId] = modelAssetNames[itemId];
+                });
+            });
 
             // Update theme assets
             var themeAssetNames = this.assets.themeAssetNames;
