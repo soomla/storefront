@@ -1,5 +1,10 @@
 define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
 
+    //
+    // Constants
+    //
+    var SPONSORPAY = "sponsorpay";
+
 
     // TODO: Save local references of imagePlaceholder
     // TODO: Create set,get,update,remove methods for each type of entity \ theme asset
@@ -56,8 +61,15 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         getThemeAsset : function(keychain) {
             return Utils.getByKeychain(this.theme, keychain) || Urls.imagePlaceholder;
         },
-        getHookAsset : function(itemId, key) {
-            return this._getAsset("hooks", itemId, key) || Urls.imagePlaceholder;
+        getHookAsset : function(provider, options, key) {
+
+            // Enforce SponsorPay requirements
+            this._enforceSponsorpay(provider, options);
+
+            var id;
+            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
+
+            return this._getAsset("hooks", id, key) || Urls.imagePlaceholder;
         },
         getOffersMenuLinkAsset : function() {
             return Utils.getByKeychain(this.theme, ["hooks", "common", "offersMenuLinkImage"]) || Urls.imagePlaceholder;
@@ -103,10 +115,16 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         setUpgradeBarAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
         },
-        setHookAsset : function(id, url, name) {
+        setHookAsset : function(provider, options, url, name) {
+
+            // Enforce SponsorPay requirements
+            this._enforceSponsorpay(provider, options);
 
             // Ensure object
             (this.modelAssets.hooks) || (this.modelAssets.hooks = {});
+
+            var id;
+            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
 
             // assign URL and name
             this.modelAssets.hooks[id] = url || "";
@@ -133,7 +151,14 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         removeUpgradeAssets : function(upgradeImageAssetId, upgradeBarAssetId) {
             return this._removeItemAsset(upgradeImageAssetId)._removeItemAsset(upgradeBarAssetId);
         },
-        removeHookAsset : function(id) {
+        removeHookAsset : function(provider, options) {
+
+            // Enforce SponsorPay requirements
+            this._enforceSponsorpay(provider, options);
+
+            var id;
+            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
+
             delete this.modelAssets.hooks[id];
             delete this.modelAssetNames[id];
             if (_.isEmpty(this.modelAssets.hooks)) delete this.modelAssets.hooks;
@@ -190,6 +215,11 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
             delete this.modelAssets.items[id];
             delete this.modelAssetNames[id];
             return this;
+        },
+        _enforceSponsorpay : function(provider, options) {
+
+            // Enforce SponsorPay requirements
+            if (provider === SPONSORPAY && (_.isEmpty(options) || _.isUndefined(options.itemId))) throw new Error("SponsorPay Hook: item ID must be supplied");
         }
     });
 

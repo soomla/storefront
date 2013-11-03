@@ -11,13 +11,26 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
     // Backbone Models
     //
     var Hook = Backbone.Model.extend({
-        idAttribute : "itemId"
+        idAttribute : "itemId",
+        getProvider : function() {
+            return this.get("provider");
+        }
     });
+    var SponsorpayHook = Hook.extend({
+        defaults : {
+
+            // The provider should match the same string used in all API functions
+            // that get \ set \ remove something by a given provider
+            provider : SPONSORPAY
+        }
+    });
+
     var HookCollection = Backbone.Collection.extend({
         model : Hook
     });
 
    var SponsorPayCollection = HookCollection.extend({
+       model : SponsorpayHook,
        addItemHook : function(options) {
 
            // Pass `{merge : true}` to allow updating exsiting models with this API
@@ -28,7 +41,7 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
        toJSON : function() {
            var json = HookCollection.prototype.toJSON.call(this);
            json = _.object(_.map(json, function(item) {
-               return [item.itemId, _.omit(item, "itemId")];
+               return [item.itemId, _.omit(item, "itemId", "provider")];
            }));
 
            return json;
@@ -85,16 +98,13 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
         addHook : function(provider, options) {
 
             if (provider === SPONSORPAY) {
-                var id = "__" + provider + "__" + options.itemId;
-                this.assets.setHookAsset(id);
+                if (_.isEmpty(options) || _.isUndefined(options.itemId)) throw new Error("SponsorPay Hook: item ID must be supplied");
+                this.assets.setHookAsset(provider, options);
             }
             return this.hooks.addHook(provider, options || {});
         },
         removeHook : function(provider, options) {
-            if (provider === "sponsorpay") {
-                var id = "__" + provider + "__" + options.itemId;
-                this.assets.removeHookAsset(id);
-            }
+            if (provider === "sponsorpay") this.assets.removeHookAsset("sponsorpay", options);
             this.hooks.removeHook(provider, options || {});
         },
         getOfferHooks : function() {
