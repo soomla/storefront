@@ -1,4 +1,4 @@
-define("hooks", ["underscore", "backbone", "economyModels"], function(_, Backbone, EconomyModels) {
+define("hooks", ["underscore", "backbone"], function(_, Backbone) {
 
     //
     // Constants

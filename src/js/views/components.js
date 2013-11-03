@@ -294,7 +294,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 zoom        : this.zoomFunction(),
                 deviceId    : this.options.deviceId
             });
-            var selector = this.model.get("template").noBranding ? ".nobrand" : ".soombot";
+            var selector = this.model.isBranded() ? ".soombot" : ".nobrand";
             $(selector).show().on("fastclick", function(event) {
                 dialog.show();
             });

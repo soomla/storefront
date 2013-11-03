@@ -149,8 +149,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Create theme object
             this.assets = new Assets.AssetManager({
+                template    : this.get("template"),
                 theme 		: this.get("theme"),
-                modelAssets : this.getModelAssets()
+                modelAssets : this.get("modelAssets")
             });
 
             // Clean fields that are not unnecessary to prevent duplicate data
@@ -203,9 +204,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         setThemeAsset : function(assetId, url, assetName) {
             this.assets.setThemeAsset(assetId, url, assetName)
-        },
-        getModelAssets : function() {
-            return this.get("modelAssets");
         },
         setThemeAttribute : function(keychain, value) {
             Utils.setByKeyChain(this.get("theme"), keychain, value);

@@ -12,8 +12,7 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         var AssetManager = function(options) {
 
             // Save the raw JSON internally
-            this.theme      = options.theme;
-            this.modelAssets= options.modelAssets;
+            _.extend(this, _.pick(options, "template", "theme", "modelAssets"));
         };
 
         // Define getters
@@ -200,6 +199,9 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
         },
         getAssetPath : function(type) {
             return (type === "font") ? "fonts" : "img";
+        },
+        isBranded : function() {
+            return !!this.assets.template.noBranding;
         }
     };
 
