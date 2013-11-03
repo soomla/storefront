@@ -112,7 +112,7 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
             return normalize(this.json.assetMetadata.economy.categories);
         },
         getOfferItemAssetDimensions : function() {
-            return normalize(this.json.assetMetadata.template.hooks.item);
+            return normalize(this.json.assetMetadata.hooks.offers.item);
         },
         getOffersMenuLinkAssetDimensions : function() {
             return normalize(this.json.assetMetadata.template.hooks.common.offersMenuLinkImage);
