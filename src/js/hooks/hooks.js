@@ -19,9 +19,11 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
 
    var SponsorPayCollection = HookCollection.extend({
        addItemHook : function(options) {
+
+           // Pass `{merge : true}` to allow updating exsiting models with this API
            return this.add(_.extend({
                itemId : options.itemId
-           }, _.omit(options, "itemId")));
+           }, _.omit(options, "itemId")), {merge: true});
        },
        toJSON : function() {
            var json = HookCollection.prototype.toJSON.call(this);
