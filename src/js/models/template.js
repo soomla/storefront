@@ -71,7 +71,7 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
 
             return collection;
         },
-        getAppearancedAttributes : function() {
+        getAppearanceAttributes : function() {
             var collection = this.getAttributeCollection();
             var groups = _.groupBy(collection, function(attribute) {
                 return attribute.section;
@@ -81,6 +81,9 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
             delete groups.hooks;
 
             return _.object(_.keys(groups), _.map(_.values(groups), function(objs) { return new AttributeCollection(objs); }));
+        },
+        getAppearanceSections : function() {
+            return _.pick(this.sections, "global", "singleItems", "fonts");
         },
         getTemplateImageDimensions : function(keychain) {
             try {
