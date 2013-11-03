@@ -13,13 +13,13 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.get("name");
         },
         getIosId : function() {
-            return this.get("purchasableItem").marketItem.iosId;
+            return this.purchasableItem.marketItem.iosId;
         },
         getAndroidId : function() {
-            return this.get("purchasableItem").marketItem.androidId;
+            return this.purchasableItem.marketItem.androidId;
         },
         isMarketPurchaseType : function() {
-            return this.get("purchasableItem").purchaseType === marketPurchaseType;
+            return this.purchasableItem.purchaseType === marketPurchaseType;
         },
         // Functions for market purchase type items.
         // These are common between goods and currency packs
@@ -50,12 +50,18 @@ define("economyModels", ["backbone"], function(Backbone) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
             // Backbone will trigger the change event only this way.
-            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
+            var purchasableItem = $.extend(true, {}, this.purchasableItem);
             _.extend(purchasableItem.marketItem, options);
             return this.set("purchasableItem", purchasableItem);
         }
     }),
     Collection = Backbone.Collection;
+
+    Object.defineProperties(RelationalModel.prototype, {
+        purchasableItem : {
+            get : function() { return this.get("purchasableItem"); }
+        }
+    });
 
 
     var CurrencyPack = RelationalModel.extend({
@@ -70,12 +76,12 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.set("currency_itemId", id);
         },
         getPrice : function() {
-            return this.get("purchasableItem").marketItem.price;
+            return this.purchasableItem.marketItem.price;
         },
         setPrice : function(price) {
 
             // Use jQuery's extend to achieve a deep clone
-            var purchasableItem = $.extend(true, {}, this.get("purchasableItem"));
+            var purchasableItem = $.extend(true, {}, this.purchasableItem);
             purchasableItem.marketItem.price = price;
             return this.set("purchasableItem", purchasableItem);
         },
@@ -95,10 +101,10 @@ define("economyModels", ["backbone"], function(Backbone) {
             }
         },
         getCurrencyId : function() {
-            return this.get("purchasableItem").pvi_itemId;
+            return this.purchasableItem.pvi_itemId;
         },
         getPrice : function() {
-            var pi = this.get("purchasableItem");
+            var pi = this.purchasableItem;
             return this.isMarketPurchaseType() ? pi.marketItem.price : pi.pvi_amount;
         },
         getType : function() {
@@ -134,7 +140,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             if (this.isMarketPurchaseType()) {
 
                 // Deep clone the purchasable item and set the market item's price
-                var pi =  this.get("purchasableItem"),
+                var pi =  this.purchasableItem,
                     purchasableItem = _.extend({}, pi);
                 purchasableItem.marketItem = _.extend({}, pi.marketItem);
                 purchasableItem.marketItem.price = price;
@@ -147,15 +153,15 @@ define("economyModels", ["backbone"], function(Backbone) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
             // Backbone will trigger the change event only this way.
-            var purchasableItem = _.extend({}, this.get("purchasableItem"), options);
+            var purchasableItem = _.extend({}, this.purchasableItem, options);
             return this.set("purchasableItem", purchasableItem);
         },
         is : function(type) {
             if (type === "upgradable") return this.has("upgradeId");
-            return this.get("type") === type;
+            return this.getType() === type;
         },
         isMarketPurchaseType : function() {
-            return this.get("purchasableItem").purchaseType === "market";
+            return this.purchasableItem.purchaseType === "market";
         }
     });
 
@@ -222,8 +228,8 @@ define("economyModels", ["backbone"], function(Backbone) {
             this.on("add:upgrades remove:upgrades", this.reorderUpgrades);
             this.on("add:upgrades remove:upgrades", this.resetUpgrades);
 
-            this.get("upgrades").on("reset", this.reorderUpgrades);
-            this.get("upgrades").on("reset", this.resetUpgrades);
+            this.getUpgrades().on("reset", this.reorderUpgrades);
+            this.getUpgrades().on("reset", this.resetUpgrades);
         },
         getUpgrades : function() {
             return this.get("upgrades");
@@ -234,13 +240,16 @@ define("economyModels", ["backbone"], function(Backbone) {
         getUpgradeCount : function() {
             return this.getUpgrades().size();
         },
+        getCurrentUpgradeId : function() {
+            return this.get("upgradeId");
+        },
         getCurrentUpgrade : function() {
 
             // If there's no current upgrade ID, we're still in the zero-upgrade state.
             // Return `this` as a dummy object
-            if (this.get("upgradeId") === "") return this;
+            if (this.getCurrentUpgradeId() === "") return this;
 
-            return this.getUpgrades().get(this.get("upgradeId"));
+            return this.getUpgrades().get(this.getCurrentUpgradeId());
         },
         getNextUpgrade : function() {
             var currentUpgrade  = this.getCurrentUpgrade(),
@@ -256,7 +265,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             return  this.getUpgrades().get(nextUpgradeId);
         },
         getPrice : function() {
-            return this.getNextUpgrade().get("purchasableItem").pvi_amount;
+            return this.getNextUpgrade().purchasableItem.pvi_amount;
         },
         upgrade : function(upgradeId) {
             this.set("upgradeId", upgradeId);
@@ -268,7 +277,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             return Upgrade.generateNameFor(id || this.id, 0) + Upgrade.barSuffix;
         },
         getCurrentUpgradeBarAssetId : function() {
-            var upgradeId = this.get("upgradeId");
+            var upgradeId = this.getCurrentUpgradeId();
             return (upgradeId === "") ? this.getEmptyUpgradeBarAssetId() : this.getUpgrades().get(upgradeId).getUpgradeBarAssetId();
         },
         addUpgrade : function(options) {
