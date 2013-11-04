@@ -42,7 +42,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
        model : SponsorpayHook,
        addItemHook : function(options) {
 
-           // Pass `{merge : true}` to allow updating exsiting models with this API
+           // Pass `{merge : true}` to allow updating existing models with this API
            return this.add(_.extend({
                itemId : options.itemId
            }, _.omit(options, "itemId")), {merge: true});
