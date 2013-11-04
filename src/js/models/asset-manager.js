@@ -63,8 +63,7 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         },
         getHookAsset : function(provider, options, key) {
 
-            // Enforce SponsorPay requirements
-            this._enforceSponsorpay(provider, options);
+            (options) || (options = {});
 
             var id;
             if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
