@@ -79,6 +79,16 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         getThemeAssetName : function(itemId) {
             return this.themeAssetNames[itemId];
         },
+        getHookThemeAssetName : function(provider, options) {
+
+            // Enforce SponsorPay requirements
+            this._enforceSponsorpay(provider, options);
+
+            var id;
+            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
+
+            return this.getThemeAssetName(id);
+        },
         getOffersMenuLinkAssetName : function() {
             var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
             return this.modelAssetNames[offersMenuLinkImageKeychain];
