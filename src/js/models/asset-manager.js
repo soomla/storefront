@@ -1,9 +1,9 @@
-define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
+define("assetManager", ["underscore", "utils", "urls", "constants"], function(_, Utils, Urls, Constants) {
 
     //
     // Constants
     //
-    var SPONSORPAY = "sponsorpay";
+    var SPONSORPAY = Constants.SPONSORPAY;
 
 
     // TODO: Save local references of imagePlaceholder

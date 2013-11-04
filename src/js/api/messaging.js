@@ -1,4 +1,4 @@
-define("messaging", ["jquery", "hooks", "jquery.pnotify"], function($, Hooks) {
+define("messaging", ["jquery", "hooks", "constants", "jquery.pnotify"], function($, Hooks, Constants) {
 
 
     // The notification stack must be defined in a variable for it to work properly.
@@ -7,7 +7,7 @@ define("messaging", ["jquery", "hooks", "jquery.pnotify"], function($, Hooks) {
 
     return {
         handleMessage : function(options) {
-            if (options.success === true && options.type === "sponsorpay") {
+            if (options.success === true && options.type === Constants.SPONSORPAY) {
 
                 // Assume access to the store model
                 var itemName    = (this.model.getCurrency(options.itemId) || this.model.getItem(options.itemId)).getName(),

@@ -1,9 +1,9 @@
-define("hooks", ["underscore", "backbone", "stringUtils"], function(_, Backbone, StringUtils) {
+define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function(_, Backbone, StringUtils, Constants) {
 
     //
     // Constants
     //
-    var SPONSORPAY = "sponsorpay";
+    var SPONSORPAY = Constants.SPONSORPAY;
 
 
 
@@ -113,7 +113,7 @@ define("hooks", ["underscore", "backbone", "stringUtils"], function(_, Backbone,
             return this.hooks.addHook(provider, options || {});
         },
         removeHook : function(provider, options) {
-            if (provider === "sponsorpay") this.assets.removeHookAsset("sponsorpay", options);
+            if (provider === SPONSORPAY) this.assets.removeHookAsset(provider, options);
             this.hooks.removeHook(provider, options || {});
         },
         getOfferHooks : function() {

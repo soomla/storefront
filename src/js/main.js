@@ -29,6 +29,7 @@ require.config({
         urls                    : "utils/urls",
         userAgent               : "utils/user-agent",
         cssUtils                : "utils/css-utils",
+        constants               : "utils/constants",
 
         // Native APIs
         soomlaAndroid           : "api/soomla-android",

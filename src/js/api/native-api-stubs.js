@@ -2,7 +2,7 @@
  * This set of functions is an API implemented by the native code and is provided for the Javascript code to invoke.
  * Since the native code should provide this interface, it is currently implemented with stubs.
  */
-define("nativeApiStubs", function(){
+define("nativeApiStubs", ["constants"], function(Constants){
     var _jsAPI;
 
     var API = {
@@ -119,7 +119,7 @@ define("nativeApiStubs", function(){
 
             var provider = offer.getProvider();
 
-            if (provider === "sponsorpay") {
+            if (provider === Constants.SPONSORPAY) {
 
                 SoomlaJS.storeView.openDialog();
                 var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();

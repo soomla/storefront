@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "messaging", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, Messaging) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "messaging", "constants", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, Messaging, Constants) {
 
 
     // Save a local copy
@@ -365,7 +365,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         var provider = offer.getProvider();
 
-        if (provider === "sponsorpay") {
+        if (provider === Constants.SPONSORPAY) {
 
             // Open dialog in here and not outside, because this
             // hook is supported and thus will eventually close the dialog
