@@ -34,11 +34,7 @@ define("soomlaAndroid", {
     wantsToUpgradeVirtualGood : function(model) {
         this.nativeAPI.wantsToUpgradeVirtualGood(model.toJSON().itemId);
     },
-    wantsToOpenOffer : function(itemId) {
-        var params = JSON.stringify({
-            action  : "offerwall",
-            itemId  : itemId
-        });
-        this.nativeAPI.wantsToInitiateHook("sponsorpay", params);
+    wantsToInitiateHook : function(provider, options) {
+        this.nativeAPI.wantsToInitiateHook(provider, JSON.stringify(options));
     }
 });

@@ -35,6 +35,7 @@ require.config({
         soomlaiOS               : "api/soomla-ios",
         nativeApiStubs          : "api/native-api-stubs",
         jsAPI                   : "api/js-api",
+        messaging               : "api/messaging",
 
         // Hooks
         hooks                   : "hooks/hooks",

@@ -115,18 +115,20 @@ define("nativeApiStubs", function(){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
-        wantsToOpenOffer : function(itemId) {
-            this.log("wantsToOpenOffer", arguments);
+        wantsToInitiateHook : function(offer) {
 
-            // No conditional checks on provider since
-            // only SponsorPay is supported
-            SoomlaJS.storeView.openDialog();
-            var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();
-            options = _.omit(options, "id", "name");
-            console.dir(JSON.stringify(options));
-            setTimeout(function() {
-                SoomlaJS.storeView.closeDialog();
-            }, 1000);
+            var provider = offer.getProvider();
+
+            if (provider === "sponsorpay") {
+
+                SoomlaJS.storeView.openDialog();
+                var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();
+                options = _.omit(options, "id", "name");
+                console.dir(JSON.stringify(options));
+                setTimeout(function() {
+                    SoomlaJS.storeView.closeDialog();
+                }, 1000);
+            }
         },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },

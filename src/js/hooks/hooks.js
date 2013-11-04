@@ -1,4 +1,4 @@
-define("hooks", ["underscore", "backbone"], function(_, Backbone) {
+define("hooks", ["underscore", "backbone", "stringUtils"], function(_, Backbone, StringUtils) {
 
     //
     // Constants
@@ -16,6 +16,12 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
             return this.get("provider");
         }
     });
+
+    //
+    // Each hook should implement:
+    // 1. A default provider field
+    // 2. A default message function for showing the user when the offer is completed
+    //
     var SponsorpayHook = Hook.extend({
         defaults : {
 
@@ -24,6 +30,9 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
             provider : SPONSORPAY
         }
     });
+    SponsorpayHook.defaultMessage = function(amount, itemName) {
+        return "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName + " from SponsorPay";
+    };
 
     var HookCollection = Backbone.Collection.extend({
         model : Hook
@@ -118,6 +127,9 @@ define("hooks", ["underscore", "backbone"], function(_, Backbone) {
 
     return {
         HookManager : HookManager,
-        HooksMixin  : HooksMixin
+        HooksMixin  : HooksMixin,
+        Providers : {
+            SponsorpayHook : SponsorpayHook
+        }
     };
 });

@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "stringUtils", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, StringUtils) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "messaging", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, Messaging) {
 
 
     // Save a local copy
@@ -359,50 +359,29 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         OFFERS_TITLE    : "Offers"
     };
 
-    // Wrap the function that calls the native API.
-    // Open a message dialog whenever the user selects an offer wall
-    _.wrap(BaseStoreView.prototype.wantsToOpenOffer, function(func) {
-        this.openDialog();
-        func.call(this);
-    });
+    // Open a loading dialog and process initiate a hook
+    // according to the given offer
+    BaseStoreView.prototype.wantsToOpenOffer = function(offer) {
 
+        var provider = offer.getProvider();
 
+        if (provider === "sponsorpay") {
 
-    // The notification stack must be defined in a variable for it to work properly.
-    // See: https://github.com/sciactive/pnotify#stacks
-    var bottomUpStack = {"dir1": "up", "dir2": "right", "spacing1": 20, "spacing2": 20};
+            // Open dialog in here and not outside, because this
+            // hook is supported and thus will eventually close the dialog
+            this.openDialog();
 
-    _.extend(BaseStoreView.prototype, {
-        handleMessage : function(options) {
-            if (options.type === "sponsorpay") {
-                var itemName = (this.model.getCurrency(options.itemId) || this.model.getItem(options.itemId)).getName(),
-                    amount = options.amount;
-
-
-                // Safeguard in case things aren't defined properly
-                if (!amount || !itemName) return;
-
-                var notice = $.pnotify({
-                    title 			: 'Congratulations!',
-                    text 			: "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName,
-                    addclass 		: "stack-bar-bottom soomla-hook-notice",
-                    closer_hover 	: false,
-                    hide            : false,
-                    type 			: "info",
-                    cornerclass 	: "",
-                    animate_speed 	: "fast",
-                    maxonscreen 	: 2,
-                    history 		: false,
-                    stack 			: bottomUpStack
-                });
-
-
-                if (innerHeight <= 1024) {
-                    notice.css("zoom", innerHeight <= 320 ? 3 : 2);
-                }
-            }
+            var options = JSON.stringify({
+                action  : "offerwall",
+                itemId  : offer.id
+            });
+            this.nativeAPI.wantsToInitiateHook(provider, options);
         }
-    });
+    };
+
+
+    // Add message handling capabilities to store view
+    _.extend(BaseStoreView.prototype, Messaging);
 
 
     return _.extend({}, ItemViews, ExpandableItemViews, CollectionViews, {
