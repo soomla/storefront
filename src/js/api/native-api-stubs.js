@@ -115,18 +115,14 @@ define("nativeApiStubs", ["constants"], function(Constants){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
-        wantsToInitiateHook : function(offer) {
-
-            var provider = offer.getProvider();
+        wantsToInitiateHook : function(provider, options) {
 
             if (provider === Constants.SPONSORPAY) {
 
                 SoomlaJS.storeView.openDialog();
-                var options = SoomlaJS.store.getOfferHooks().get(itemId).toJSON();
-                options = _.omit(options, "id", "name");
-                console.dir(JSON.stringify(options));
+
                 setTimeout(function() {
-                    SoomlaJS.storeView.closeDialog();
+					SoomlaJS.storeView.closeDialog();
                 }, 1000);
             }
         },

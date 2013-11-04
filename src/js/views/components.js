@@ -367,15 +367,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         if (provider === Constants.SPONSORPAY) {
 
-            // Open dialog in here and not outside, because this
-            // hook is supported and thus will eventually close the dialog
-            this.openDialog();
-
             var options = JSON.stringify({
                 action  : "offerwall",
                 itemId  : offer.id
             });
-            this.nativeAPI.wantsToInitiateHook(provider, options);
+            this.wantsToInitiateHook(provider, options);
         }
     };
 
