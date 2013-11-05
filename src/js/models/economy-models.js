@@ -85,6 +85,9 @@ define("economyModels", ["backbone"], function(Backbone) {
             purchasableItem.marketItem.price = price;
             return this.set("purchasableItem", purchasableItem);
         },
+        getAmount : function() {
+            return this.get("currency_amount");
+        },
         setAmount : function(amount) {
             return this.set("currency_amount", amount);
         }
@@ -369,6 +372,9 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         balanceIncreased : function() {
             return this.previous("balance") < this.getBalance();
+        },
+        getPacks : function() {
+            return this.get("packs");
         }
 
     }, {
@@ -392,7 +398,10 @@ define("economyModels", ["backbone"], function(Backbone) {
                     includeInJSON: 'id'
                 }
             }
-        ]
+        ],
+        getGoods : function() {
+            return this.get("goods");
+        }
     });
 
     var CategoryCollection          = Collection.extend({ model : Category }),
