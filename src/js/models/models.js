@@ -15,9 +15,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         Category                    = EconomyModels.Category,
         CategoryCollection          = EconomyModels.CategoryCollection,
         VirtualCurrencyCollection   = EconomyModels.VirtualCurrencyCollection,
-        CurrencyPacksCollection     = EconomyModels.CurrencyPacksCollection,
-        NonConsumable               = EconomyModels.NonConsumable,
-        NonConsumablesCollection    = EconomyModels.NonConsumablesCollection;
+        CurrencyPacksCollection     = EconomyModels.CurrencyPacksCollection;
 
 
     var duplicateCategoryErrorMessage = "A category with that name already exists.",
@@ -40,15 +38,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 key: 'currencies',
                 relatedModel: Currency,
                 collectionType: VirtualCurrencyCollection,
-                reverseRelation: {
-                    includeInJSON: 'id'
-                }
-            },
-            {
-                type: Backbone.HasMany,
-                key: 'nonConsumables',
-                relatedModel: NonConsumable,
-                collectionType: NonConsumablesCollection,
                 reverseRelation: {
                     includeInJSON: 'id'
                 }
@@ -335,23 +324,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Notify listeners after updating goods
             this.trigger("goods:update:after");
             return this;
-        },
-        updateNonConsumables : function(nonConsumables) {
-            _.each(nonConsumables, function(attributes, nonConsumableId) {
-                this.get("nonConsumables").get(nonConsumableId).set(attributes);
-            }, this);
-        },
-        restorePurchases : function(nonConsumables) {
-
-            // In case the input is empty, create an object with all the
-            // non-consumable items marked as owned.
-            if (!nonConsumables) {
-                nonConsumables = {};
-                this.get("nonConsumables").each(function(nonConsumable) {
-                    nonConsumables[nonConsumable.id] = {owned : true};
-                });
-            }
-            this.updateNonConsumables(nonConsumables);
         },
         addCurrency : function(options) {
             var currency;
@@ -810,7 +782,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Delete auxiliary fields
             // TODO: Check if needed
             delete json.rawCategories;
-            delete json.nonConsumables;
 
 
 
@@ -853,7 +824,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         Category                    : Category,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
-        NonConsumable               : NonConsumable,
         RelationalModel             : RelationalModel
     };
 });

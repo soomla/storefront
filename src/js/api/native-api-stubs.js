@@ -58,35 +58,17 @@ define("nativeApiStubs", ["constants"], function(Constants){
 
             var amount = model.get("currency_amount");
 
-            // If a market item has the amount field it's a consumable market item (i.e. currency pack)
-            if (amount) {
+            // Calculate and assign the new currency balance
+            var balances    = {},
+                currencyId  = model.getCurrencyId(),
+                newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
 
-                // Calculate and assign the new currency balance
-                var balances    = {},
-                    currencyId  = model.getCurrencyId(),
-                    newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
+            balances[currencyId] = {balance: newBalance};
 
-                balances[currencyId] = {balance: newBalance};
-
-                _jsAPI.marketPurchaseStarted();
-                setTimeout(function() {
-                    _jsAPI.currenciesUpdated(balances);
-                }, 1000);
-            } else {
-
-                // The market item has no amount and is thus a non-consumable (i.e. "Remove Ads")
-                // Mark it as "owned"
-                var nonConsumables = {};
-                nonConsumables[model.id] = {owned : true};
-                _jsAPI.purchasesRestored(nonConsumables);
-
-                // TODO: Add a timeout for showing the dialog
-            }
-        },
-        wantsToRestorePurchases : function() {
-            this.log("wantsToRestorePurchases", arguments);
-
-            _jsAPI.purchasesRestored();
+            _jsAPI.marketPurchaseStarted();
+            setTimeout(function() {
+                _jsAPI.currenciesUpdated(balances);
+            }, 1000);
         },
         wantsToEquipGoods : function(model) {
             this.log("wantsToEquipGoods", arguments);

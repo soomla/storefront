@@ -111,7 +111,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             // Assign reference to native API on store view object.
             // This is used specifically by the Android native API module.
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
             this.theme = options.model.get("theme");

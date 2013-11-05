@@ -15,12 +15,6 @@ define("jsAPI", ["underscore"], function(_) {
         goodsUpdated : function(virtualGoods) {
             SoomlaJS.store.updateVirtualGoods(virtualGoods);
         },
-        nonConsumablesUpdated : function(nonConsumables) {
-            SoomlaJS.store.updateNonConsumables(nonConsumables);
-        },
-        purchasesRestored : function(nonConsumables) {
-            SoomlaJS.store.restorePurchases(nonConsumables);
-        },
         notEnoughGoods : function(itemId) {
             var good = SoomlaJS.store.getItem(itemId);
             SoomlaJS.storeView.openMessageDialog("Cannot use " + good.getName());

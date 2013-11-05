@@ -341,14 +341,8 @@ define("economyModels", ["backbone"], function(Backbone) {
     });
 
 
-    var NonConsumable = RelationalModel.extend({
-        idAttribute : "itemId"
-    });
-
-
-    var CurrencyPacksCollection     = Collection.extend({ model : CurrencyPack }),
-        VirtualGoodsCollection      = Collection.extend({ model : VirtualGood  }),
-        NonConsumablesCollection    = Collection.extend({ model : NonConsumable  });
+    var CurrencyPacksCollection = Collection.extend({ model : CurrencyPack }),
+        VirtualGoodsCollection  = Collection.extend({ model : VirtualGood  });
 
     var Currency = RelationalModel.extend({
         defaults : {
@@ -421,8 +415,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         CategoryCollection          : CategoryCollection,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
-        NonConsumable               : NonConsumable,
-        NonConsumablesCollection    : NonConsumablesCollection,
         RelationalModel             : RelationalModel
     };
 

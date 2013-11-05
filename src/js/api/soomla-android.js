@@ -10,9 +10,6 @@ define("soomlaAndroid", {
 	wantsToBuyVirtualGoods : function(model) {
 		this.nativeAPI.wantsToBuyVirtualGoods(model.toJSON().itemId);
 	},
-	wantsToRestorePurchases : function() {
-		this.nativeAPI.wantsToRestorePurchases();
-	},
 	wantsToEquipGoods : function(model) {
 		this.nativeAPI.wantsToEquipGoods(model.toJSON().itemId);
 	},

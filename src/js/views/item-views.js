@@ -76,32 +76,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     });
 
 
-    // Used for non-consumables
-    // TODO: Review if necessary
-    var BuyOnceItemView = ItemView.extend({
-        initialize : function() {
-            this.model.on("change", this.render, this);
-            this.model.on("change:owned", this.disable, this);
-        },
-
-        // Override triggers
-        triggers : {
-            "fastclick" : "buy"
-        },
-        disable : function() {
-            if (this.model.get("owned") === true) {
-                this.undelegateEvents();
-                this.$el.addClass("owned");
-            }
-        },
-        onRender : function() {
-
-            // Check the state of the view's virtual good and update the view accordingly
-            if (this.model.get("owned") === true) this.disable();
-        }
-    });
-
-
     /**
      * Assumes initialization with an upgradable model
      * @type {*}
@@ -218,7 +192,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         ItemView            : ItemView,
         SingleUseItemView   : SingleUseItemView,
         CurrencyPackView    : CurrencyPackView,
-        BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
         EquippableItemView  : EquippableItemView,

@@ -24,9 +24,6 @@ define("soomlaiOS", {
     wantsToBuyVirtualGoods : function(model) {
         this._callNative("wantsToBuyVirtualGoods:" + model.toJSON().itemId);
     },
-    wantsToRestorePurchases : function() {
-        this._callNative("wantsToRestorePurchases");
-    },
     wantsToEquipGoods : function(model) {
         this._callNative("wantsToEquipGoods:" + model.toJSON().itemId);
     },
