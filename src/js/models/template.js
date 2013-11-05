@@ -12,12 +12,28 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
         getType : function() {
             return this.get("type");
         },
+        getSelector : function() {
+            return this.get("selector");
+        },
         getKeychain : function() {
             return this.id.split(".");
+        },
+        isType : function(type) {
+            return type === this.getType();
         }
     });
+
+    var FontAttribute = Attribute.extend({
+        getClass : function() {
+            return this.get("class");
+        }
+    });
+
     var AttributeCollection = Backbone.Collection.extend({
-        model : Attribute
+        model : function(attrs, options) {
+            if (attrs.type === "font") return new FontAttribute(attrs, options);
+            return new Attribute(attrs, options);
+        }
     });
 
     var Template = (function() {
