@@ -87,7 +87,7 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
         },
         getTemplateImageDimensions : function(keychain) {
             try {
-                var res = Utils.getByKeychain(this.json.assetMetadata.template, keychain);
+                var res = Utils.getByKeychain(this.json.assetMetadata.template, keychain.split("."));
                 return normalize(res);
             } catch (e) {
                 return undefined;

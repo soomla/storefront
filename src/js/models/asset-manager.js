@@ -59,7 +59,7 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
             return this._getItemAsset(itemId) || Urls.progressBarPlaceholder;
         },
         getThemeAsset : function(keychain) {
-            return Utils.getByKeychain(this.theme, keychain) || Urls.imagePlaceholder;
+            return Utils.getByKeychain(this.theme, keychain.split(".")) || Urls.imagePlaceholder;
         },
         getHookAsset : function(provider, options, key) {
 
