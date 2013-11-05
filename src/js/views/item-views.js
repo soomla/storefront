@@ -145,7 +145,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
             }, this);
         },
         onBalanceChange : function() {
-            if (this.model.get("balance") >  0) {
+            if (this.model.isOwned()) {
                 this.$el.addClass("owned");
                 this.onItemOwned();
             } else {
@@ -181,10 +181,10 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
             }, this);
         },
         onBalanceChange : function() {
-            (this.model.get("balance") >  0) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
+            (this.model.isOwned()) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
         },
         onEquippingChange : function() {
-            this.model.get("equipped") ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
+            this.model.isEquipped() ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
         },
         onRender : function() {
 

@@ -168,16 +168,33 @@ define("economyModels", ["backbone"], function(Backbone) {
     var SingleUseGood = VirtualGood.extend({
 
         // Single use goods should have a balance of 0 by default
-        defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults)
+        defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults),
+        getBalance : function() {
+            return this.get("balance");
+        }
     });
 
-    var EquippableGood = SingleUseGood.extend({
+    // This is an intermediary type that isn't used by the UI, but is just part of the
+    // prototype chain of goods that can be owned
+    var OwnableItem = SingleUseGood.extend({
+        isOwned : function() {
+            return this.getBalance() > 0;
+        }
+    });
+
+    var EquippableGood = OwnableItem.extend({
 
         // Equippable goods should, by default, have a balance of 0 and not be equipped
-        defaults : $.extend(true, {equipped : false, equipping : "category"}, SingleUseGood.prototype.defaults)
+        defaults : $.extend(true, {equipped : false, equipping : "category"}, SingleUseGood.prototype.defaults),
+        isEquipped : function() {
+            return !!this.get("equipped");
+        },
+        setEquipping : function(equipped) {
+            return this.set("equipped", equipped)
+        }
     });
 
-    var LifetimeGood = SingleUseGood.extend();
+    var LifetimeGood = OwnableItem.extend();
 
     var Upgrade = VirtualGood.extend({
 

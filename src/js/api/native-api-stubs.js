@@ -15,7 +15,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
             if (model = SoomlaJS.store.getItem(itemId)) {
                 this.log("wantsToBuyVirtualGoods", arguments);
                 this._wantsToBuyVirtualGoods(model, function(model) {
-                    return {balance: model.get("balance") + 1};
+                    return {balance: model.getBalance() + 1};
                 });
             } else if (model = SoomlaJS.store.getCurrencyPack(itemId)) {
                 this._wantsToBuyMarketItem(model);
@@ -100,13 +100,13 @@ define("nativeApiStubs", ["constants"], function(Constants){
             });
 
             // Then equip the given good
-            goods[model.id] = {equipped: !model.get("equipped")};
+            goods[model.id] = {equipped: !model.isEquipped()};
             _jsAPI.goodsUpdated(goods);
         },
         wantsToUnequipGoods : function(model) {
             this.log("wantsToUnequipGoods", arguments);
             var goods = {};
-            goods[model.id] = {equipped: !model.get("equipped")};
+            goods[model.id] = {equipped: !model.isEquipped()};
             _jsAPI.goodsUpdated(goods);
         },
         wantsToUpgradeVirtualGood : function(model) {

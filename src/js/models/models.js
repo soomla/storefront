@@ -313,15 +313,17 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                     if (attributes.hasOwnProperty("equipped")) {
                         if (attributes.equipped)
-                            if (good.get("balance") >  0) {
-                                good.set("equipped", attributes.equipped);
+                            if (good.getBalance() >  0) {
+                                good.setEquipping(attributes.equipped);
                             } else {
+
                                 // Don't allow equipping goods that aren't owned
-                                good.set("equipped", false);
+                                // TODO: Throw error
+                                good.setEquipping(false);
                                 SoomlaJS.notEnoughGoods(good.id);
                             }
                         else
-                            good.set("equipped", attributes.equipped);
+                            good.setEquipping(attributes.equipped);
                     }
 
                     if (attributes.currentUpgrade && attributes.currentUpgrade !== "none") {

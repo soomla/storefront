@@ -37,7 +37,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
     var ExpandableEquippableItemView = ItemViews.EquippableItemView.extend({
         onBalanceChange : function() {
-            if (this.model.get("balance") >  0) {
+            if (this.model.isOwned()) {
                 this.$el.addClass("owned");
                 if (this.expanded) this.collapse({noSound: true});
             } else {
