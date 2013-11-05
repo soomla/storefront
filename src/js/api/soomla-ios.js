@@ -5,7 +5,7 @@ define("soomlaiOS", {
 
         iFrame.setAttribute("src", "soomla:" + command);
 
-        document.body.appendChild(iFrame); 
+        document.body.appendChild(iFrame);
 
         iFrame.parentNode.removeChild(iFrame);
 
@@ -21,17 +21,17 @@ define("soomlaiOS", {
     wantsToLeaveStore : function() {
         this._callNative("wantsToLeaveStore");
     },
-    wantsToBuyVirtualGoods : function(itemId) {
-        this._callNative("wantsToBuyVirtualGoods:" + itemId);
+    wantsToBuyVirtualGoods : function(model) {
+        this._callNative("wantsToBuyVirtualGoods:" + model.toJSON().itemId);
     },
     wantsToRestorePurchases : function() {
         this._callNative("wantsToRestorePurchases");
     },
-    wantsToEquipGoods : function(itemId) {
-        this._callNative("wantsToEquipGoods:" + itemId);
+    wantsToEquipGoods : function(model) {
+        this._callNative("wantsToEquipGoods:" + model.toJSON().itemId);
     },
-    wantsToUnequipGoods : function(itemId) {
-        this._callNative("wantsToUnequipGoods:" + itemId);
+    wantsToUnequipGoods : function(model) {
+        this._callNative("wantsToUnequipGoods:" + model.toJSON().itemId);
     },
 
     playSound : function(filePath) {
@@ -50,8 +50,8 @@ define("soomlaiOS", {
     wantsToRestoreTransactions : function() {
         this._callNative("wantsToRestoreTransactions");
     },
-    wantsToUpgradeVirtualGood : function(itemId) {
-        this._callNative("wantsToUpgradeVirtualGood:" + itemId);
+    wantsToUpgradeVirtualGood : function(model) {
+        this._callNative("wantsToUpgradeVirtualGood:" + model.toJSON().itemId);
     },
     wantsToInitiateHook : function(provider, options) {
         this._callNative("wantsToInitiateHook:" + provider + ":" + JSON.stringify(options));

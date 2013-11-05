@@ -62,8 +62,17 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
     };
 
 
-// Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
+    // Stub native API calls to simulate an Android client
+    // and so that they won't block execution \ prevent higher level DOM event handlers from running
     window.SoomlaNative = {
+
+        // Indicate to the storefront component that the initial `uiReady` and `storeInitialized`
+        // API is provided, and that the rest will be provided as stubs functions upon `storeInitialized`,
+        // so no need to extend the store object with native API functions
+        STUB_API : true,
+        uiReady : function() {
+            // Stub implementation so that store.js will succeed when calling this
+        },
         playSound : function(filePath) {},
         storeInitialized : function() {
             require(["nativeApiStubs", "jsAPI"], function(NativeApiStubs, jsAPI) {

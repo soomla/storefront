@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "messaging", "constants", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, Messaging, Constants) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "soomlaiOS", "messaging", "userAgent", "constants", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, SoomlaIos, Messaging, UserAgent, Constants) {
 
 
     // Save a local copy
@@ -108,7 +108,8 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 throw err;
             }
 
-            // Bind native API
+            // Assign reference to native API on store view object.
+            // This is used specifically by the Android native API module.
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
             _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
 
@@ -353,7 +354,14 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             };
         })()
     });
-    _.extend(BaseStoreView.prototype, SoomlaAndroid);
+
+
+    // Extend the store view with the appropriate native API module
+    // according to the user agent. The default is Android.
+    _.extend(BaseStoreView.prototype, UserAgent.iOS() ? SoomlaIos : SoomlaAndroid);
+
+
+    // Assign constants
     BaseStoreView.Const = {
         OFFERS_ID       : "__offers__",
         OFFERS_TITLE    : "Offers"
@@ -367,10 +375,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         if (provider === Constants.SPONSORPAY) {
 
-            var options = JSON.stringify({
+            var options = {
                 action  : "offerwall",
                 itemId  : offer.id
-            });
+            };
             this.wantsToInitiateHook(provider, options);
         }
     };
