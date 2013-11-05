@@ -64,7 +64,7 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         },
         getThemeAsset : function(keychain, options) {
             (options) || (options = {});
-            var defaultAsset = _.contains(dragDropTypes, options.type) ? Urls.imagePlaceholder : ""
+            var defaultAsset = _.contains(dragDropTypes, options.type) ? Urls.imagePlaceholder : "";
 
             return Utils.getByKeychain(this.theme, keychain.split(".")) || defaultAsset;
         },

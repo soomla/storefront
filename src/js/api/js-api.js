@@ -22,9 +22,8 @@ define("jsAPI", ["underscore"], function(_) {
             SoomlaJS.store.restorePurchases(nonConsumables);
         },
         notEnoughGoods : function(itemId) {
-            // TODO: Fix broken get for attribute that doesn't exist
-            var good = SoomlaJS.store.get("virtualGoods").get(itemId);
-            alert("Cannot use " + good.get("name"));
+            var good = SoomlaJS.store.getItem(itemId);
+            SoomlaJS.storeView.openMessageDialog("Cannot use " + good.getName());
         },
         // The native UI is going to be destroyed
         destroy : function() {
