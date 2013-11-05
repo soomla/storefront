@@ -17,7 +17,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         addEvents : function() {
             // This one is for categories - sometimes there is a model and sometimes there isn't
             // TODO: Review
-            if (this.model) this.model.on("all", this.render, this);
+            if (this.model) this.listenTo(this.model, "all", this.render);
         },
         className : "item",
         tagName : "li",
@@ -45,14 +45,14 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var ItemView = LinkView.extend({
         initialize : function() {
 
-            // TODO: Remove change:balance => this.render
+            // TODO: Remove change:balance => this.render once each child class implements a partial render of the balance HTML
             this.listenTo(this.model, "change:balance change:purchasableItem", this.render, this);
 
-            // Animate balance if it changes
+            // Animate balance if it changes (after rendering)
             if (_.isString(this.animateBalanceClass)) this.listenTo(this.model, "change:balance", this.animateBalance, this);
         },
         addEvents : function() {
-            this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
+            this.listenTo(this.model, "change:name change:description change:currency_amount change:purchasableItem change:asset", this.render);
         },
         animateBalance : function() {
             this.$el.animateOnce(this.animateBalanceClass);
@@ -83,7 +83,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var UpgradableItemView = ItemView.extend({
         className : "item upgradable",
         initialize : function() {
-            this.model.on({
+            this.listenTo(this.model, {
                 "change:purchasableItem change:upgradeId"   : this.render,
                 "change:upgradeId"                          : this.onUpgradeChange
             }, this);
@@ -148,7 +148,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var EquippableItemView = ItemView.extend({
         className : "item equippable",
         initialize : function() {
-            this.model.on({
+            this.listenTo(this.model, {
                 "change:purchasableItem"    : this.render,
                 "change:balance"            : this.onBalanceChange,
                 "change:equipped"           : this.onEquippingChange

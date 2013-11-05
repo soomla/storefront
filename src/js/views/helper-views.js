@@ -4,7 +4,8 @@ define("helperViews", ["marionette", "jquery.fastbutton"], function(Marionette) 
         initialize : function(options) {
             this.states = options.states;
             this.initialState = options.initialState;
-            this.model = new Backbone.Model({state: this.initialState}).on("change:state", this.onStateChange, this);
+            this.model = new Backbone.Model({state: this.initialState});
+            this.listenTo(this.model, "change:state", this.onStateChange);
         },
         events : {
             "fastclick .back" : function() {

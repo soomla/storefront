@@ -47,14 +47,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend({
-        constructor : function(options) {
-            ItemViews.SingleUseItemView.prototype.constructor.apply(this, arguments);
-
-            // TODO: Check if this listener is necessary: might be duplicate with ItemView
-            this.model.on("change:balance", this.render);
-        }
-    });
+    var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend();
 
 
     var ExpandableLifetimeItemView = ItemViews.LifetimeItemView.extend({
