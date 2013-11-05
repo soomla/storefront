@@ -5,6 +5,10 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
     //
     var SPONSORPAY = Constants.SPONSORPAY;
 
+    // Arrays for testing model types
+    var imageTypes      = ["image", "backgroundImage"],
+        dragDropTypes   = imageTypes.concat("font");
+
 
     // TODO: Save local references of imagePlaceholder
     // TODO: Create set,get,update,remove methods for each type of entity \ theme asset
@@ -58,8 +62,11 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         getUpgradeBarAsset : function(itemId) {
             return this._getItemAsset(itemId) || Urls.progressBarPlaceholder;
         },
-        getThemeAsset : function(keychain) {
-            return Utils.getByKeychain(this.theme, keychain.split(".")) || Urls.imagePlaceholder;
+        getThemeAsset : function(keychain, options) {
+            (options) || (options = {});
+            var defaultAsset = _.contains(dragDropTypes, options.type) ? Urls.imagePlaceholder : ""
+
+            return Utils.getByKeychain(this.theme, keychain.split(".")) || defaultAsset;
         },
         getHookAsset : function(provider, options, key) {
 
