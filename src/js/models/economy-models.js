@@ -234,11 +234,11 @@ define("economyModels", ["backbone"], function(Backbone) {
         relations: [
             {
                 type: Backbone.HasMany,
-                key: 'upgrades',
+                key: "upgrades",
                 relatedModel: Upgrade,
                 collectionType: UpgradeCollection,
                 reverseRelation: {
-                    includeInJSON: 'id'
+                    includeInJSON: "id"
                 }
             }
         ],
@@ -360,11 +360,11 @@ define("economyModels", ["backbone"], function(Backbone) {
         relations: [
             {
                 type: Backbone.HasMany,
-                key: 'packs',
+                key: "packs",
                 relatedModel: CurrencyPack,
                 collectionType: CurrencyPacksCollection,
                 reverseRelation: {
-                    includeInJSON: 'id'
+                    includeInJSON: "id"
                 }
             }
         ],
@@ -393,11 +393,11 @@ define("economyModels", ["backbone"], function(Backbone) {
         relations: [
             {
                 type: Backbone.HasMany,
-                key: 'goods',
+                key: "goods",
                 relatedModel: VirtualGood,
                 collectionType: VirtualGoodsCollection,
                 reverseRelation: {
-                    includeInJSON: 'id'
+                    includeInJSON: "id"
                 }
             }
         ],
@@ -408,6 +408,33 @@ define("economyModels", ["backbone"], function(Backbone) {
 
     var CategoryCollection          = Collection.extend({ model : Category }),
         VirtualCurrencyCollection   = Collection.extend({ model : Currency });
+
+
+    // A container model for holding the relational tree
+    // of currencies + packs, and categories + goods
+    var Economy = RelationalModel.extend({
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: 'categories',
+                relatedModel: Category,
+                collectionType: CategoryCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            },
+            {
+                type: Backbone.HasMany,
+                key: 'currencies',
+                relatedModel: Currency,
+                collectionType: VirtualCurrencyCollection,
+                reverseRelation: {
+                    includeInJSON: 'id'
+                }
+            }
+        ]
+    });
+
 
     return {
         VirtualGood                 : VirtualGood,
@@ -423,6 +450,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         CategoryCollection          : CategoryCollection,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
+        Economy                     : Economy,
         RelationalModel             : RelationalModel
     };
 

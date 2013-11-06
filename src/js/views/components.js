@@ -105,7 +105,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
     var BaseStoreView = BaseView.extend({
         constructor : function(options) {
 
-            if (!(options.model && options.model.get("theme"))) {
+            if (!(options.model && options.model.options.theme)) {
                 var err = new Error("You must initialize the store with a model and make sure it has a theme");
                 err.name = "InvalidInitializationError";
                 throw err;
@@ -120,7 +120,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
-            this.theme = options.model.get("theme");
+            this.theme = options.model.options.theme;
 
             // Create an object to store all child views
             this.children = new Backbone.ChildViewContainer();

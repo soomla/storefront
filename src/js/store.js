@@ -255,12 +255,6 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 });
 
 
-                // Move the raw categories' metadata, because the `categories` attribute
-                // should be saved for the backbone relational categories collection
-                json.rawCategories = json.categories;
-                json.categories = [];
-
-
                 // Initialize model
                 this.store = new Models.Store(json);
 

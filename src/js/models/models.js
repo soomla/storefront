@@ -1,9 +1,10 @@
 define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks) {
 
     // Cache base classes.
-    var RelationalModel = Backbone.RelationalModel;
+    var RelationalModel             = Backbone.RelationalModel;
 
-    var VirtualGood                 = EconomyModels.VirtualGood,
+    var Economy                     = EconomyModels.Economy,
+        VirtualGood                 = EconomyModels.VirtualGood,
         SingleUseGood               = EconomyModels.SingleUseGood,
         EquippableGood              = EconomyModels.EquippableGood,
         LifetimeGood                = EconomyModels.LifetimeGood,
@@ -22,132 +23,120 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         duplicateCurrencyErrorMessage = "A currency with that name already exists.";
 
 
-    var Store = RelationalModel.extend({
-        relations: [
-            {
-                type: Backbone.HasMany,
-                key: 'categories',
-                relatedModel: Category,
-                collectionType: CategoryCollection,
-                reverseRelation: {
-                    includeInJSON: 'id'
-                }
-            },
-            {
-                type: Backbone.HasMany,
-                key: 'currencies',
-                relatedModel: Currency,
-                collectionType: VirtualCurrencyCollection,
-                reverseRelation: {
-                    includeInJSON: 'id'
-                }
-            }
-        ],
-        initialize : function() {
-            _.bindAll(this, "buildTemplate", "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
 
-            // Create a {ID : good} map with goods from all categories
-            var goodsMap    = this.goodsMap     = {};
-            var packsMap    = this.packsMap     = {};
-            var categoryMap = this.categoryMap  = {};
+    var Store = function(options) {
+
+        // Save for later reference
+        this.options = options;
+
+        _.bindAll(this, "buildTemplate", "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
+
+        // Create a {ID : good} map with goods from all categories
+        var goodsMap    = this.goodsMap     = {};
+        var packsMap    = this.packsMap     = {};
+        var categoryMap = this.categoryMap  = {};
+
+        // Initialize the economy only with currencies, since their raw
+        // representation fits what's expected.  In contrast, raw categories need
+        // to be massaged and will be added later to the economy's `categories` relational model
+        this.economy = new Economy({
+            currencies : options.currencies
+        });
 
 
-            // Populate market items map
-            _.each(this.get("currencyPacks"), function(rawPack) {
-                var pack = new CurrencyPack(rawPack);
-                packsMap[pack.id] = pack;
-            });
+        // Populate market items map
+        _.each(options.currencyPacks, function(rawPack) {
+            var pack = new CurrencyPack(rawPack);
+            packsMap[pack.id] = pack;
+        });
 
-            //
-            // Populate goods map, flag each good with its type
-            //
+        //
+        // Populate goods map, flag each good with its type
+        //
 
-            // Start by filtering goods with upgrades
-            var upgradableGoodIds = _(this.get("goods").goodUpgrades).chain().map(function(u) { return u.good_itemId; }).uniq().value();
+        // Start by filtering goods with upgrades
+        var upgradableGoodIds = _(options.goods.goodUpgrades).chain().map(function(u) { return u.good_itemId; }).uniq().value();
 
-            // Iterate all types of goods and instantiate
-            // objects for all goods according to their classification
-            _.each(_.omit(this.get("goods"), "goodUpgrades"), function(rawGoods, type) {
-                _.each(rawGoods, function(rawGood) {
-                    rawGood.type = type;
-                    var good;
+        // Iterate all types of goods and instantiate
+        // objects for all goods according to their classification
+        _.each(_.omit(options.goods, "goodUpgrades"), function(rawGoods, type) {
+            _.each(rawGoods, function(rawGood) {
+                rawGood.type = type;
+                var good;
 
-                    if (_.contains(upgradableGoodIds, rawGood.itemId)) {
+                if (_.contains(upgradableGoodIds, rawGood.itemId)) {
 
-                        // If a good has upgrade levels, instantiate it as a different object
-                        good = new UpgradableGood(rawGood);
+                    // If a good has upgrade levels, instantiate it as a different object
+                    good = new UpgradableGood(rawGood);
 
-                    } else {
-                        switch (type) {
-                            case "equippable":
-                                good = new EquippableGood(rawGood);
-                                break;
-                            case "lifetime":
-                                good = new LifetimeGood(rawGood);
-                                break;
-                            default:
+                } else {
+                    switch (type) {
+                        case "equippable":
+                            good = new EquippableGood(rawGood);
+                            break;
+                        case "lifetime":
+                            good = new LifetimeGood(rawGood);
+                            break;
+                        default:
 
-                                // By default instantiate goods like this
-                                good = new SingleUseGood(rawGood);
-                                break;
-                        }
+                            // By default instantiate goods like this
+                            good = new SingleUseGood(rawGood);
+                            break;
                     }
+                }
 
-                    // Keep a reference to the goods in a map
-                    goodsMap[good.id] = good;
-                }, this);
+                // Keep a reference to the goods in a map
+                goodsMap[good.id] = good;
             }, this);
+        }, this);
 
 
-            // Now, add upgrades to existing upgradable goods
-            _.each(this.get("goods").goodUpgrades, function(rawUpgrade) {
+        // Now, add upgrades to existing upgradable goods
+        _.each(options.goods.goodUpgrades, function(rawUpgrade) {
 
-                // Create Upgrade objects without the good_itemId attribute
-                // Since they'll be associated with Backbone Relational to that good
-                var goodItemId  = rawUpgrade.good_itemId,
-                    upgrade     = new Upgrade(_.omit(rawUpgrade, "good_itemId")),
-                    good        = goodsMap[goodItemId];
-                good.getUpgrades().add(upgrade, {silent : true});
+            // Create Upgrade objects without the good_itemId attribute
+            // Since they'll be associated with Backbone Relational to that good
+            var goodItemId  = rawUpgrade.good_itemId,
+            upgrade     = new Upgrade(_.omit(rawUpgrade, "good_itemId")),
+            good        = goodsMap[goodItemId];
+            good.getUpgrades().add(upgrade, {silent : true});
+        });
+
+
+        // Fill currency packs into currency buckets (collections)
+        var currencies = this.getCurrencies();
+        _.each(options.currencyPacks, function(pack) {
+            var packs = currencies.get(pack.currency_itemId).getPacks();
+            packs.add(packsMap[pack.itemId]);
+        });
+
+        // Fill goods from the raw categories into category buckets (collections)
+        _.each(options.categories, function(rawCategory) {
+
+            var category = new Category(_.pick(rawCategory, "name")),
+                goods    = category.getGoods();
+
+            _.each(rawCategory.goods_itemIds, function(goodItemId) {
+                goods.add(goodsMap[goodItemId]);
+                categoryMap[goodItemId] = category;
             });
 
-
-            // Fill currency packs into currency buckets (collections)
-            var currencies = this.getCurrencies();
-            _.each(this.get("currencyPacks"), function(pack) {
-                var packs = currencies.get(pack.currency_itemId).get("packs");
-                packs.add(packsMap[pack.itemId]);
-            });
-
-            // Fill goods from the raw categories into category buckets (collections)
-            _.each(this.get("rawCategories"), function(rawCategory) {
-
-                var category = new Category(_.pick(rawCategory, "name")),
-                    goods    = category.getGoods();
-
-                _.each(rawCategory.goods_itemIds, function(goodItemId) {
-                    goods.add(goodsMap[goodItemId]);
-                    categoryMap[goodItemId] = category;
-                });
-
-                this.getCategories().add(category);
-            }, this);
+            this.getCategories().add(category);
+        }, this);
 
 
-            // Create hooks object
-            this.hooks = new Hooks.HookManager({theme : this.get("theme"), hooks : this.get("hooks")});
+        // Create hooks object
+        this.hooks = new Hooks.HookManager({theme : options.theme, hooks : options.hooks});
 
-            // Create theme object
-            this.assets = new Assets.AssetManager({
-                template    : this.get("template"),
-                theme 		: this.get("theme"),
-                modelAssets : this.get("modelAssets")
-            });
+        // Create theme object
+        this.assets = new Assets.AssetManager({
+            template    : options.template,
+            theme 		: options.theme,
+            modelAssets : options.modelAssets
+        });
+    };
 
-            // Clean fields that are not unnecessary to prevent duplicate data
-            this.unset("rawCategories");
-            this.unset("goods");
-            this.unset("currencyPacks");
-        },
+    _.extend(Store.prototype, Backbone.Events, {
         // A function for injecting model and theme assets
         // externally after the object has been created
         injectAssets : function(modelAssetNames, themeAssetNames) {
@@ -155,7 +144,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this.assets.themeAssetNames = themeAssetNames;
         },
         buildTemplate : function(json) {
-            this.template = new Template(json, this.get("template").orientation);
+            this.template = new Template(json, this.options.template.orientation);
         },
         getTemplate : function() {
             return this.template;
@@ -195,7 +184,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this.assets.setThemeAsset(assetId, url, assetName)
         },
         setThemeAttribute : function(keychain, value) {
-            Utils.setByKeyChain(this.get("theme"), keychain, value);
+            Utils.setByKeyChain(this.options.theme, keychain, value);
         },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
@@ -504,7 +493,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
-            this.getCurrency(currency_itemId).get("packs").add(currencyPack, {at: 0});
+            this.getCurrency(currency_itemId).getPacks().add(currencyPack, {at: 0});
 
             // Add pack to other maps
             this.packsMap[currencyPack.id] = currencyPack;
@@ -584,7 +573,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             currency.trigger('destroy', currency, currency.collection, {});
         },
         getCategories : function() {
-            return this.get("categories");
+            return this.economy.get("categories");
         },
         getCategory : function(id) {
             return this.getCategories().get(id);
@@ -593,7 +582,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             return this.getCategories().first();
         },
         getCurrencies : function() {
-            return this.get("currencies");
+            return this.economy.get("currencies");
         },
         getCurrency : function(id) {
             return this.getCurrencies().get(id);
@@ -677,12 +666,12 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         toJSON : function() {
 
             // Prepare a JSON using the original prototype's toJSON method
-            var json = RelationalModel.prototype.toJSON.apply(this);
+            var json = RelationalModel.prototype.toJSON.apply(this.economy);
 
             // Deep clone the model assets and theme since they might be manipulated
             // by this function and we don't want to affect the original objects
-            json.modelAssets = $.extend(true, {}, json.modelAssets);
-            json.theme = $.extend(true, {}, json.theme);
+            json.modelAssets = $.extend(true, {}, this.assets.modelAssets);
+            json.theme = $.extend(true, {}, this.assets.theme);
 
             // Remove all fields injected into models during runtime
             // e.g. balance, equipped...
@@ -779,11 +768,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             });
 
 
-            // Delete auxiliary fields
-            // TODO: Check if needed
-            delete json.rawCategories;
-
-
 
             // Remove the injected base URL (only for loading assets in the dashboard)
             // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
@@ -791,7 +775,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // This is why cloning the template object first is necessary.  Manipulating it directly will
             // affect the original model which we don't want
             // TODO: Remove once the storefront loads its template files (.less, .handlbars, *Views.js) from S3 URLs
-            json.template = _.clone(json.template);
+            json.template = _.clone(this.assets.template);
             delete json.template.baseUrl;
 
             return json;
