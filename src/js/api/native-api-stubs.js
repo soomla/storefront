@@ -56,7 +56,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
         _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
 
-            var amount = model.get("currency_amount");
+            var amount = model.getAmount();
 
             // Calculate and assign the new currency balance
             var balances    = {},
@@ -73,12 +73,12 @@ define("nativeApiStubs", ["constants"], function(Constants){
         wantsToEquipGoods : function(model) {
             this.log("wantsToEquipGoods", arguments);
             var goods           = {},
-                categoryGoods   = SoomlaJS.store.getGoodCategory(model.id).get("goods");
+                categoryGoods   = SoomlaJS.store.getGoodCategory(model.id).getGoods();
 
             // First unequip all other owned goods in category ("single" equipping enforcement)
             // TODO: Change the logic to support different scopes of equipping, i.e. single, category, global
             categoryGoods.each(function(good) {
-                if (good.get("balance") > 0) goods[good.id] = {equipped: false};
+                if (good.isOwned()) goods[good.id] = {equipped: false};
             });
 
             // Then equip the given good
