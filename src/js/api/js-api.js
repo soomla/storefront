@@ -4,11 +4,6 @@
 define("jsAPI", ["underscore"], function(_) {
 
     return {
-        // in case Market purchases are not supported we only want to show the goods store
-        disableCurrencyStore : function() {
-            // Raise a flag to indicate that the currency store can't be opened (probably due to connectivity issues)
-            SoomlaJS.store.set("isCurrencyStoreDisabled", true);
-        },
         currenciesUpdated : function(balances) {
             SoomlaJS.store.setBalance(balances);
         },
