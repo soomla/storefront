@@ -125,6 +125,11 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
 
             this._setThemeAsset(id, url, name);
         },
+        setThemeAttribute : function(type, id, value) {
+
+            // Default to empty strings and not `undefined`s
+            Utils.setByKeyChain(this.theme, id.split("."), value || "");
+        },
         setUpgradeAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
         },
@@ -245,6 +250,19 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         },
         getAssetPath : function(type) {
             return (type === "font") ? "fonts" : "img";
+        },
+        setThemeAsset : function(assetId, url, assetName) {
+            this.assets.setThemeAsset(assetId, url, assetName)
+        },
+        setThemeTextAttribute : function(id, value) {
+
+            // Default to empty strings and not `undefined`s
+            this.assets.setThemeAttribute("text", id, value);
+        },
+        setThemeCssAttribute : function(id, value) {
+
+            // Default to empty strings and not `undefined`s
+            this.assets.setThemeAttribute("css", id, value);
         },
         isBranded : function() {
             return !!this.assets.template.noBranding;

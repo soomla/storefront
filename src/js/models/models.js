@@ -180,12 +180,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Force the preview to update by triggering a change event on the model
             model.trigger("change:asset");
         },
-        setThemeAsset : function(assetId, url, assetName) {
-            this.assets.setThemeAsset(assetId, url, assetName)
-        },
-        setThemeAttribute : function(keychain, value) {
-            Utils.setByKeyChain(this.options.theme, keychain, value);
-        },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },
