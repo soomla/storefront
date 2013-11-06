@@ -122,7 +122,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             _.each(this.get("rawCategories"), function(rawCategory) {
 
                 var category = new Category(_.pick(rawCategory, "name")),
-                    goods    = category.get("goods");
+                    goods    = category.getGoods();
 
                 _.each(rawCategory.goods_itemIds, function(goodItemId) {
                     goods.add(goodsMap[goodItemId]);
@@ -442,7 +442,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             }
 
             // Add good to category
-            category.get("goods").add(good, {at: 0});
+            category.getGoods().add(good, {at: 0});
             return good;
         },
         addUpgrade : function(options) {
@@ -557,7 +557,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         removeCategory : function(category) {
 
             // Remove all goods associated with this currency
-            this._clearReverseOrder(category.get("goods"), this.removeVirtualGood);
+            this._clearReverseOrder(category.getGoods(), this.removeVirtualGood);
 
             // Remove the currency mappings
             this.removeCategoryId(category.id);
@@ -575,7 +575,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this._clearReverseOrder(currencyGoods, this.removeVirtualGood);
 
             // Remove all packs associated with this currency
-            this._clearReverseOrder(currency.get("packs"), this.removeCurrencyPack);
+            this._clearReverseOrder(currency.getPacks(), this.removeCurrencyPack);
 
             // Remove the currency mappings
             this.removeItemId(currency.id);

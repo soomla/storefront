@@ -3,6 +3,12 @@ define("economyModels", ["backbone"], function(Backbone) {
     var marketPurchaseType      = "market",
         virtualItemPurchaseType = "virtualItem";
 
+    var DescriptionModule = {
+        getDescription : function() {
+            return this.get("description");
+        }
+    };
+
 
     // Cache base classes.
     var RelationalModel = Backbone.RelationalModel.extend({
@@ -92,6 +98,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.set("currency_amount", amount);
         }
     });
+    _.extend(CurrencyPack.prototype, DescriptionModule);
 
     var VirtualGood = RelationalModel.extend({
         idAttribute : "itemId",
@@ -167,6 +174,7 @@ define("economyModels", ["backbone"], function(Backbone) {
             return this.purchasableItem.purchaseType === "market";
         }
     });
+    _.extend(VirtualGood.prototype, DescriptionModule);
 
     var SingleUseGood = VirtualGood.extend({
 
