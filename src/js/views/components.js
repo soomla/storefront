@@ -7,8 +7,9 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
     var ModalDialog = BaseView.extend({
         className : "modal-container",
-        initialize : function() {
+        initialize : function(options) {
             _.bindAll(this, "close");
+            this.parent = options.parent;
         },
         triggers : {
             "fastclick .close"    : "cancel",
@@ -34,7 +35,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             this.$(event.target).parent().removeClass("emulate-active");
         },
         onRender : function() {
-            this.options.parent.append(this.$el);
+            this.parent.append(this.$el);
         },
         // The modal dialog model is a simple object, not a Backbone model
         serializeData : function() {
@@ -68,8 +69,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             this.$soomlaInfoDialog = this.$("#soomla-info-dialog");
             this.updateZoomFactor(options.zoom);
 
-            if (options.deviceId && !_.isEmpty(options.deviceId)) {
-                this.$("#device-id").html(options.deviceId);
+            var deviceId = options.deviceId;
+
+            if (deviceId && !_.isEmpty(deviceId)) {
+                this.$("#device-id").html(deviceId);
                 this.$soomlaInfoDialog.addClass("show-device-id");
             }
         },
@@ -108,6 +111,9 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 throw err;
             }
 
+            // Assign some of the provided options on the instance
+            this.deviceId = options.deviceId;
+
             // Assign reference to native API on store view object.
             // This is used specifically by the Android native API module.
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
@@ -125,7 +131,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
                     this.createIScrolls();
-                    this.changeViewToItem(this.options.initViewItemId);
+                    this.changeViewToItem(options.initViewItemId);
                     this.finalizeRendering();
                 }, this);
             }
@@ -293,7 +299,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             var dialog = this.soomlaInfoDialog = new SoomlaInfoModalDialog({
                 el          : $("#soomla-info-modal"),
                 zoom        : this.zoomFunction(),
-                deviceId    : this.options.deviceId
+                deviceId    : this.deviceId
             });
             var selector = this.model.isBranded() ? ".soombot" : ".nobrand";
             $(selector).show().on("fastclick", function(event) {
