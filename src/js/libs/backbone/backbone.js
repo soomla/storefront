@@ -42,6 +42,12 @@ define("backbone", ["backboneFramework", "backboneExtensions", "backboneRelation
         return undefined;
     };
 
+    Backbone.Collection.prototype.getOrAdd = function(id) {
+        var model = this.get(id);
+        if (_.isUndefined(model)) this.add({id : id});
+        return this.get(id);
+    };
+
 
     return Backbone;
 });
