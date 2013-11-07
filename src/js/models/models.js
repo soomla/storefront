@@ -465,7 +465,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
             upgrade.trigger('destroy', upgrade, upgrade.collection, {});
         },
-        addCurrencyPack : function(options) {         var currencyPack = new CurrencyPack({
+        addCurrencyPack : function(options) {
+            var currencyPack = new CurrencyPack({
                 purchasableItem : {
                     marketItem : {
                         consumable  : 1,
@@ -741,7 +742,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             });
 
             // Assign hooks
-            json.hooks = this.hooks.toJSON();
+            var hooks = this.hooks.toJSON();
+            if (!_.isEmpty(hooks)) json.hooks = hooks;
 
 
             // Update model assets

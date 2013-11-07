@@ -7,13 +7,31 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
 
 
+
     //
     // Backbone Models
     //
-    var Hook = Backbone.Model.extend({
-        idAttribute : "itemId",
+    var Hook = Backbone.RelationalModel.extend({
         getProvider : function() {
-            return this.get("provider");
+            return this.getRelation("provider").related;
+        },
+        getAction : function() {
+            return this.get("action");
+        },
+        getAssetId : function(providerId) {
+            (providerId) || (providerId = this.getProvider().id);
+            var assetId = "__" + providerId + "__" + this.getAction();
+
+            if (providerId === SPONSORPAY) {
+                return assetId + "_" + this.id;
+            }
+            return assetId
+        },
+        setName : function(name) {
+            return this.set("name", name);
+        },
+        setDescription: function(description) {
+            return this.set("description", description);
         }
     });
 
@@ -28,6 +46,12 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             // The provider should match the same string used in all API functions
             // that get \ set \ remove something by a given provider
             provider : SPONSORPAY
+        },
+        getItemId : function() {
+            return this.get("itemId");
+        },
+        setExchangeRate : function(exchangeRate) {
+            return this.set("exchangeRate", exchangeRate);
         }
     });
     SponsorpayHook.defaultMessage = function(amount, itemName) {
@@ -35,55 +59,88 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
     };
 
     var HookCollection = Backbone.Collection.extend({
-        model : Hook
+        model : function(attrs, options) {
+            return new Hook(attrs, options);
+        }
     });
 
-   var SponsorPayCollection = HookCollection.extend({
-       model : SponsorpayHook,
-       addItemHook : function(options) {
 
-           // Pass `{merge : true}` to allow updating existing models with this API
-           return this.add(_.extend({
-               itemId : options.itemId
-           }, _.omit(options, "itemId")), {merge: true});
-       },
-       toJSON : function() {
-           var json = HookCollection.prototype.toJSON.call(this);
-           json = _.object(_.map(json, function(item) {
-               return [item.itemId, _.omit(item, "itemId", "provider")];
-           }));
+    var Provider = Backbone.RelationalModel.extend({
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: "actions",
+                relatedModel: Hook,
+                collectionType: HookCollection,
+                reverseRelation: {
+                    key : "provider",
+                    includeInJSON: "id"
+                }
+            }
+        ],
+        addAction : function(models, options) {
+            this.getActions().add(models, options);
+            return (this.id === SPONSORPAY) ? this.getActions().get(options.itemId) : undefined;
+        },
+        getActions : function() {
+            return this.get("actions");
+        }
+    });
 
-           return json;
-       }
-   });
+    var SponsorpayProvider = Provider.extend({
+        relations: [
+            {
+                type: Backbone.HasMany,
+                key: "actions",
+                relatedModel: SponsorpayHook,
+                collectionType: HookCollection,
+                reverseRelation: {
+                    key : "provider",
+                    includeInJSON: "id"
+                }
+            }
+        ]
+    });
+
+    var ProviderCollection = Backbone.Collection.extend({
+        model : function(attrs, options) {
+            if (attrs.id === SPONSORPAY) return new SponsorpayProvider(attrs, options);
+            return new Provider(attrs, options);
+        }
+    });
+
 
 
     var HookManager = function(options) {
         this.theme = options.theme;
         this.hooks = options.hooks || {}; // The passed hooks might be undefined
 
-        // Process hooks
-        // TODO: Select relevant hooks that are actually offer walls, once the hooks object contains more stuff
-        var rawSponsorPayData = _.map(this.hooks.sponsorpay || [], function(offer, itemId) {
-            offer.itemId = itemId;
-            return offer;
-        });
-        this.sponsorpayCollection = new SponsorPayCollection(rawSponsorPayData);
+        this.providers = new ProviderCollection();
+        _.each(this.hooks.providers, this.providers.add, this.providers);
+
+        // Create a collection for UI purposes that mirrors parts of other collections,
+        // i.e. only models that represent offers
+        this.offerHooks = new HookCollection();
+
+        // Populate that collection from all providers with offers
+        this.providers.each(function(provider) {
+            if (provider.id === SPONSORPAY) {
+                provider.getActions().each(function(action) {
+                    this.offerHooks.add(action);
+                }, this);
+            }
+        }, this);
     };
 
     _.extend(HookManager.prototype, {
-        addHook : function(provider, options) {
-            if (provider === SPONSORPAY) {
-                return this.sponsorpayCollection.addItemHook(options);
-            }
-        },
-        removeHook : function(provider, options) {
-            if (provider === SPONSORPAY) {
-                this.sponsorpayCollection.removeById(options.itemId, {fallback : "first"});
-            }
+        removeHook : function(hook) {
+
+            this.offerHooks.remove(hook);
+            hook.trigger('destroy', hook, hook.collection, {});
+            // TODO: Maybe check if the provider is empty and remove it from the list of providers
         },
         getOfferHooks : function() {
-            return this.sponsorpayCollection;
+            return this.offerHooks;
         },
         getHook : function(provider, options) {
 
@@ -91,36 +148,71 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             (options) || (options = {});
 
             if (provider === SPONSORPAY) {
-                return options.itemId ? this.sponsorpayCollection.get(options.itemId) : this.sponsorpayCollection.first();
+
+                var providerActions = this.providers.get(provider);
+                return !providerActions ? undefined :
+                        options.itemId ? providerActions.get(options.itemId) :
+                        providerActions.first();
             }
-            return null;
+            return undefined;
+        },
+        getProviders : function() {
+            return this.providers;
+        },
+        getProvider : function(id) {
+            return this.providers.get(id);
         },
         toJSON : function() {
             var json = {};
-            if (!this.sponsorpayCollection.isEmpty()) json.sponsorpay = this.sponsorpayCollection.toJSON();
+
+            json.providers = [];
+            this.providers.each(function(provider) {
+                var providerJson = provider.toJSON();
+                if (!_.isEmpty(providerJson.actions)) json.providers.push(providerJson);
+            });
+
+            if (_.isEmpty(json.providers)) delete json.providers;
+
             return json;
         }
     });
 
     // Assumes that `this.hooks` is an instance of `HookManager`
     var HooksMixin = {
-        addHook : function(provider, options) {
+        addHook : function(providerId, options) {
 
-            if (provider === SPONSORPAY) {
-                if (_.isEmpty(options) || _.isUndefined(options.itemId)) throw new Error("SponsorPay Hook: item ID must be supplied");
-                this.assets.setHookAsset(provider, options);
+            if (providerId === SPONSORPAY) {
+
+                var action = new SponsorpayHook(_.extend({
+                    id      : _.uniqueId("hook_"),
+                    itemId  : this.getFirstCurrency().id
+                }, options));
+
+                // TODO: Maybe change `getAssetId` to be a static method
+                this.assets.setHookAsset(action.getAssetId(providerId), options.assetUrl);
+
+                // Start by adding the provider.  If it exists, the add operation will be ignored
+                var provider = this.hooks.providers.getOrAdd(providerId);
+                provider.getActions().add(action);
+                this.hooks.offerHooks.add(action);
+
+                return action;
             }
-            return this.hooks.addHook(provider, options || {});
+
+            return undefined;
         },
-        removeHook : function(provider, options) {
-            if (provider === SPONSORPAY) this.assets.removeHookAsset(provider, options);
-            this.hooks.removeHook(provider, options || {});
+        removeHook : function(hook) {
+            this.assets.removeHookAsset(hook.getAssetId());
+            this.hooks.removeHook(hook);
         },
         getOfferHooks : function() {
             return this.hooks.getOfferHooks();
         },
         getHook : function(provider, options) {
             return this.hooks.getHook(provider, options || {});
+        },
+        getProvider : function(id) {
+            return this.hooks.getProvider(id);
         }
     };
 
@@ -128,6 +220,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
     return {
         HookManager : HookManager,
         HooksMixin  : HooksMixin,
+        Hook        : Hook,
         Providers : {
             SponsorpayHook : SponsorpayHook
         }

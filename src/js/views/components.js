@@ -379,14 +379,12 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         var provider = offer.getProvider();
 
-        if (provider === Constants.SPONSORPAY) {
-
-            var options = {
-                action  : "offerwall",
-                itemId  : offer.id
-            };
-            this.wantsToInitiateHook(provider, options);
+        var options = {action : offer.getAction()};
+        if (provider.id === Constants.SPONSORPAY) {
+            options.itemId = offer.id
         }
+
+        this.wantsToInitiateHook(provider.id, options);
     };
 
 

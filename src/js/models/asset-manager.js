@@ -1,4 +1,4 @@
-define("assetManager", ["underscore", "utils", "urls", "constants"], function(_, Utils, Urls, Constants) {
+define("assetManager", ["underscore", "hooks", "utils", "urls", "constants"], function(_, Hooks, Utils, Urls, Constants) {
 
     //
     // Constants
@@ -8,6 +8,8 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
     // Arrays for testing model types
     var imageTypes      = ["image", "backgroundImage"],
         dragDropTypes   = imageTypes.concat("font");
+
+    var Hook = Hooks.Hook;
 
 
     // TODO: Save local references of imagePlaceholder
@@ -68,13 +70,7 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
 
             return Utils.getByKeychain(this.theme, keychain.split(".")) || defaultAsset;
         },
-        getHookAsset : function(provider, options, key) {
-
-            (options) || (options = {});
-
-            var id;
-            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
-
+        getHookAsset : function(id, key) {
             return this._getAsset("hooks", id, key) || Urls.imagePlaceholder;
         },
         getOffersMenuLinkAsset : function() {
@@ -86,15 +82,8 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         getThemeAssetName : function(itemId) {
             return this.themeAssetNames[itemId];
         },
-        getHookThemeAssetName : function(provider, options) {
-
-            // Enforce SponsorPay requirements
-            this._enforceSponsorpay(provider, options);
-
-            var id;
-            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
-
-            return this.getThemeAssetName(id);
+        getHookModelAssetName : function(id) {
+            return this.getModelAssetName(id);
         },
         getOffersMenuLinkAssetName : function() {
             var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
@@ -136,16 +125,10 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         setUpgradeBarAsset : function(id, url, name) {
             this._setItemAsset(id, url, name);
         },
-        setHookAsset : function(provider, options, url, name) {
-
-            // Enforce SponsorPay requirements
-            this._enforceSponsorpay(provider, options);
+        setHookAsset : function(id, url, name) {
 
             // Ensure object
             (this.modelAssets.hooks) || (this.modelAssets.hooks = {});
-
-            var id;
-            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
 
             // assign URL and name
             this.modelAssets.hooks[id] = url || "";
@@ -172,14 +155,7 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         removeUpgradeAssets : function(upgradeImageAssetId, upgradeBarAssetId) {
             return this._removeItemAsset(upgradeImageAssetId)._removeItemAsset(upgradeBarAssetId);
         },
-        removeHookAsset : function(provider, options) {
-
-            // Enforce SponsorPay requirements
-            this._enforceSponsorpay(provider, options);
-
-            var id;
-            if (provider === SPONSORPAY) id = "__" + provider + "__" + options.itemId;
-
+        removeHookAsset : function(id) {
             delete this.modelAssets.hooks[id];
             delete this.modelAssetNames[id];
             if (_.isEmpty(this.modelAssets.hooks)) delete this.modelAssets.hooks;
@@ -236,11 +212,6 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
             delete this.modelAssets.items[id];
             delete this.modelAssetNames[id];
             return this;
-        },
-        _enforceSponsorpay : function(provider, options) {
-
-            // Enforce SponsorPay requirements
-            if (provider === SPONSORPAY && (_.isEmpty(options) || _.isUndefined(options.itemId))) throw new Error("SponsorPay Hook: item ID must be supplied");
         }
     });
 
@@ -266,6 +237,12 @@ define("assetManager", ["underscore", "utils", "urls", "constants"], function(_,
         },
         isBranded : function() {
             return !!this.assets.template.noBranding;
+        },
+        setHookAsset : function(hook, id, name, url) {
+            this.assets.setHookAsset(id, name, url);
+
+            // Force the preview to update by triggering a change event on the model
+            hook.trigger("change:asset");
         }
     };
 

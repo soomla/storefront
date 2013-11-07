@@ -146,6 +146,10 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
             var hooks = this.supportedFeatures.hooks;
             return !!(hooks && hooks[provider]);
         },
+        supportsHookAction : function(provider, action) {
+            var hooks = this.supportedFeatures.hooks;
+            return !!(hooks && hooks[provider] && hooks[provider]["actions"][action]);
+        },
         supportsOffersMenuLinkImage : function() {
             var hooks = this.supportedFeatures.hooks;
             return !!(hooks && hooks.common && hooks.common.offersMenuLinkImage);
