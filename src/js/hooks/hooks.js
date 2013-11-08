@@ -74,7 +74,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                 collectionType: HookCollection,
                 reverseRelation: {
                     key : "provider",
-                    includeInJSON: "id"
+                    includeInJSON: false
                 }
             }
         ],
@@ -96,7 +96,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                 collectionType: HookCollection,
                 reverseRelation: {
                     key : "provider",
-                    includeInJSON: "id"
+                    includeInJSON: false
                 }
             }
         ]
