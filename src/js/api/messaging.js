@@ -16,10 +16,11 @@ define("messaging", ["jquery", "hooks", "constants", "jquery.pnotify"], function
                 // Safeguard in case things aren't defined properly
                 if (!amount || !itemName) return;
 
-                var message = Hooks.Providers.SponsorpayHook.defaultMessage(amount, itemName);
+                var title   = Hooks.Providers.SponsorpayAction.defaultTitle(),
+                    message = Hooks.Providers.SponsorpayAction.defaultMessage(amount, itemName);
 
                 var notice = $.pnotify({
-                    title 			: 'Congratulations!',
+                    title 			: title,
                     text 			: message,
                     addclass 		: "stack-bar-bottom soomla-hook-notice",
                     closer_hover 	: false,

@@ -11,21 +11,12 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
     //
     // Backbone Models
     //
-    var Hook = Backbone.RelationalModel.extend({
+    var Action = Backbone.RelationalModel.extend({
         getProvider : function() {
             return this.getRelation("provider").related;
         },
         getAction : function() {
             return this.get("action");
-        },
-        getAssetId : function(providerId) {
-            (providerId) || (providerId = this.getProvider().id);
-            var assetId = "__" + providerId + "__" + this.getAction();
-
-            if (providerId === SPONSORPAY) {
-                return assetId + "_" + this.id;
-            }
-            return assetId
         },
         setName : function(name) {
             return this.set("name", name);
@@ -35,18 +26,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         }
     });
 
-    //
-    // Each hook should implement:
-    // 1. A default provider field
-    // 2. A default message function for showing the user when the offer is completed
-    //
-    var SponsorpayHook = Hook.extend({
-        defaults : {
-
-            // The provider should match the same string used in all API functions
-            // that get \ set \ remove something by a given provider
-            provider : SPONSORPAY
-        },
+    var SponsorpayAction = Action.extend({
         getItemId : function() {
             return this.get("itemId");
         },
@@ -54,13 +34,24 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             return this.set("exchangeRate", exchangeRate);
         }
     });
-    SponsorpayHook.defaultMessage = function(amount, itemName) {
-        return "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName + " from SponsorPay";
-    };
 
-    var HookCollection = Backbone.Collection.extend({
+    //
+    // Each hook should implement:
+    // 1. A default title for messages
+    // 2. A default message function for showing the user when the offer is completed
+    //
+    _.extend(SponsorpayAction, {
+        defaultTitle : function() {
+            return "Congratulations!";
+        },
+        defaultMessage : function(amount, itemName) {
+            return "You've just earned " + StringUtils.numberFormat(amount) + " " + itemName + " from SponsorPay";
+        }
+    });
+
+    var ActionCollection = Backbone.Collection.extend({
         model : function(attrs, options) {
-            return new Hook(attrs, options);
+            return new Action(attrs, options);
         }
     });
 
@@ -70,18 +61,14 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             {
                 type: Backbone.HasMany,
                 key: "actions",
-                relatedModel: Hook,
-                collectionType: HookCollection,
+                relatedModel: Action,
+                collectionType: ActionCollection,
                 reverseRelation: {
                     key : "provider",
                     includeInJSON: false
                 }
             }
         ],
-        addAction : function(models, options) {
-            this.getActions().add(models, options);
-            return (this.id === SPONSORPAY) ? this.getActions().get(options.itemId) : undefined;
-        },
         getActions : function() {
             return this.get("actions");
         }
@@ -92,8 +79,8 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             {
                 type: Backbone.HasMany,
                 key: "actions",
-                relatedModel: SponsorpayHook,
-                collectionType: HookCollection,
+                relatedModel: SponsorpayAction,
+                collectionType: ActionCollection,
                 reverseRelation: {
                     key : "provider",
                     includeInJSON: false
@@ -120,7 +107,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
         // Create a collection for UI purposes that mirrors parts of other collections,
         // i.e. only models that represent offers
-        this.offerHooks = new HookCollection();
+        this.offerHooks = new ActionCollection();
 
         // Populate that collection from all providers with offers
         this.providers.each(function(provider) {
@@ -167,11 +154,8 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
             json.providers = [];
             this.providers.each(function(provider) {
-                var providerJson = provider.toJSON();
-                if (!_.isEmpty(providerJson.actions)) json.providers.push(providerJson);
+                json.providers.push(provider.toJSON());
             });
-
-            if (_.isEmpty(json.providers)) delete json.providers;
 
             return json;
         }
@@ -183,13 +167,12 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
             if (providerId === SPONSORPAY) {
 
-                var action = new SponsorpayHook(_.extend({
+                var action = new SponsorpayAction(_.extend({
                     id      : _.uniqueId("hook_"),
                     itemId  : this.getFirstCurrency().id
                 }, options));
 
-                // TODO: Maybe change `getAssetId` to be a static method
-                this.assets.setHookAsset(action.getAssetId(providerId), options.assetUrl);
+                this.assets.setHookAsset(action.id, options.assetUrl);
 
                 // Start by adding the provider.  If it exists, the add operation will be ignored
                 var provider = this.hooks.providers.getOrAdd(providerId);
@@ -202,7 +185,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             return undefined;
         },
         removeHook : function(hook) {
-            this.assets.removeHookAsset(hook.getAssetId());
+            this.assets.removeHookAsset(hook.id);
             this.hooks.removeHook(hook);
         },
         getOfferHooks : function() {
@@ -220,9 +203,9 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
     return {
         HookManager : HookManager,
         HooksMixin  : HooksMixin,
-        Hook        : Hook,
+        Action      : Action,
         Providers : {
-            SponsorpayHook : SponsorpayHook
+            SponsorpayAction : SponsorpayAction
         }
     };
 });

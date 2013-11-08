@@ -1,15 +1,10 @@
-define("assetManager", ["underscore", "hooks", "utils", "urls", "constants"], function(_, Hooks, Utils, Urls, Constants) {
+define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hooks, Utils, Urls) {
 
-    //
-    // Constants
-    //
-    var SPONSORPAY = Constants.SPONSORPAY;
 
     // Arrays for testing model types
     var imageTypes      = ["image", "backgroundImage"],
         dragDropTypes   = imageTypes.concat("font");
 
-    var Hook = Hooks.Hook;
 
 
     // TODO: Save local references of imagePlaceholder

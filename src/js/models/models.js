@@ -742,8 +742,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             });
 
             // Assign hooks
-            var hooks = this.hooks.toJSON();
-            if (!_.isEmpty(hooks)) json.hooks = hooks;
+            json.hooks = this.hooks.toJSON();
 
 
             // Update model assets
