@@ -381,7 +381,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
         var options = {action : offer.getAction()};
         if (provider.id === Constants.SPONSORPAY) {
-            options.itemId = offer.id
+            options.itemId = offer.getItemId();
         }
 
         this.wantsToInitiateHook(provider.id, options);
