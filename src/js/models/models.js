@@ -126,7 +126,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
 
         // Create hooks object
-        this.hooks = new Hooks.HookManager({theme : options.theme, hooks : options.hooks});
+        this.hooks = new Hooks.HookManager({theme : options.theme, hooks : options.hooks, hooksProviders : options.hooks_providers || []});
 
         // Create theme object
         this.assets = new Assets.AssetManager({

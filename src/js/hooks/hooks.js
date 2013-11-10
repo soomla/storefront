@@ -99,9 +99,17 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
 
     var HookManager = function(options) {
-        this.theme      = options.theme;
-        this.hooks      = options.hooks || {}; // The passed hooks might be undefined
-        this.hooksMap   = {};
+        this.theme              = options.theme;
+        this.hooks              = options.hooks || {}; // The passed hooks might be undefined
+        this.hooksMap           = {};
+
+        //
+        // This is an important attribute: it's an array
+        // that contains all the providers that the SDK has initialized when the store is initialized
+        // This is different from supported features: a provider \ hook can be supported but not yet
+        // initialized in the native code.  That's why the dashboard marks hooks as {active: true \ false}
+        //
+        this.hooksProviders     = options.hooksProviders;
 
         this.providers = new ProviderCollection();
         _.each(this.hooks.providers, this.providers.add, this.providers);
@@ -112,11 +120,16 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
         // Populate that collection from all providers with offers
         this.providers.each(function(provider) {
-            if (provider.id === SPONSORPAY) {
-                provider.getActions().each(function(action) {
-                    this.offerHooks.add(action);
-                    this.hooksMap[action.id] = action;
-                }, this);
+
+            // Add the provider only if it's initialized in the native code
+            if (_.contains(this.hooksProviders, provider.id)) {
+
+                if (provider.id === SPONSORPAY) {
+                    provider.getActions().each(function(action) {
+                        this.offerHooks.add(action);
+                        this.hooksMap[action.id] = action;
+                    }, this);
+                }
             }
         }, this);
     };
