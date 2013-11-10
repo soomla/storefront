@@ -99,8 +99,9 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
 
     var HookManager = function(options) {
-        this.theme = options.theme;
-        this.hooks = options.hooks || {}; // The passed hooks might be undefined
+        this.theme      = options.theme;
+        this.hooks      = options.hooks || {}; // The passed hooks might be undefined
+        this.hooksMap   = {};
 
         this.providers = new ProviderCollection();
         _.each(this.hooks.providers, this.providers.add, this.providers);
@@ -114,6 +115,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             if (provider.id === SPONSORPAY) {
                 provider.getActions().each(function(action) {
                     this.offerHooks.add(action);
+                    this.hooksMap[action.id] = action;
                 }, this);
             }
         }, this);
@@ -173,6 +175,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                 }, options));
 
                 this.assets.setHookAsset(action.id, options.assetUrl);
+                delete this.hooks.hooksMap[action.id];
 
                 // Start by adding the provider.  If it exists, the add operation will be ignored
                 var provider = this.hooks.providers.getOrAdd(providerId);
@@ -186,13 +189,19 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         },
         removeHook : function(hook) {
             this.assets.removeHookAsset(hook.id);
+            delete this.hooks.hooksMap[hook.id];
             this.hooks.removeHook(hook);
         },
         getOfferHooks : function() {
             return this.hooks.getOfferHooks();
         },
+
+        // Unused
         getHook : function(provider, options) {
             return this.hooks.getHook(provider, options || {});
+        },
+        getHookById : function(id) {
+            return this.hooks.hooksMap[id];
         },
         getProvider : function(id) {
             return this.hooks.getProvider(id);
