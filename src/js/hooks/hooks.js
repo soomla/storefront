@@ -122,7 +122,8 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         this.providers.each(function(provider) {
 
             // Add the provider only if it's initialized in the native code
-            if (_.contains(this.hooksProviders, provider.id)) {
+            // or if we're in hosted mode (STUB_API)
+            if (_.contains(this.hooksProviders, provider.id) || window.SoomlaNative.STUB_API) {
 
                 if (provider.id === SPONSORPAY) {
                     provider.getActions().each(function(action) {

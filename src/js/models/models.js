@@ -668,6 +668,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             json.modelAssets = $.extend(true, {}, this.assets.modelAssets);
             json.theme = $.extend(true, {}, this.assets.theme);
 
+            // Delete field that is injected just for SDK state emulation
+            delete json.theme.hooks_providers;
+
             // Remove all fields injected into models during runtime
             // e.g. balance, equipped...
             _.each(json.currencies, function(currency) {
