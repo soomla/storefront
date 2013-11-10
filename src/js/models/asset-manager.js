@@ -233,8 +233,8 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         isBranded : function() {
             return !!this.assets.template.noBranding;
         },
-        setHookAsset : function(hook, id, name, url) {
-            this.assets.setHookAsset(id, name, url);
+        setHookAsset : function(hook, url, name) {
+            this.assets.setHookAsset(hook.id, url, name);
 
             // Force the preview to update by triggering a change event on the model
             hook.trigger("change:asset");
