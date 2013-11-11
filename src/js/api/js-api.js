@@ -90,6 +90,15 @@ define("jsAPI", ["underscore"], function(_) {
         },
 
 
+
+        //
+        // Functions for backward compatibility
+        // Cannot be removed
+        //
+
+        nonConsumablesUpdated : function() {},
+
+
         // Private methods
         _getItemName: function(itemId) {
             var item = SoomlaJS.store.getItem(itemId);
