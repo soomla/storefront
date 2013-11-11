@@ -232,7 +232,7 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
             return this.assets.getHookModelAssetName(itemId);
         },
         getOffersMenuLinkAssetName : function() {
-            return this.assets.assets();
+            return this.assets.getOffersMenuLinkAssetName();
         },
         setThemeAsset : function(assetId, options) {
             (options) || (options = {});
