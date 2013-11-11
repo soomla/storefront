@@ -122,8 +122,9 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         this.providers.each(function(provider) {
 
             // Add the provider only if it's initialized in the native code
-            // or if we're in hosted mode (STUB_API)
-            if (_.contains(this.hooksProviders, provider.id) || window.SoomlaNative.STUB_API) {
+            // or if we're in hosted mode (STUB_API).
+            // Double check existence of SoomlaNative, because iOS doesn't define it on the window
+            if (_.contains(this.hooksProviders, provider.id) || (window.SoomlaNative && window.SoomlaNative.STUB_API)) {
 
                 if (provider.id === SPONSORPAY) {
                     provider.getActions().each(function(action) {
