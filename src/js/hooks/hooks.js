@@ -177,7 +177,11 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         }
     });
 
-    // Assumes that `this.hooks` is an instance of `HookManager`
+
+    //
+    // A mixin of methods that will be exposed on the store model
+    // Assumes the existence of `this.hooks`, `this.assets`, `this.template`
+    //
     var HooksMixin = {
         addHook : function(providerId, options) {
 
@@ -188,7 +192,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                     itemId  : this.getFirstCurrency().id
                 }, options));
 
-                this.assets.setHookAsset(action.id, options.assetUrl);
+                this.setHookAsset(action, {url : options.assetUrl});
                 delete this.hooks.hooksMap[action.id];
 
                 // Start by adding the provider.  If it exists, the add operation will be ignored
@@ -219,6 +223,9 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
         },
         getProvider : function(id) {
             return this.hooks.getProvider(id);
+        },
+        getHookProviders : function() {
+            return this.hooks.getProviders();
         }
     };
 

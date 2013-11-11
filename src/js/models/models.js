@@ -149,37 +149,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getTemplate : function() {
             return this.template;
         },
-        setCategoryAsset : function(category, url, name) {
-
-            // First assign category asset, so that when the item view
-            // in the store renders, it will have it accessible as a template helper
-            this.assets.setCategoryAsset(category.id, url, name);
-
-            // Force the preview to update by triggering a change event on the model
-            category.trigger("change:asset");
-        },
-        setItemAsset : function(model, url, name, options) {
-
-            var id = model.id;
-
-            // Check for overrides of item ID, for example,
-            // in case of multiple images like in Upgrades
-            if (options) {
-                if (options.upgradeImage) {
-                    id = model.getUpgradeImageAssetId();
-                } else if (options.upgradeBar) {
-                    id = model.getUpgradeBarAssetId();
-                } else if (options.upgradeBarInitial) {
-                    id = model.getEmptyUpgradeBarAssetId();
-                }
-            }
-
-            // Update asset map
-            this.assets.setItemAsset(id, url, name);
-
-            // Force the preview to update by triggering a change event on the model
-            model.trigger("change:asset");
-        },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },

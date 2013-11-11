@@ -210,6 +210,11 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         }
     });
 
+
+    //
+    // A mixin of methods that will be exposed on the store model
+    // Assumes the existence of `this.hooks`, `this.assets`, `this.template`
+    //
     var AssetsMixin = {
         getImagesPath : function() {
             return "img";
@@ -217,8 +222,21 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         getAssetPath : function(type) {
             return (type === "font") ? "fonts" : "img";
         },
-        setThemeAsset : function(assetId, url, assetName) {
-            this.assets.setThemeAsset(assetId, url, assetName)
+        getModelAssetName : function(itemId) {
+            return this.assets.getModelAssetName(itemId);
+        },
+        getThemeAssetName : function(itemId) {
+            return this.assets.getThemeAssetName(itemId);
+        },
+        getHookModelAssetName : function(itemId) {
+            return this.assets.getHookModelAssetName(itemId);
+        },
+        getOffersMenuLinkAssetName : function() {
+            return this.assets.assets();
+        },
+        setThemeAsset : function(assetId, options) {
+            (options) || (options = {});
+            this.assets.setThemeAsset(assetId, options.url, options.name)
         },
         setThemeTextAttribute : function(id, value) {
 
@@ -233,14 +251,48 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         isBranded : function() {
             return !!this.assets.template.noBranding;
         },
-        setHookAsset : function(hook, url, name) {
-            this.assets.setHookAsset(hook.id, url, name);
+        setCategoryAsset : function(category, options) {
+            (options) || (options = {});
+
+            // First assign category asset, so that when the item view
+            // in the store renders, it will have it accessible as a template helper
+            this.assets.setCategoryAsset(category.id, options.url, options.name);
+
+            // Force the preview to update by triggering a change event on the model
+            category.trigger("change:asset");
+        },
+        setItemAsset : function(model, options) {
+            (options) || (options = {});
+            var id = model.id;
+
+            // Check for overrides of item ID, for example,
+            // in case of multiple images like in Upgrades
+            if (options) {
+                if (options.upgradeImage) {
+                    id = model.getUpgradeImageAssetId();
+                } else if (options.upgradeBar) {
+                    id = model.getUpgradeBarAssetId();
+                } else if (options.upgradeBarInitial) {
+                    id = model.getEmptyUpgradeBarAssetId();
+                }
+            }
+
+            // Update asset map
+            this.assets.setItemAsset(id, options.url, options.name);
+
+            // Force the preview to update by triggering a change event on the model
+            model.trigger("change:asset");
+        },
+        setHookAsset : function(hook, options) {
+            (options) || (options = {});
+            this.assets.setHookAsset(hook.id, options.url, options.name);
 
             // Force the preview to update by triggering a change event on the model
             hook.trigger("change:asset");
         },
-        setOffersMenuLinkAsset : function(url, name) {
-            this.assets.setOffersMenuLinkAsset(url, name);
+        setOffersMenuLinkAsset : function(options) {
+            (options) || (options = {});
+            this.assets.setOffersMenuLinkAsset(options.url, options.name);
         }
     };
 
