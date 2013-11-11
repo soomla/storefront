@@ -238,6 +238,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
 
             // Force the preview to update by triggering a change event on the model
             hook.trigger("change:asset");
+        },
+        setOffersMenuLinkAsset : function(url, name) {
+            this.assets.setOffersMenuLinkAsset(url, name);
         }
     };
 
