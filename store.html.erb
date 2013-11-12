@@ -5,9 +5,9 @@
     <meta name="description" content="">
 
     <!-- Mobile viewport optimized: h5bp.com/viewport -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
-	<link rel="stylesheet" href="<%= sfjs_assets["#{dist_type}/css/store.css"] %>">
-	<link rel="stylesheet/less" href="<%= template_assets["#{dist_type}/less/#{template_name}.less"] %>" type="text/css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
+      <link rel="stylesheet" href="<%= sfjs_assets["#{dist_type}/css/store.css"] %>">
+      <link rel="stylesheet/less" href="<%= template_assets["#{dist_type}/less/#{template_name}.less"] %>" type="text/css">
 </head>
 <body>
 
@@ -24,31 +24,31 @@
 <!-- JavaScript at the bottom for fast page loading -->
 <!-- scripts concatenated and minified via build script -->
 
-<% if dist_type == "dist" %>
+    <% if dist_type == "dist" %>
 
-    <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
-    <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
-    <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+        <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
 
-<% elsif dist_type == "src" %>
+    <% elsif dist_type == "src" %>
 
-    <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
-    <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+        <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
 
-	<%
-	   sfjs_assets.each do |name, url|
+        <%
+           sfjs_assets.each do |name, url|
 
-	     # Deploy if
-	     next if (name == "#{dist_type}/js/libs/require.js" || name == "#{dist_type}/js/main.js")
-	%>
+             # Deploy if
+             next if (name == "#{dist_type}/js/libs/require.js" || name == "#{dist_type}/js/main.js")
+        %>
 
-        <script src="<%= url %>"></script>
-	<% end %>
+            <script src="<%= url %>"></script>
+        <% end %>
 
 
-    <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
 
-<% end %>
+    <% end %>
 
 
 <!-- Finally, allow the page an option to self initialize if provided with a model -->
@@ -57,6 +57,11 @@
 
 	    // Stub native API calls so that they won't block execution \ prevent higher level DOM event handlers from running
 	    window.SoomlaNative = {
+
+		    // Indicate to the storefront component that the initial `uiReady` and `storeInitialized`
+		    // API is provided, and that the rest will be provided as stubs functions upon `storeInitialized`,
+		    // so no need to extend the store object with native API functions
+		    STUB_API : true,
 		    playSound : function(filePath) {},
 		    storeInitialized : function() {
 			    require(["nativeApiStubs", "jsAPI"], function(NativeApiStubs, jsAPI) {
@@ -64,21 +69,20 @@
 				    _.extend(SoomlaJS.storeView, NativeApiStubs);
 				    NativeApiStubs.injectJsApi(jsAPI);
 			    });
+		    },
+		    uiReady : function() {
+			    var json = <%= JSON model %>;
+			    var options = {
+				    env : "dist",
+				    cssHandlebarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
+				    templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>",
+				    assets : <%= JSON theme_assets %>
+			    };
+
+			    SoomlaJS.initialize(json, options);
 		    }
 	    };
 
-		$(window).load(function() {
-
-			var json = <%= JSON model %>;
-			var options = {
-				env : "dist",
-				cssHandlebarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
-				templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>",
-				assets : <%= JSON theme_assets %>
-			};
-
-			SoomlaJS.initialize(json, options);
-		});
     </script>
 <% end %>
 

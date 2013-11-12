@@ -37,7 +37,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
     var ExpandableEquippableItemView = ItemViews.EquippableItemView.extend({
         onBalanceChange : function() {
-            if (this.model.get("balance") >  0) {
+            if (this.model.isOwned()) {
                 this.$el.addClass("owned");
                 if (this.expanded) this.collapse({noSound: true});
             } else {
@@ -47,14 +47,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     });
 
 
-    var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend({
-        constructor : function(options) {
-            ItemViews.SingleUseItemView.prototype.constructor.apply(this, arguments);
-
-            // TODO: Check if this listener is necessary: might be duplicate with ItemView
-            this.model.on("change:balance", this.render);
-        }
-    });
+    var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend();
 
 
     var ExpandableLifetimeItemView = ItemViews.LifetimeItemView.extend({

@@ -2,7 +2,7 @@
  * This set of functions is an API implemented by the native code and is provided for the Javascript code to invoke.
  * Since the native code should provide this interface, it is currently implemented with stubs.
  */
-define("nativeApiStubs", function(){
+define("nativeApiStubs", ["constants"], function(Constants){
     var _jsAPI;
 
     var API = {
@@ -15,7 +15,7 @@ define("nativeApiStubs", function(){
             if (model = SoomlaJS.store.getItem(itemId)) {
                 this.log("wantsToBuyVirtualGoods", arguments);
                 this._wantsToBuyVirtualGoods(model, function(model) {
-                    return {balance: model.get("balance") + 1};
+                    return {balance: model.getBalance() + 1};
                 });
             } else if (model = SoomlaJS.store.getCurrencyPack(itemId)) {
                 this._wantsToBuyMarketItem(model);
@@ -56,57 +56,39 @@ define("nativeApiStubs", function(){
         _wantsToBuyMarketItem : function(model) {
             this.log("wantsToBuyMarketItem", arguments);
 
-            var amount = model.get("currency_amount");
+            var amount = model.getAmount();
 
-            // If a market item has the amount field it's a consumable market item (i.e. currency pack)
-            if (amount) {
+            // Calculate and assign the new currency balance
+            var balances    = {},
+                currencyId  = model.getCurrencyId(),
+                newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
 
-                // Calculate and assign the new currency balance
-                var balances    = {},
-                    currencyId  = model.getCurrencyId(),
-                    newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
+            balances[currencyId] = {balance: newBalance};
 
-                balances[currencyId] = {balance: newBalance};
-
-                _jsAPI.marketPurchaseStarted();
-                setTimeout(function() {
-                    _jsAPI.currenciesUpdated(balances);
-                }, 1000);
-            } else {
-
-                // The market item has no amount and is thus a non-consumable (i.e. "Remove Ads")
-                // Mark it as "owned"
-                var nonConsumables = {};
-                nonConsumables[model.id] = {owned : true};
-                _jsAPI.purchasesRestored(nonConsumables);
-
-                // TODO: Add a timeout for showing the dialog
-            }
-        },
-        wantsToRestorePurchases : function() {
-            this.log("wantsToRestorePurchases", arguments);
-
-            _jsAPI.purchasesRestored();
+            _jsAPI.marketPurchaseStarted();
+            setTimeout(function() {
+                _jsAPI.currenciesUpdated(balances);
+            }, 1000);
         },
         wantsToEquipGoods : function(model) {
             this.log("wantsToEquipGoods", arguments);
             var goods           = {},
-                categoryGoods   = SoomlaJS.store.getGoodCategory(model.id).get("goods");
+                categoryGoods   = SoomlaJS.store.getGoodCategory(model.id).getGoods();
 
             // First unequip all other owned goods in category ("single" equipping enforcement)
             // TODO: Change the logic to support different scopes of equipping, i.e. single, category, global
             categoryGoods.each(function(good) {
-                if (good.get("balance") > 0) goods[good.id] = {equipped: false};
+                if (good.isOwned()) goods[good.id] = {equipped: false};
             });
 
             // Then equip the given good
-            goods[model.id] = {equipped: !model.get("equipped")};
+            goods[model.id] = {equipped: !model.isEquipped()};
             _jsAPI.goodsUpdated(goods);
         },
         wantsToUnequipGoods : function(model) {
             this.log("wantsToUnequipGoods", arguments);
             var goods = {};
-            goods[model.id] = {equipped: !model.get("equipped")};
+            goods[model.id] = {equipped: !model.isEquipped()};
             _jsAPI.goodsUpdated(goods);
         },
         wantsToUpgradeVirtualGood : function(model) {
@@ -115,9 +97,21 @@ define("nativeApiStubs", function(){
                 return {currentUpgrade : model.getNextUpgrade().id };
             });
         },
+        wantsToInitiateHook : function(provider, options) {
+
+            if (provider === Constants.SPONSORPAY) {
+
+                SoomlaJS.storeView.openDialog();
+
+                setTimeout(function() {
+					SoomlaJS.storeView.closeDialog();
+                }, 1000);
+            }
+        },
         storeInitialized                : function()        { this.log("storeInitialized", arguments);          },
         wantsToLeaveStore               : function()        { this.log("wantsToLeaveStore", arguments);         },
-        requestEarnedCurrency           : function(provider){ this.log("requestEarnedCurrency", arguments);     },
+
+        // TODO: Check if used, if not - remove
         playSound                       : function()        { this.log("playSound", arguments); return this;    },
         injectJsApi : function(jsAPI) {
             _jsAPI = jsAPI;

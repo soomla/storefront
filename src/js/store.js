@@ -1,4 +1,4 @@
-define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos) {
+define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid) {
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -152,9 +152,13 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 }
 
                 // Ensure the correct module is loaded for the template
-                // Use a non-public Require.js API to alter the config paths in runtime
+                // This was previously done with a non-public Require.js API
+                // to alter the config paths in runtime
                 // See: https://groups.google.com/forum/?fromgroups#!topic/requirejs/Hf-qNmM0ceI
-                require.s.contexts._.config.paths[templateModule] = templateModulePath;
+				// require.s.contexts._.config.paths[templateModule] = templateModulePath;
+                var paths = {};
+                paths[templateModule] = templateModulePath;
+                require.config({paths: paths});
 
 
 
@@ -194,7 +198,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
                     cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
                     templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
-                    $this           	= this,
+                    _this           	= this,
                     storeViewDeferred 	= $.Deferred(),
                     backgroundImagesPromise;
 
@@ -210,6 +214,9 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     // Create an asset map for the theme assets
                     var themeAssetNames = {};
                     createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
+                    _this.store.injectAssets(modelAssetNames, themeAssetNames);
+
+
 
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
@@ -240,38 +247,27 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                         window.dispatchEvent(evt);
 
                         // Notify hosting device and wrapper iframe (if we're in an iframe) that the store is initialized and ready for work
-                        if (SoomlaNative && SoomlaNative.storeInitialized) SoomlaNative.storeInitialized();
+                        SoomlaNative.storeInitialized();
                         triggerEventOnFrame("store:initialized", _.extend({
-                            modelAssetNames : modelAssetNames,
-                            themeAssetNames : themeAssetNames,
-                            template        : template
+                            template : template
                         }, options));
                     });
                 });
 
 
-                // Move the raw categories' metadata, because the `categories` attribute
-                // should be saved for the backbone relational categories collection
-                json.rawCategories = json.categories;
-                json.categories = [];
-
-
                 // Initialize model
                 this.store = new Models.Store(json);
 
-                // Inject the supported features to the store model once they're loaded
-                templateRequest.done(function(template) {
-                    $this.store.set("supportedFeatures", template.supportedFeatures);
-                    $this.store.buildTemplate(template);
-                });
+                // Inject the store template to the store model once it's loaded
+                templateRequest.done(this.store.buildTemplate);
 
 
                 require([templateModule], function(Theme) {
 
                     // Initialize view
-                    $this.storeView = Theme.createStoreView({
+                    _this.storeView = Theme.createStoreView({
                         storeViewOptions : {
-                            model 			: $this.store,
+                            model 			: _this.store,
                             el 				: $("#main"),
                             template 		: Handlebars.getTemplate("template"),
                             initViewItemId 	: options.initViewItemId,
@@ -294,16 +290,22 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
             $("body").addClass("iphone");
         }
 
-        // Notify native code that we're initialized only if an interface exists
-        // i.e. only when running in a device and not in the store builder.
-        if (UserAgent.iOS()){
-            window.SoomlaNative = SoomlaIos;
-        }
 
-        var SoomlaNative = window.SoomlaNative || top.SoomlaNative;
-        if (SoomlaNative && SoomlaNative.uiReady) {
-            SoomlaNative.uiReady();
-        }
+        // Assign the native API.  Here are the different cases:
+        //
+        // 1. The module is executed with `window.SoomlaNative` present
+        //    	a) 	Without a stubbed API flag - it's an Android native app.
+        // 			In this case the entire API is defined on the window
+        // 			with Android's javascript interface mechanism.
+        //		b) 	With a stubbed API flag - it's hosted in a page which
+        // 			defines the `window.SoomlaNative` object with its API flagged as stubbed.
+        //
+        // 2. The module is executed without `window.SoomlaNative` present.
+        //    This means we're in an iOS native app.  In this case, use
+        //    the iOS's native API module (which uses the custom URL scheme mechanism)
+        //
+        var SoomlaNative = ((window.SoomlaNative && window.SoomlaNative.STUB_API) || !UserAgent.iOS()) ? window.SoomlaNative : SoomlaIos;
+		SoomlaNative.uiReady();
         triggerEventOnFrame("store:uiReady");
     });
 });

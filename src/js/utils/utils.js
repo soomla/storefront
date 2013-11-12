@@ -27,9 +27,13 @@ define("utils", function() {
         // Replaces URLs for a given collection of assets by
         // applying a regex and replacement string to the assets' URL
         //
-        assignAssetUrls : function(obj, regex, replaceString) {
+        assignAssetUrls : function recursiveAssignAssetUrls(obj, regex, replaceString) {
             _.each(obj, function(url, name) {
-                obj[name] = url.replace(regex, replaceString);
+                if (_.isObject(url)) {
+                    recursiveAssignAssetUrls(url, regex, replaceString);
+                } else {
+                    obj[name] = url.replace(regex, replaceString);
+                }
             });
         },
         //

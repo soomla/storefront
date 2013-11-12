@@ -1,4 +1,4 @@
-define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "viewMixins", "jquery.fastbutton", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, ViewMixins) {
+define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", "collectionViews", "soomlaAndroid", "soomlaiOS", "messaging", "userAgent", "constants", "jquery.fastbutton", "jquery.pnotify", "imagesloaded", "iscroll", "jqueryUtils"], function($, Backbone, ItemViews, ExpandableItemViews, CollectionViews, SoomlaAndroid, SoomlaIos, Messaging, UserAgent, Constants) {
 
 
     // Save a local copy
@@ -7,8 +7,9 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
     var ModalDialog = BaseView.extend({
         className : "modal-container",
-        initialize : function() {
+        initialize : function(options) {
             _.bindAll(this, "close");
+            this.parent = options.parent;
         },
         triggers : {
             "fastclick .close"    : "cancel",
@@ -34,7 +35,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             this.$(event.target).parent().removeClass("emulate-active");
         },
         onRender : function() {
-            this.options.parent.append(this.$el);
+            this.parent.append(this.$el);
         },
         // The modal dialog model is a simple object, not a Backbone model
         serializeData : function() {
@@ -68,8 +69,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             this.$soomlaInfoDialog = this.$("#soomla-info-dialog");
             this.updateZoomFactor(options.zoom);
 
-            if (options.deviceId && !_.isEmpty(options.deviceId)) {
-                this.$("#device-id").html(options.deviceId);
+            var deviceId = options.deviceId;
+
+            if (deviceId && !_.isEmpty(deviceId)) {
+                this.$("#device-id").html(deviceId);
                 this.$soomlaInfoDialog.addClass("show-device-id");
             }
         },
@@ -102,18 +105,22 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
     var BaseStoreView = BaseView.extend({
         constructor : function(options) {
 
-            if (!(options.model && options.model.get("theme"))) {
+            if (!(options.model && options.model.options.theme)) {
                 var err = new Error("You must initialize the store with a model and make sure it has a theme");
                 err.name = "InvalidInitializationError";
                 throw err;
             }
 
-            // Bind native API
+            // Assign some of the provided options on the instance
+            this.deviceId = options.deviceId;
+
+            // Assign reference to native API on store view object.
+            // This is used specifically by the Android native API module.
             this.nativeAPI = options.nativeAPI || window.SoomlaNative;
-            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "wantsToRestorePurchases", "playSound", "conditionalPlaySound", "render");
+            _.bindAll(this, "leaveStore", "wantsToLeaveStore", "wantsToBuyItem", "playSound", "conditionalPlaySound", "render");
 
             // Assign theme before initialize function is called
-            this.theme = options.model.get("theme");
+            this.theme = options.model.options.theme;
 
             // Create an object to store all child views
             this.children = new Backbone.ChildViewContainer();
@@ -124,7 +131,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
                     this.createIScrolls();
-                    this.changeViewToItem(this.options.initViewItemId);
+                    this.changeViewToItem(options.initViewItemId);
                     this.finalizeRendering();
                 }, this);
             }
@@ -140,10 +147,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         },
         serializeData : function() {
             var currencies  = this.model.getCurrencies().toJSON(),
-                modelAssets = this.model.getModelAssets();
+                assets      = this.model.assets;
 
             _.each(currencies, function(currency) {
-                currency.imgFilePath = modelAssets.items[currency.itemId];
+                currency.imgFilePath = assets.getItemAsset(currency.itemId);
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },
@@ -187,6 +194,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         },
         closeDialog: function () {
             if (this.dialog) this.dialog.close();
+            return this;
         },
         updateBalance : function(currency) {
 
@@ -291,9 +299,9 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             var dialog = this.soomlaInfoDialog = new SoomlaInfoModalDialog({
                 el          : $("#soomla-info-modal"),
                 zoom        : this.zoomFunction(),
-                deviceId    : this.options.deviceId
+                deviceId    : this.deviceId
             });
-            var selector = this.model.get("template").noBranding ? ".nobrand" : ".soombot";
+            var selector = this.model.isBranded() ? ".soombot" : ".nobrand";
             $(selector).show().on("fastclick", function(event) {
                 dialog.show();
             });
@@ -352,7 +360,36 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             };
         })()
     });
-    _.extend(BaseStoreView.prototype, ViewMixins);
+
+
+    // Extend the store view with the appropriate native API module
+    // according to the user agent. The default is Android.
+    _.extend(BaseStoreView.prototype, UserAgent.iOS() ? SoomlaIos : SoomlaAndroid);
+
+
+    // Assign constants
+    BaseStoreView.Const = {
+        OFFERS_ID       : "__offers__",
+        OFFERS_TITLE    : "Offers"
+    };
+
+    // Open a loading dialog and process initiate a hook
+    // according to the given offer
+    BaseStoreView.prototype.wantsToOpenOffer = function(offer) {
+
+        var provider = offer.getProvider();
+
+        var options = {action : offer.getAction()};
+        if (provider.id === Constants.SPONSORPAY) {
+            options.itemId = offer.getItemId();
+        }
+
+        this.wantsToInitiateHook(provider.id, options);
+    };
+
+
+    // Add message handling capabilities to store view
+    _.extend(BaseStoreView.prototype, Messaging);
 
 
     return _.extend({}, ItemViews, ExpandableItemViews, CollectionViews, {

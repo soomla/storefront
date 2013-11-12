@@ -17,7 +17,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         addEvents : function() {
             // This one is for categories - sometimes there is a model and sometimes there isn't
             // TODO: Review
-            if (this.model) this.model.on("all", this.render, this);
+            if (this.model) this.listenTo(this.model, "all", this.render);
         },
         className : "item",
         tagName : "li",
@@ -45,14 +45,14 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var ItemView = LinkView.extend({
         initialize : function() {
 
-            // TODO: Remove change:balance => this.render
+            // TODO: Remove change:balance => this.render once each child class implements a partial render of the balance HTML
             this.listenTo(this.model, "change:balance change:purchasableItem", this.render, this);
 
-            // Animate balance if it changes
+            // Animate balance if it changes (after rendering)
             if (_.isString(this.animateBalanceClass)) this.listenTo(this.model, "change:balance", this.animateBalance, this);
         },
         addEvents : function() {
-            this.model.on("change:name change:description change:currency_amount change:purchasableItem change:asset", this.render, this);
+            this.listenTo(this.model, "change:name change:description change:currency_amount change:purchasableItem change:asset", this.render);
         },
         animateBalance : function() {
             this.$el.animateOnce(this.animateBalanceClass);
@@ -76,32 +76,6 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     });
 
 
-    // Used for non-consumables
-    // TODO: Review if necessary
-    var BuyOnceItemView = ItemView.extend({
-        initialize : function() {
-            this.model.on("change", this.render, this);
-            this.model.on("change:owned", this.disable, this);
-        },
-
-        // Override triggers
-        triggers : {
-            "fastclick" : "buy"
-        },
-        disable : function() {
-            if (this.model.get("owned") === true) {
-                this.undelegateEvents();
-                this.$el.addClass("owned");
-            }
-        },
-        onRender : function() {
-
-            // Check the state of the view's virtual good and update the view accordingly
-            if (this.model.get("owned") === true) this.disable();
-        }
-    });
-
-
     /**
      * Assumes initialization with an upgradable model
      * @type {*}
@@ -109,7 +83,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var UpgradableItemView = ItemView.extend({
         className : "item upgradable",
         initialize : function() {
-            this.model.on({
+            this.listenTo(this.model, {
                 "change:purchasableItem change:upgradeId"   : this.render,
                 "change:upgradeId"                          : this.onUpgradeChange
             }, this);
@@ -145,7 +119,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
             }, this);
         },
         onBalanceChange : function() {
-            if (this.model.get("balance") >  0) {
+            if (this.model.isOwned()) {
                 this.$el.addClass("owned");
                 this.onItemOwned();
             } else {
@@ -174,17 +148,17 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var EquippableItemView = ItemView.extend({
         className : "item equippable",
         initialize : function() {
-            this.model.on({
+            this.listenTo(this.model, {
                 "change:purchasableItem"    : this.render,
                 "change:balance"            : this.onBalanceChange,
                 "change:equipped"           : this.onEquippingChange
             }, this);
         },
         onBalanceChange : function() {
-            (this.model.get("balance") >  0) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
+            (this.model.isOwned()) ? this.$el.addClass("owned") : this.$el.removeClass("owned");
         },
         onEquippingChange : function() {
-            this.model.get("equipped") ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
+            this.model.isEquipped() ? this.$el.addClass("equipped") : this.$el.removeClass("equipped");
         },
         onRender : function() {
 
@@ -202,15 +176,25 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     });
 
 
+    /**
+     * An item view designated for offers (offer walls, social offers, etc.)
+     * Supports simplest interaction model of tap to activate, and thus extends the `LinkView`
+     * @type {*}
+     */
+    var OfferItemView = LinkView.extend({
+        className : "item item-offer"
+    });
+
+
     return {
         BaseView            : BaseView,
         LinkView            : LinkView,
         ItemView            : ItemView,
         SingleUseItemView   : SingleUseItemView,
         CurrencyPackView    : CurrencyPackView,
-        BuyOnceItemView     : BuyOnceItemView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
-        EquippableItemView  : EquippableItemView
+        EquippableItemView  : EquippableItemView,
+        OfferItemView       : OfferItemView
     };
 });

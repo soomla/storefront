@@ -1,0 +1,43 @@
+.ui-pnotify-container {
+    h4 {
+        margin-top: 0;
+    }
+    padding: 8px 14px 8px 14px;
+    color: #ccc;
+    text-shadow: 0 1px 0 @black;
+    border: 1px solid #111;
+    .border-radius(10px);
+    background-color: rgba(20,20,20,0.9);
+    .box-shadow(~"0px 2px 10px rgba(150, 150, 150, 1) !important");
+}
+
+
+.ui-pnotify {
+
+    &.stack-bar-bottom {
+        margin-left: 15%;
+        width: 70% !important;
+        right: auto;
+        bottom: 5%;
+        top: auto;
+        left: auto;
+    }
+
+    &.soomla-hook-notice {
+
+        .icon-remove {
+            display: inline-block;
+            .square(32px);
+            background-image: url("img/x_alt_32x32.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+        }
+    }
+}
+
+// On iPhones, because of the line-height distortion problem
+// enlarge the title's font size
+body.iphone .ui-pnotify-title {
+    font-size: 2em;
+}
