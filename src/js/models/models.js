@@ -198,8 +198,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         updateCategoryId : function(category, newItemId) {
 
             var oldItemId = category.id;
-            this.assets.updateCategoryId(oldItemId, newItemId);
-            this.assets.updateModelAssetName(oldItemId, newItemId);
+            if (this.template.supportsCategoryImages()) {
+                this.assets.updateCategoryId(oldItemId, newItemId);
+                this.assets.updateModelAssetName(oldItemId, newItemId);
+            }
 
             // After all assets have been updated, update the category's name (effectively its ID)
             category.setName(newItemId);
