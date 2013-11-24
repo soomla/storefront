@@ -262,8 +262,8 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 // This helps cope with various viewports, i.e. mobile, tablet...
                 var _this 		= this,
                 	$body 		= $("body"),
-                    $soombot 	= $(".soombot"),
-                    isIphone 	= $body.hasClass("iphone");
+                    $soombot    = $(".soombot"),
+                    isIOS       = $body.hasClass("ios-device");
 
                 var adjustBodySize = function() {
                     var zoomFactor      = _this.zoomFunction(),
@@ -285,7 +285,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                     // This injection stipulates that the entire CSS of the given store
                     // doesn't use the line-height property at all
                     //
-                    if (isIphone) attrs["line-height"] =  (1 / zoomFactor);
+                    if (isIOS) attrs["line-height"] =  (1 / zoomFactor);
 
                     $body.css(attrs);
                     $soombot.css({zoom : calculateTransformedZoomFactor(zoomFactor, 75, 0.15)});

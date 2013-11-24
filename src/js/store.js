@@ -284,11 +284,13 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
             Components : Components
         });
 
-        // iPhone \ iPod hack: add a "iphone" class to the body to apply
-        // iPhone specific CSS hacks on font-face + line height problems
-        if (UserAgent.iPhone()) {
-            $("body").addClass("iphone");
-        }
+        //
+        // Add a vendor specific classes to the body to apply device specific CSS.
+        // iPhone \ iPod example: add hacks on font-face + line height problems
+        //
+        var $body = $("body");
+        if (UserAgent.iOS()) $body.addClass("ios-device");
+        if (UserAgent.Android()) $body.addClass("android-device");
 
 
         // Assign the native API.  Here are the different cases:
