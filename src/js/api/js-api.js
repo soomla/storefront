@@ -25,7 +25,7 @@ define("jsAPI", ["underscore"], function(_) {
         //
 
         marketPurchaseStarted : function() {
-            SoomlaJS.storeView.openDialog();
+            SoomlaJS.storeView.openLoadingDialog();
         },
         marketPurchaseCancelled : function() {
             SoomlaJS.storeView.closeDialog();
@@ -52,7 +52,7 @@ define("jsAPI", ["underscore"], function(_) {
         //
 
         errInsufficientFunds : function(currencyId) {
-            SoomlaJS.storeView.openDialog(currencyId);
+            SoomlaJS.storeView.openInsufficientFundsDialog(currencyId);
         },
         errItemNotFound : function(itemId) {
             SoomlaJS.storeView.openMessageDialog("Error: " + this._getItemName(itemId) + " not found");
