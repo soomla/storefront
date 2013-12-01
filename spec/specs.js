@@ -1,0 +1,1 @@
+define(["cs!models.spec"], function() {});
