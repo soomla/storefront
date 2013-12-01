@@ -101,7 +101,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
 
             if (provider === Constants.SPONSORPAY) {
 
-                SoomlaJS.storeView.openDialog();
+                SoomlaJS.storeView.openLoadingDialog();
 
                 setTimeout(function() {
 					SoomlaJS.storeView.closeDialog();

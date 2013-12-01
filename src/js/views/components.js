@@ -22,13 +22,13 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             "touchend a"   : "onTouchEnd",
             "touchcancel a": "onTouchEnd"
         },
-        onTouchStart : function() {
+        onTouchStart : function(event) {
 
             // For some reason, the current target wasn't the <a> tag but the
             // modal container, so work with the target and fetch its parent node
             this.$(event.target).parent().addClass("emulate-active");
         },
-        onTouchEnd: function() {
+        onTouchEnd: function(event) {
 
             // For some reason, the current target wasn't the <a> tag but the
             // modal container, so work with the target and fetch its parent node
@@ -154,25 +154,36 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             });
             return _.extend({}, this.theme, {currencies : currencies});
         },
-        openDialog : function(currencyId) {
+        openLoadingDialog : function() {
 
             // Ensure dialog is closed
             this.closeDialog();
 
             this.dialog = new ModalDialog({
-                parent 	: this.$el,
-                template: Handlebars.getTemplate("modalDialog"),
-                model	: !currencyId ? this.loadingModal : this.dialogModal
+                parent      : this.$el,
+                template    : Handlebars.getTemplate("modalDialog"),
+                className   : "modal-container modal-loading",
+                model       : this.loadingModal
             });
 
-            if (currencyId) {
-                this.dialog.on("cancel buyMore", function () {
-                    this.playSound();
-                    this.dialog.close();
-                }, this).on("buyMore", function () {
-                    this.showCurrencyPacks(currencyId);
-                }, this);
-            }
+            return this.dialog.render();
+        },
+        openInsufficientFundsDialog : function(currencyId) {
+
+            // Ensure dialog is closed
+            this.closeDialog();
+
+            this.dialog = new ModalDialog({
+                parent      : this.$el,
+                template    : Handlebars.getTemplate("modalDialog"),
+                className   : "modal-container modal-insufficient-funds",
+                model       : this.dialogModal
+            }).on("cancel buyMore", function () {
+                this.playSound();
+                this.dialog.close();
+            }, this).on("buyMore", function () {
+                this.showCurrencyPacks(currencyId);
+            }, this);
 
             return this.dialog.render();
         },
@@ -182,9 +193,10 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             this.closeDialog();
 
             this.dialog = new ModalDialog({
-                parent  : this.$el,
-                template: Handlebars.getTemplate("modalDialog"),
-                model   : _.extend({text : text}, this.messageDialogOptions)
+                parent      : this.$el,
+                className   : "modal-container modal-loading",
+                template    : Handlebars.getTemplate("modalDialog"),
+                model       : _.extend({text : text}, this.messageDialogOptions)
             }).on("cancel", function () {
                 this.playSound();
                 this.dialog.close();
@@ -193,7 +205,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
             return this.dialog.render();
         },
         closeDialog: function () {
-            if (this.dialog) this.dialog.close();
+            if (this.dialog) this.dialog.off().close();
             return this;
         },
         updateBalance : function(currency) {
@@ -262,8 +274,8 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 // This helps cope with various viewports, i.e. mobile, tablet...
                 var _this 		= this,
                 	$body 		= $("body"),
-                    $soombot 	= $(".soombot"),
-                    isIphone 	= $body.hasClass("iphone");
+                    $soombot    = $(".soombot"),
+                    isIOS       = $body.hasClass("ios-device");
 
                 var adjustBodySize = function() {
                     var zoomFactor      = _this.zoomFunction(),
@@ -285,7 +297,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                     // This injection stipulates that the entire CSS of the given store
                     // doesn't use the line-height property at all
                     //
-                    if (isIphone) attrs["line-height"] =  (1 / zoomFactor);
+                    if (isIOS) attrs["line-height"] =  (1 / zoomFactor);
 
                     $body.css(attrs);
                     $soombot.css({zoom : calculateTransformedZoomFactor(zoomFactor, 75, 0.15)});
