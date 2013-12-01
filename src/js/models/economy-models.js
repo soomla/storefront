@@ -11,7 +11,7 @@ define("economyModels", ["backbone"], function(Backbone) {
 
 
     // Cache base classes.
-    var RelationalModel = Backbone.RelationalModel.extend({
+    var BaseModel = Backbone.RelationalModel.extend({
         setName: function (name) {
             this.set("name", name);
         },
@@ -63,14 +63,14 @@ define("economyModels", ["backbone"], function(Backbone) {
     }),
     Collection = Backbone.Collection;
 
-    Object.defineProperties(RelationalModel.prototype, {
+    Object.defineProperties(BaseModel.prototype, {
         purchasableItem : {
             get : function() { return this.get("purchasableItem"); }
         }
     });
 
 
-    var CurrencyPack = RelationalModel.extend({
+    var CurrencyPack = BaseModel.extend({
         idAttribute : "itemId",
         defaults : {
             name : "Untitled"
@@ -100,7 +100,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     });
     _.extend(CurrencyPack.prototype, DescriptionModule);
 
-    var VirtualGood = RelationalModel.extend({
+    var VirtualGood = BaseModel.extend({
         idAttribute : "itemId",
         defaults : {
             name        : "Untitled",
@@ -352,7 +352,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var CurrencyPacksCollection = Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection  = Collection.extend({ model : VirtualGood  });
 
-    var Currency = RelationalModel.extend({
+    var Currency = BaseModel.extend({
         defaults : {
             name    : "coins",
             balance : 0
@@ -385,7 +385,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         }
     });
 
-    var Category = RelationalModel.extend({
+    var Category = BaseModel.extend({
         idAttribute: "name",
         defaults : {
             name    : "General"
@@ -412,7 +412,7 @@ define("economyModels", ["backbone"], function(Backbone) {
 
     // A container model for holding the relational tree
     // of currencies + packs, and categories + goods
-    var Economy = RelationalModel.extend({
+    var Economy = BaseModel.extend({
         relations: [
             {
                 type: Backbone.HasMany,
@@ -451,7 +451,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
         Economy                     : Economy,
-        RelationalModel             : RelationalModel
+        BaseModel                   : BaseModel
     };
 
 });
