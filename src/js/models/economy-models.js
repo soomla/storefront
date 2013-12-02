@@ -10,14 +10,17 @@ define("economyModels", ["backbone"], function(Backbone) {
     };
 
 
-    // Cache base classes.
     var BaseModel = Backbone.RelationalModel.extend({
         setName: function (name) {
             this.set("name", name);
         },
         getName: function () {
             return this.get("name");
-        },
+        }
+    });
+
+    var PurchasableVirtualItem = BaseModel.extend({
+        idAttribute : "itemId",
         getIosId : function() {
             return this.purchasableItem.marketItem.iosId;
         },
@@ -63,15 +66,14 @@ define("economyModels", ["backbone"], function(Backbone) {
     }),
     Collection = Backbone.Collection;
 
-    Object.defineProperties(BaseModel.prototype, {
+    Object.defineProperties(PurchasableVirtualItem.prototype, {
         purchasableItem : {
             get : function() { return this.get("purchasableItem"); }
         }
     });
 
 
-    var CurrencyPack = BaseModel.extend({
-        idAttribute : "itemId",
+    var CurrencyPack = PurchasableVirtualItem.extend({
         defaults : {
             name : "Untitled"
         },
@@ -100,8 +102,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     });
     _.extend(CurrencyPack.prototype, DescriptionModule);
 
-    var VirtualGood = BaseModel.extend({
-        idAttribute : "itemId",
+    var VirtualGood = PurchasableVirtualItem.extend({
         defaults : {
             name        : "Untitled",
             purchasableItem : {
@@ -179,7 +180,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var SingleUseGood = VirtualGood.extend({
 
         // Single use goods should have a balance of 0 by default
-        defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults),
+        defaults : $.extend(true, {balance : 0, type : "singleUse"}, VirtualGood.prototype.defaults),
         getBalance : function() {
             return this.get("balance");
         }
@@ -196,16 +197,19 @@ define("economyModels", ["backbone"], function(Backbone) {
     var EquippableGood = OwnableItem.extend({
 
         // Equippable goods should, by default, have a balance of 0 and not be equipped
-        defaults : $.extend(true, {equipped : false, equipping : "category"}, SingleUseGood.prototype.defaults),
+        defaults : $.extend(true, {equipped : false, equipping : "category", balance : 0, type : "equippable"}, VirtualGood.prototype.defaults),
         isEquipped : function() {
             return !!this.get("equipped");
         },
         setEquipping : function(equipped) {
+            if (!this.isOwned()) throw new Error("[Item ID - " + this.id + "]: Cannot equip a good that isn't owned")
             return this.set("equipped", equipped)
         }
     });
 
-    var LifetimeGood = OwnableItem.extend();
+    var LifetimeGood = OwnableItem.extend({
+        defaults : $.extend(true, {balance : 0, type : "lifetime"}, VirtualGood.prototype.defaults)
+    });
 
     var Upgrade = VirtualGood.extend({
 
@@ -352,7 +356,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var CurrencyPacksCollection = Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection  = Collection.extend({ model : VirtualGood  });
 
-    var Currency = BaseModel.extend({
+    var Currency = PurchasableVirtualItem.extend({
         defaults : {
             name    : "coins",
             balance : 0
@@ -368,7 +372,6 @@ define("economyModels", ["backbone"], function(Backbone) {
                 }
             }
         ],
-        idAttribute : "itemId",
         getBalance : function() {
             return this.get("balance");
         },
@@ -412,7 +415,7 @@ define("economyModels", ["backbone"], function(Backbone) {
 
     // A container model for holding the relational tree
     // of currencies + packs, and categories + goods
-    var Economy = BaseModel.extend({
+    var Economy = Backbone.RelationalModel.extend({
         relations: [
             {
                 type: Backbone.HasMany,
@@ -437,6 +440,8 @@ define("economyModels", ["backbone"], function(Backbone) {
 
 
     return {
+        BaseModel                   : PurchasableVirtualItem,
+        PurchasableVirtualItem      : PurchasableVirtualItem,
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
         EquippableGood              : EquippableGood,
@@ -450,8 +455,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         CategoryCollection          : CategoryCollection,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
-        Economy                     : Economy,
-        BaseModel                   : BaseModel
+        Economy                     : Economy
     };
 
 });
