@@ -223,3 +223,47 @@ define ["economyModels"], (EconomyModels) ->
           @model.set("balance", true)
           @model.setEquipping(true)
           expect(@model.isEquipped()).toBe true
+
+
+      describe "Upgrade", ->
+        beforeEach ->
+          @model = new EconomyModels.Upgrade({
+            purchasableItem : {
+              pvi_itemId    : "currency_coins",
+              pvi_amount    : 100,
+              purchaseType  : "virtualItem"
+            },
+            name          : "Speed Boost",
+            description   : "Walk and run faster by 25%",
+            itemId        : "speed_boost_upgrade2",
+            prev_itemId   : "speed_boost_upgrade1",
+            next_itemId   : "speed_boost_upgrade3",
+            good_itemId   : "speed_boost"
+          })
+
+        afterEach ->
+          Backbone.Relational.store.unregister(@model)
+
+        it "should have an empty next \ previous item pointer by default", ->
+          model = new EconomyModels.Upgrade
+          expect(model.getPrevItemId()).toBe ""
+          expect(model.getNextItemId()).toBe ""
+          Backbone.Relational.store.unregister(model)
+
+        it "should point to the next \ previous item IDs", ->
+          expect(@model.getPrevItemId()).toBe "speed_boost_upgrade1"
+          expect(@model.getNextItemId()).toBe "speed_boost_upgrade3"
+
+        it "should have a 'goodUpgrade' type", ->
+          expect(@model.getType()).toBe "goodUpgrade"
+
+        it "should get the upgrade image asset ID", ->
+          expect(@model.getUpgradeImageAssetId()).toBe "speed_boost_upgrade2"
+          expect(@model.getUpgradeImageAssetId("new_id")).toBe "new_id"
+
+        it "should get the upgrade bar asset ID", ->
+          expect(@model.getUpgradeBarAssetId()).toBe "speed_boost_upgrade2_bar"
+          expect(@model.getUpgradeBarAssetId("new_id")).toBe "new_id_bar"
+
+        it "should generate a name for an upgrade", ->
+          expect(EconomyModels.Upgrade.generateNameFor("boost", 2)).toBe "boost_upgrade2"

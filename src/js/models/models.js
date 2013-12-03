@@ -97,8 +97,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Create Upgrade objects without the good_itemId attribute
             // Since they'll be associated with Backbone Relational to that good
             var goodItemId  = rawUpgrade.good_itemId,
-            upgrade     = new Upgrade(_.omit(rawUpgrade, "good_itemId")),
-            good        = goodsMap[goodItemId];
+                upgrade     = new Upgrade(_.omit(rawUpgrade, "good_itemId")),
+                good        = goodsMap[goodItemId];
             good.getUpgrades().add(upgrade, {silent : true});
         });
 
