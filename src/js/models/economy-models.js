@@ -364,6 +364,7 @@ define("economyModels", ["backbone"], function(Backbone) {
                 relatedModel: CurrencyPack,
                 collectionType: CurrencyPacksCollection,
                 reverseRelation: {
+                    key : "currency",
                     includeInJSON: "id"
                 }
             }
@@ -397,6 +398,7 @@ define("economyModels", ["backbone"], function(Backbone) {
                 relatedModel: VirtualGood,
                 collectionType: VirtualGoodsCollection,
                 reverseRelation: {
+                    key : "category",
                     includeInJSON: "id"
                 }
             }
