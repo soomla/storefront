@@ -218,9 +218,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Remove the item from the assets
             this.assets.removeItemAsset(id);
         },
-        removeCategoryId : function(id) {
-            this.assets.removeCategoryAsset(id);
-        },
         setBalance : function(balances) {
 
             // Notify listeners before updating currencies
@@ -515,7 +512,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             this._clearReverseOrder(category.getGoods(), this.removeVirtualGood);
 
             // Remove the currency mappings
-            this.removeCategoryId(category.id);
             this.assets.removeCategoryAsset(category.id);
 
             // Remove the category model
