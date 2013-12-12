@@ -562,11 +562,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             if (categories.get(newItemId)) throw new Error(duplicateCategoryErrorMessage);
 
             // TODO: conditionally do this - only if store has category assets
-            // First ensure model assets are updated
             this.updateCategoryId(category, newItemId);
-
-            // then set the new values
-            category.set("name", newName);
 
             return category;
         },
