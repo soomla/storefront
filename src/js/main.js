@@ -1,5 +1,7 @@
 require.config({
-    baseUrl : "js",
+
+    // Allow the base URL to be overriden for development environment purposes
+    baseUrl : (typeof requirejsOverrideBaseUrl !== "undefined") ? requirejsOverrideBaseUrl : "js",
 
     // Cancel timeout for really slow devices
     waitSeconds : 0,
