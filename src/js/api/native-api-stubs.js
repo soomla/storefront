@@ -15,7 +15,23 @@ define("nativeApiStubs", ["constants"], function(Constants){
             if (model = SoomlaJS.store.getItem(itemId)) {
                 this.log("wantsToBuyVirtualGoods", arguments);
                 this._wantsToBuyVirtualGoods(model, function(model) {
-                    return {balance: model.getBalance() + 1};
+
+                    var goods = {},
+                        balance;
+
+                    if (model.is("goodPacks")) {
+
+                        // In the case of single use packs, add the
+                        // pack amount to the referenced good's amount
+                        var good = SoomlaJS.store.getItem(model.getGoodItemId());
+                        balance = good.getBalance() + model.getAmount();
+                        goods[good.id] = {balance : balance}
+                    } else {
+                        balance = model.getBalance() + 1;
+                        goods[model.id] = {balance : balance}
+                    }
+
+                    return goods;
                 });
             } else if (model = SoomlaJS.store.getCurrencyPack(itemId)) {
                 this._wantsToBuyMarketItem(model);
@@ -24,8 +40,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
         _wantsToBuyVirtualGoods : function(model, createMap) {
 
             // Increment and update good balance
-            var goods = {};
-            goods[model.id] = createMap(model);
+            var goods = createMap(model);
 
             if (!model.isMarketPurchaseType()) {
 
@@ -94,7 +109,9 @@ define("nativeApiStubs", ["constants"], function(Constants){
         wantsToUpgradeVirtualGood : function(model) {
             this.log("wantsToUpgradeVirtualGood", arguments);
             this._wantsToBuyVirtualGoods(model, function(model) {
-                return {currentUpgrade : model.getNextUpgrade().id };
+                var goods = {};
+                goods[model.id] = {currentUpgrade : model.getNextUpgrade().id };
+                return goods;
             });
         },
         wantsToInitiateHook : function(provider, options) {
