@@ -186,7 +186,7 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
 
             // If the asset is an object (i.e. isn't a plain string)
             // return either the asset with the provided key, or the default asset
-            if (_.isObject(asset)) return key ? asset[key] : asset.default;
+            if (_.isObject(asset)) return key ? asset[key] : asset.defaultAsset;
 
             // Otherwise, the asset is a plain string, return it
             return asset;
