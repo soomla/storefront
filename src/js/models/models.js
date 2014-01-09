@@ -6,6 +6,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     var Economy                     = EconomyModels.Economy,
         VirtualGood                 = EconomyModels.VirtualGood,
         SingleUseGood               = EconomyModels.SingleUseGood,
+        SingleUsePack               = EconomyModels.SingleUsePack,
         EquippableGood              = EconomyModels.EquippableGood,
         LifetimeGood                = EconomyModels.LifetimeGood,
         UpgradableGood              = EconomyModels.UpgradableGood,
@@ -71,6 +72,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 } else {
                     switch (type) {
+                        case "goodPacks":
+                            good = new SingleUsePack(rawGood);
+                            break;
                         case "equippable":
                             good = new EquippableGood(rawGood);
                             break;
@@ -316,6 +320,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 // For market purchase only stores, no need to consider all good types, categories or currencies
                 switch(type) {
+                    case "goodPacks":
+                        GoodType = SingleUsePack;
+                        break;
                     case "lifetime":
                         GoodType = LifetimeGood;
                         break;
@@ -345,6 +352,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
 
                 switch(type) {
+                    case "goodPacks":
+                        GoodType = SingleUsePack;
+                        break;
                     case "equippable":
                         GoodType = EquippableGood;
                         break;
@@ -492,6 +502,13 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 this.assets.removeItemAsset(good.getEmptyUpgradeBarAssetId());
             }
 
+            if (good.is("singleUse")) {
+                var goodPacks = this.getGoodPacksForSingleUseGood(good);
+
+                // Remove all good packs associated with this single use good
+                this._clearReverseOrder(goodPacks, this.removeVirtualGood);
+            }
+
             // Remove from mappings
             this.removeItemId(good.id);
 
@@ -620,6 +637,28 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
+        },
+        getGoodPacksForSingleUseGood: function (singleUseGood) {
+            return _.filter(this.goodsMap, function(good) {
+                return good.is("goodsPack") && good.getGoodItemId() === singleUseGood.id;
+            });
+        },
+        getSingleUseGoods : function() {
+            return this._getGoodsByType("singleUse");
+        },
+        getLifetimeGoods : function() {
+            return this._getGoodsByType("lifetime");
+        },
+        getEquippableGoods : function() {
+            return this._getGoodsByType("equippable");
+        },
+        getUpgradableGoods : function() {
+            return this._getGoodsByType("upgradable");
+        },
+        _getGoodsByType : function(type) {
+            return _.filter(this.goodsMap, function(good) {
+                return good.is(type);
+            });
         },
         toJSON : function() {
 
@@ -758,6 +797,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     return {
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
+        SingleUsePack 				: SingleUsePack,
         EquippableGood              : EquippableGood,
         LifetimeGood 				: LifetimeGood,
         UpgradableGood              : UpgradableGood,

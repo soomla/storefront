@@ -70,6 +70,9 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         className : "item single-use"
     });
 
+    var SingleUsePackView = ItemView.extend({
+        className : "item single-use-pack"
+    });
 
     var CurrencyPackView = ItemView.extend({
         className : "item currency-pack"
@@ -191,6 +194,7 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
         LinkView            : LinkView,
         ItemView            : ItemView,
         SingleUseItemView   : SingleUseItemView,
+        SingleUsePackView   : SingleUsePackView,
         CurrencyPackView    : CurrencyPackView,
         UpgradableItemView  : UpgradableItemView,
         LifetimeItemView    : LifetimeItemView,
