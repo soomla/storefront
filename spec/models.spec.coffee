@@ -151,6 +151,48 @@ define ["economyModels"], (EconomyModels) ->
           expect(@model.is("singleUse")).toBe true
 
 
+      describe "Single Use Pack", ->
+        beforeEach ->
+          @model = new EconomyModels.SingleUsePack({
+            purchasableItem: {
+              pvi_itemId: "currency_coins",
+              pvi_amount: 10,
+              purchaseType: "virtualItem"
+            },
+            name          : "Lucky Clover Pack",
+            good_amount   : 2
+            description   : "Lorem Ipsum is not simply random text",
+            itemId        : "lucky_clover_pack",
+            good_itemId   : "lucky_clover"
+          })
+
+        afterEach ->
+          Backbone.Relational.store.unregister(@model)
+
+        it "should have an amount of 1 by default", ->
+          expect(new EconomyModels.SingleUsePack().getAmount()).toBe 1
+
+        it "should have a 'goodPacks' type", ->
+          expect(@model.getType()).toBe "goodPacks"
+
+        it "should have an amount of 2", ->
+          expect(@model.getAmount()).toBe 2
+
+        it "should have a good item ID of 'lucky_clover'", ->
+          expect(@model.getGoodItemId()).toBe "lucky_clover"
+
+        it "should set an amount", ->
+          @model.setAmount 3
+          expect(@model.getAmount()).toBe 3
+
+        it "should set a good item ID", ->
+          @model.setGoodItemId "lucky_flower"
+          expect(@model.getGoodItemId()).toBe "lucky_flower"
+
+        it "should know it `is` 'goodPacks'", ->
+          expect(@model.is("goodPacks")).toBe true
+
+
       describe "Lifetime", ->
         beforeEach ->
           @model = new EconomyModels.LifetimeGood({
