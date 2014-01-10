@@ -30,7 +30,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     var ExpandableUpgradableItemView = ItemViews.UpgradableItemView.extend({
         onUpgradeChange : function() {
             ItemViews.UpgradableItemView.prototype.onUpgradeChange.call(this);
-            this.collapse({noSound: true});
+            if (this.collapseOnUpgrade === true) this.collapse({noSound: true});
         }
     });
 
