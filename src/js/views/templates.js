@@ -89,4 +89,13 @@ define("templates", ["handlebars", "underscore", "jquery"], function(Handlebars,
         var res = Handlebars.partials[context.type](context);
         return new Handlebars.SafeString(res);
     });
+
+    //"IF", "IF NOT" style helpers
+    // https://github.com/ziogas/HandlebarsJS-helpers
+    Handlebars.registerHelper('check', function(arg1, arg2, options) {
+        return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+    });
+    Handlebars.registerHelper('checknot', function(arg1, arg2, options) {
+        return Handlebars.helpers['check'].call(this, arg1, arg2, { fn: options.inverse, inverse: options.fn });
+    });
 });
