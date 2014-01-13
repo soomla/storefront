@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "errors"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, Errors) {
 
     // Cache base classes.
     var RelationalModel             = Backbone.RelationalModel;
@@ -6,6 +6,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     var Economy                     = EconomyModels.Economy,
         VirtualGood                 = EconomyModels.VirtualGood,
         SingleUseGood               = EconomyModels.SingleUseGood,
+        SingleUsePack               = EconomyModels.SingleUsePack,
         EquippableGood              = EconomyModels.EquippableGood,
         LifetimeGood                = EconomyModels.LifetimeGood,
         UpgradableGood              = EconomyModels.UpgradableGood,
@@ -35,6 +36,11 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         var goodsMap    = this.goodsMap     = {};
         var packsMap    = this.packsMap     = {};
         var categoryMap = this.categoryMap  = {};
+
+        // Hold all single use goods in a collection for quick retrieval
+        // and event listening
+        this.singleUseGoods = new Backbone.Collection([], {comparator : "name"});
+        this.singleUseGoods.listenTo(this.singleUseGoods, "change:name", this.singleUseGoods.sort);
 
         // Initialize the economy only with currencies, since their raw
         // representation fits what's expected.  In contrast, raw categories need
@@ -71,6 +77,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 } else {
                     switch (type) {
+                        case "goodPacks":
+                            good = new SingleUsePack(rawGood);
+                            break;
                         case "equippable":
                             good = new EquippableGood(rawGood);
                             break;
@@ -81,6 +90,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                             // By default instantiate goods like this
                             good = new SingleUseGood(rawGood);
+                            this.singleUseGoods.add(good);
                             break;
                     }
                 }
@@ -312,10 +322,16 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 good,
                 category;
 
+            // Adding single use packs requires that at least one single use good exists
+            if (type === "goodPacks" && this.getSingleUseGoods().isEmpty()) throw new Errors.NoSingleUseGoodsError();
+
             if (this.supportsMarketPurchaseTypeOnly()) {
 
                 // For market purchase only stores, no need to consider all good types, categories or currencies
                 switch(type) {
+                    case "goodPacks":
+                        GoodType = SingleUsePack;
+                        break;
                     case "lifetime":
                         GoodType = LifetimeGood;
                         break;
@@ -345,6 +361,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
 
                 switch(type) {
+                    case "goodPacks":
+                        GoodType = SingleUsePack;
+                        break;
                     case "equippable":
                         GoodType = EquippableGood;
                         break;
@@ -364,6 +383,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                     type    : type
                 });
                 good.setCurrencyId(firstCurrencyId);
+
+                // For good packs, assign an arbitrary good item ID
+                if (good.is("goodPacks")) good.setGoodItemId(this.getSingleUseGoods().first().id);
 
                 // Ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
@@ -394,6 +416,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
             // Add good to category
             category.getGoods().add(good, {at: 0});
+
+            // Add the good to the single use collection if applicable
+            if (type === "singleUse") this.singleUseGoods.add(good);
             return good;
         },
         addUpgrade : function(options) {
@@ -490,6 +515,15 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
                 // Remove zero-index bar
                 this.assets.removeItemAsset(good.getEmptyUpgradeBarAssetId());
+
+            } else if (good.is("singleUse")) {
+                var goodPacks = this.getGoodPacksForSingleUseGood(good);
+
+                // Remove all good packs associated with this single use good
+                this._clearReverseOrder(goodPacks, this.removeVirtualGood);
+
+                // Remove from single use goods collection
+                this.singleUseGoods.remove(good);
             }
 
             // Remove from mappings
@@ -621,6 +655,14 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
         },
+        getGoodPacksForSingleUseGood: function (singleUseGood) {
+            return _.filter(this.goodsMap, function(good) {
+                return good.is("goodPacks") && good.getGoodItemId() === singleUseGood.id;
+            });
+        },
+        getSingleUseGoods : function() {
+            return this.singleUseGoods;
+        },
         toJSON : function() {
 
             // Prepare a JSON using the original prototype's toJSON method
@@ -748,7 +790,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
     // Assign store API version - to be used externally
     // i.e. when manipulating the store from the dashboard
-    var API_VERSION = "3.0.1";
+    var API_VERSION = "3.1.0";
     Object.defineProperty(Store.prototype, "API_VERSION", {
         get : function() { return API_VERSION; }
     });
@@ -758,6 +800,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     return {
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
+        SingleUsePack 				: SingleUsePack,
         EquippableGood              : EquippableGood,
         LifetimeGood 				: LifetimeGood,
         UpgradableGood              : UpgradableGood,

@@ -48,6 +48,7 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
 
     var ExpandableSingleUseItemView = ItemViews.SingleUseItemView.extend();
+    var ExpandableSingleUsePackView = ItemViews.SingleUsePackView.extend();
 
 
     var ExpandableLifetimeItemView = ItemViews.LifetimeItemView.extend({
@@ -60,7 +61,14 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     //
     // Extend functionality with expandable module and vendor prefixed transitionend event
     //
-    _.each([ExpandableUpgradableItemView, ExpandableEquippableItemView, ExpandableSingleUseItemView, ExpandableLifetimeItemView], function(View) {
+    _.each(
+        [
+            ExpandableUpgradableItemView,
+            ExpandableEquippableItemView,
+            ExpandableSingleUseItemView,
+            ExpandableSingleUsePackView,
+            ExpandableLifetimeItemView
+        ], function(View) {
         View.mixin = Backbone.View.mixin; // TODO: Solve this hack
         View.mixin(ExpandableModule);
         View.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
@@ -68,9 +76,10 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
 
 
     return {
-        ExpandableUpgradableItemView    : ExpandableUpgradableItemView,
-        ExpandableEquippableItemView   : ExpandableEquippableItemView,
-        ExpandableSingleUseItemView     : ExpandableSingleUseItemView,
-        ExpandableLifetimeItemView      : ExpandableLifetimeItemView
+        ExpandableUpgradableItemView: ExpandableUpgradableItemView,
+        ExpandableEquippableItemView: ExpandableEquippableItemView,
+        ExpandableSingleUseItemView : ExpandableSingleUseItemView,
+        ExpandableSingleUsePackView : ExpandableSingleUsePackView,
+        ExpandableLifetimeItemView  : ExpandableLifetimeItemView
     };
 });

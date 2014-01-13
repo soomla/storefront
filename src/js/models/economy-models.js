@@ -169,9 +169,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         is : function(type) {
             if (type === "upgradable") return this.has("upgradeId");
             return this.getType() === type;
-        },
-        isMarketPurchaseType : function() {
-            return this.purchasableItem.purchaseType === "market";
         }
     });
     _.extend(VirtualGood.prototype, DescriptionModule);
@@ -182,6 +179,26 @@ define("economyModels", ["backbone"], function(Backbone) {
         defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults),
         getBalance : function() {
             return this.get("balance");
+        }
+    });
+
+
+    var SingleUsePack = VirtualGood.extend({
+
+        // Single use packs should have a default amount of 1
+        defaults : $.extend(true, {good_amount : 1, type : "goodPacks"}, VirtualGood.prototype.defaults),
+
+        getAmount : function() {
+            return this.get("good_amount")
+        },
+        setAmount : function(amount) {
+            return this.set("good_amount", amount);
+        },
+        getGoodItemId : function() {
+            return this.get("good_itemId");
+        },
+        setGoodItemId : function(goodItemId) {
+            return this.set("good_itemId", goodItemId);
         }
     });
 
@@ -441,6 +458,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     return {
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
+        SingleUsePack 				: SingleUsePack,
         EquippableGood              : EquippableGood,
         LifetimeGood 				: LifetimeGood,
         UpgradableGood              : UpgradableGood,
