@@ -125,7 +125,13 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             // or if we're in hosted mode (STUB_API).
             // Double check existence of SoomlaNative, because iOS doesn't define it on the window
             var stubbedAPI = window.SoomlaNative && window.SoomlaNative.STUB_API;
-            if (this.hooksProviders[provider.id] || stubbedAPI) {
+            var hasHookProvider = _.isArray(this.hooksProviders) ?
+                                    _.contains(this.hooksProviders, provider.id) : // Backward compatibility with store versions 3.0.0 - 3.0.3 including
+                                    _.isObject(this.hooksProviders) ?              // New method for checking hooks providers - store version v3.1.0
+                                    this.hooksProviders[provider.id] :
+                                    null;
+
+            if (hasHookProvider || stubbedAPI) {
 
                 if (provider.id === SPONSORPAY) {
                     provider.getActions().each(function(action) {
