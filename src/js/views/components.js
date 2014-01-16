@@ -130,6 +130,7 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
                 var originalOnRender = this.onRender;
                 this.onRender = _.bind(function() {
                     originalOnRender.call(this);
+                    this.injectCustomCss();
                     this.createIScrolls();
                     this.changeViewToItem(options.initViewItemId);
                     this.finalizeRendering();
@@ -144,6 +145,9 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
 
             // Listen to market purchase events
             this.listenTo(this.model, "goods:update:before currencies:update:before", this.closeDialog, this);
+
+            // Listen to custom CSS changes
+            this.listenTo(this.model, "theme:customCss:change", this.injectCustomCss);
         },
         serializeData : function() {
             var currencies  = this.model.getCurrencies().toJSON(),
@@ -326,6 +330,11 @@ define("components", ["jquery", "backbone", "itemViews", "expandableItemViews", 
         conditionalPlaySound : function(view, options) {
             if (!(options && options.noSound)) return this.playSound();
             return this;
+        },
+        injectCustomCss : function() {
+            var tag = $("#custom-css");
+            if (!tag.length) tag = $("<style>", {id: "custom-css"}).appendTo("head");
+            tag.html(this.model.getCustomCss());
         }
     }, {
 

@@ -139,11 +139,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         this.hooks = new Hooks.HookManager({theme : options.theme, hooks : options.hooks, hooksProviders : options.hooks_providers || {}});
 
         // Create theme object
-        this.assets = new Assets.AssetManager({
-            template    : options.template,
-            theme 		: options.theme,
-            modelAssets : options.modelAssets
-        });
+        this.assets = new Assets.AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
     };
 
     _.extend(Store.prototype, Backbone.Events, {
@@ -781,6 +777,9 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             json.template = _.clone(this.assets.template);
             delete json.template.baseUrl;
 
+            var customCss = this.getCustomCss();
+            if (customCss) json.customCss = customCss;
+
             return json;
         }
     });
@@ -790,7 +789,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
     // Assign store API version - to be used externally
     // i.e. when manipulating the store from the dashboard
-    var API_VERSION = "3.1.0";
+    var API_VERSION = "3.1.1";
     Object.defineProperty(Store.prototype, "API_VERSION", {
         get : function() { return API_VERSION; }
     });
