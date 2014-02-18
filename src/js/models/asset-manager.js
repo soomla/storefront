@@ -18,7 +18,7 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         var AssetManager = function(options) {
 
             // Save the raw JSON internally
-            _.extend(this, _.pick(options, "template", "theme", "modelAssets"));
+            _.extend(this, _.pick(options, "template", "theme", "modelAssets", "customCss"));
         };
 
         // Define getters
@@ -84,6 +84,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
             var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
             return this.modelAssetNames[offersMenuLinkImageKeychain];
         },
+        getCustomCss : function() {
+            return this.customCss;
+        },
 
 
         //
@@ -132,6 +135,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         setOffersMenuLinkAsset : function(url, name) {
             var offersMenuLinkImageKeychain = "hooks.common.offersMenuLinkImage";
             this._setThemeAsset(offersMenuLinkImageKeychain, url, name);
+        },
+        setCustomCss : function(css) {
+            this.customCss = css;
         },
 
 
@@ -234,6 +240,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         getOffersMenuLinkAssetName : function() {
             return this.assets.getOffersMenuLinkAssetName();
         },
+        getCustomCss : function() {
+            return this.assets.getCustomCss();
+        },
         setThemeAsset : function(assetId, options) {
             (options) || (options = {});
             this.assets.setThemeAsset(assetId, options.url, options.name)
@@ -293,6 +302,10 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         setOffersMenuLinkAsset : function(options) {
             (options) || (options = {});
             this.assets.setOffersMenuLinkAsset(options.url, options.name);
+        },
+        setCustomCss : function(css) {
+            this.assets.setCustomCss(css);
+            this.trigger("theme:customCss:change");
         }
     };
 

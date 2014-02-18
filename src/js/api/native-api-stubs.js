@@ -93,7 +93,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
             // First unequip all other owned goods in category ("single" equipping enforcement)
             // TODO: Change the logic to support different scopes of equipping, i.e. single, category, global
             categoryGoods.each(function(good) {
-                if (good.isOwned()) goods[good.id] = {equipped: false};
+                if (good.is("equippable") && good.isOwned()) goods[good.id] = {equipped: false};
             });
 
             // Then equip the given good

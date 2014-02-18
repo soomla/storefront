@@ -221,7 +221,15 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     // Append theme specific styles to head with a promise
                     pickCss(template.attributes, json.theme, cssRuleSet);
                     themeCss = Handlebars.compile(cssTemplate)(cssRuleSet);
-                    $(themeCss).appendTo($("head"));
+                    var customCss = $("#custom-css");
+                    if (!customCss.length) {
+                        $(themeCss).appendTo($("head"));
+                    } else {
+
+                        // Make sure that the theme CSS isn't appended after the custom CSS
+                        // so that custom CSS rules will always override predecessor rules
+                        $(themeCss).insertBefore(customCss);
+                    }
 
                     // Preload CSS background images with a promise
                     pickImages(template.attributes, json.theme, backgroundImages);

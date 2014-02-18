@@ -32,6 +32,7 @@ require.config({
         userAgent               : "utils/user-agent",
         cssUtils                : "utils/css-utils",
         constants               : "utils/constants",
+        errors                  : "utils/errors",
 
         // Native APIs
         soomlaAndroid           : "api/soomla-android",
