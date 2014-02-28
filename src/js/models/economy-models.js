@@ -11,6 +11,9 @@ define("economyModels", ["backbone"], function(Backbone) {
 
 
     var BaseModel = Backbone.RelationalModel.extend({
+        setItemId : function(id) {
+            return this.set("itemId", id);
+        },
         setName: function (name) {
             this.set("name", name);
         },
@@ -33,9 +36,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         // Functions for market purchase type items.
         // These are common between goods and currency packs
         // because some goods can be purchased directly from the market.
-        setItemId : function(id) {
-            return this.set("itemId", id);
-        },
         setMarketItemId : function(type, id) {
             switch (type) {
                 case "iosId" :
@@ -379,7 +379,8 @@ define("economyModels", ["backbone"], function(Backbone) {
     var CurrencyPacksCollection = Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection  = Collection.extend({ model : VirtualGood  });
 
-    var Currency = PurchasableVirtualItem.extend({
+    var Currency = BaseModel.extend({
+        idAttribute : "itemId",
         defaults : {
             name    : "coins",
             balance : 0

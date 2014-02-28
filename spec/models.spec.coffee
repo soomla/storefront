@@ -18,7 +18,17 @@ define ["economyModels"], (EconomyModels) ->
 
     describe "PurchasableVirtualItem", ->
       beforeEach ->
-        @model = new EconomyModels.PurchasableVirtualItem
+        @model = new EconomyModels.PurchasableVirtualItem({
+          "purchasableItem": {
+            "marketItem": {
+              "consumable": 1,
+              "price": 0.99,
+              "androidId": "android.test.purchased",
+              "iosId": "nuts_booster_pack"
+            },
+            "purchaseType": "market"
+          },
+        })
       afterEach ->
         Backbone.Relational.store.unregister(@model)
 
@@ -26,25 +36,36 @@ define ["economyModels"], (EconomyModels) ->
         @model.setItemId "item_1"
         expect(@model.id).toBe "item_1"
 
+      it "should set an iOS ID", ->
+        @model.setIosId "some_id"
+        expect(@model.getIosId()).toBe "some_id"
+
+      it "should set an Android ID", ->
+        @model.setAndroidId "some_id"
+        expect(@model.getAndroidId()).toBe "some_id"
+
+      it "should have a market purchase type", ->
+        expect(@model.isMarketPurchaseType()).toBeTruthy
+
 
     describe "CurrencyPack", ->
       beforeEach ->
         @model = new EconomyModels.CurrencyPack({
-            "purchasableItem": {
-              "marketItem": {
-                "consumable": 1,
-                "price": 0.99,
-                "androidId": "android.test.purchased",
-                "iosId" : "coins_2500"
-              },
-              "purchaseType": "market"
+          "purchasableItem": {
+            "marketItem": {
+              "consumable": 1,
+              "price": 0.99,
+              "androidId": "android.test.purchased",
+              "iosId" : "coins_2500"
             },
-            "name"              : "2,500",
-            "description"       : "lorem ipsum",
-            "itemId"            : "coins_2500",
-            "currency_itemId"   : "currency_coins",
-            "currency_amount"   : 2500
-          })
+            "purchaseType": "market"
+          },
+          "name"              : "2,500",
+          "description"       : "lorem ipsum",
+          "itemId"            : "coins_2500",
+          "currency_itemId"   : "currency_coins",
+          "currency_amount"   : 2500
+        })
 
       afterEach ->
         Backbone.Relational.store.unregister(@model)
