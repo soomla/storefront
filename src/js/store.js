@@ -113,6 +113,18 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     Utils.replaceAssetUrls(json.modelAssets, options.assets);
                     Utils.replaceAssetUrls(json.theme, options.assets);
                 } else {
+
+                    //
+                    // HTML preview case: the code below has no effect
+                    //
+                    // Mobile webview case: all assets' paths are normalized ('img/' prefix)
+                    // and need to be augmented to the folder structure of:
+                    // soomla/storefront
+                    // |--storefront.js
+                    // |--template
+                    // |--theme
+                    //
+
                     _.each(json.modelAssets, function(assets) {
                         Utils.replaceStringAttributes(assets, /^img/, "../theme/img");
                     });
