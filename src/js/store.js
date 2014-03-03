@@ -114,24 +114,12 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                     Utils.replaceAssetUrls(json.theme, options.assets);
                 } else {
                     _.each(json.modelAssets, function(assets) {
-                        Utils.assignAssetUrls(assets, /^img/, "../theme/img");
+                        Utils.replaceStringAttributes(assets, /^img/, "../theme/img");
                     });
                     Utils.replaceStringAttributes(json.theme, /^img/, "../theme/img");
                     Utils.replaceStringAttributes(json.theme, /^fonts/, "../theme/fonts");
                 }
 
-                // Add a preload modal with the theme background
-/*
-                var modal = json.theme.noFundsModal || json.theme.pages.goods.noFundsModal;
-                var prerollEl = $("#preroll-cover");
-                var prerollDlg = prerollEl.find(".preroll-dialog");
-                var prerollHdr = prerollDlg.find("h1");
-                prerollEl.css('background-image', 'url("' + json.theme.background + '")');
-                prerollHdr.text('Loading');
-                prerollHdr.attr("style", prerollHdr.attr("style") + "; " + modal.textStyle);
-                prerollDlg.css('background-image', 'url("' + modal.background + '")');
-                prerollDlg.toggleClass('invisible', 'false');
-*/
 
                 // Define which CSS, JS and Handlebars files need to be fetched
                 // The template folder is either overridden externally in the JSON or is hardcoded
