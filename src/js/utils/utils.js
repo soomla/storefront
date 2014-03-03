@@ -74,6 +74,7 @@ define("utils", function() {
         // ( {a : {b : {c :10}}},  ["a", "b", "c"], 20 )  ==>  {a : {b : {c :20}}}
         setByKeyChain : function(target, keychain, value) {
 
+            // Handle dot-delimited sting keychains.
             if (_.isString(keychain)) keychain = keychain.split(".");
 
             var obj = target;
@@ -94,9 +95,13 @@ define("utils", function() {
         // Based on https://github.com/documentcloud/underscore-contrib
         //
         getByKeychain: function getPath (obj, keychain) {
+
             // If we have reached an undefined property
             // then stop executing and return undefined
             if (obj === undefined) return void 0;
+
+            // Handle dot-delimited sting keychains.
+            if (_.isString(keychain)) keychain = keychain.split(".");
 
             // If the path array has no more elements, we've reached
             // the intended property and return its value
