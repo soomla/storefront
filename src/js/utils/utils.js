@@ -7,32 +7,23 @@ define("utils", function() {
 
 
     return {
+
+        //
         // Given an object, replaces all string attributes in the object (or deeply nested)
         // that match the given regex with the given replacement string.
         // Example:
         // ( {a : "foo", {b: "foobar"} }, /foo/, "off" )  ==>  {a: "off", {b: "offbar"}}
-        replaceStringAttributes : function(obj, regex, replaceString) {
-            var $this = this;
+        //
+        replaceStringAttributes : function recursiveReplaceStringAttributes(obj, regex, replaceString) {
             _.each(obj, function(value, key) {
                 if (_.isObject(value)) {
+
                     // Recursive call
-                    $this.replaceStringAttributes(value, regex, replaceString);
+                    recursiveReplaceStringAttributes(value, regex, replaceString);
                 } else if (_.isString(value) && value.match(regex)) {
+
                     // Replace the path
                     obj[key] = value.replace(regex, replaceString);
-                }
-            });
-        },
-        //
-        // Replaces URLs for a given collection of assets by
-        // applying a regex and replacement string to the assets' URL
-        //
-        assignAssetUrls : function recursiveAssignAssetUrls(obj, regex, replaceString) {
-            _.each(obj, function(url, name) {
-                if (_.isObject(url)) {
-                    recursiveAssignAssetUrls(url, regex, replaceString);
-                } else {
-                    obj[name] = url.replace(regex, replaceString);
                 }
             });
         },
