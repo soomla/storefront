@@ -32,15 +32,15 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
       describe "Currencies", ->
 
         it "addCurrency: it should add a new currency model", ->
-          @currency = @store.addCurrency({name: "coins"})
-          expect(@store.getCurrency("currency_coins")).toEqual @currency
+          currency = @store.addCurrency({name: "coins"})
+          expect(@store.getCurrency("currency_coins")).toEqual currency
 
         it "addCurrency: it should add an asset for the currency", ->
-          @currency = @store.addCurrency({name: "coins", assetUrl: stubImage})
+          @store.addCurrency({name: "coins", assetUrl: stubImage})
           expect(@store.assets.getItemAsset "currency_coins").toBe stubImage
 
         it "addCurrency: it should use the placeholder when no asset is provided", ->
-          @currency = @store.addCurrency({name: "coins"})
+          @store.addCurrency({name: "coins"})
           expect(@store.assets.getItemAsset "currency_coins").toBe placeholder
 
         it "removeCurrency: it should remove the currency", ->
@@ -54,15 +54,15 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
       describe "Categories", ->
 
         it "addCategory: it should add a new category model", ->
-          @category = @store.addCategory({name: "Spaceships"})
-          expect(@store.getCategory("Spaceships")).toEqual @category
+          category = @store.addCategory({name: "Spaceships"})
+          expect(@store.getCategory("Spaceships")).toEqual category
 
         it "addCategory: it should add an asset for the category", ->
-          @category = @store.addCategory({name: "Spaceships", assetUrl: stubImage})
+          @store.addCategory({name: "Spaceships", assetUrl: stubImage})
           expect(@store.assets.getCategoryAsset "Spaceships").toBe stubImage
 
         it "addCategory: it should use the placeholder when no asset is provided", ->
-          @category = @store.addCategory({name: "Spaceships"})
+          @store.addCategory({name: "Spaceships"})
           expect(@store.assets.getCategoryAsset "Spaceships").toBe placeholder
 
         it "removeCategory: it should remove the category", ->
