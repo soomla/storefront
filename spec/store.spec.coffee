@@ -265,6 +265,12 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
 
 
         describe "Utility functions", ->
+
           it "getGoodPacksForSingleUseGood: returns good packs associated with the given single use good", ->
             good = @store.getItem("switch")
             expect(@store.getGoodPacksForSingleUseGood(good).length).toBe 2
+
+          it "supportsMarketPurchaseTypeOnly: returns good packs associated with the given single use good", ->
+            expect(@store.supportsMarketPurchaseTypeOnly()).toBeFalsy()
+            delete @store.template.supportedFeatures.purchaseTypes.virtualItem
+            expect(@store.supportsMarketPurchaseTypeOnly()).toBeTruthy()

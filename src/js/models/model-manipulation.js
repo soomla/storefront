@@ -310,6 +310,10 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
 
             return currency;
         },
+        supportsMarketPurchaseTypeOnly : function() {
+            var purchaseTypes = this.template.getSupportedPurchaseTypes();
+            return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
+        },
         getGoodPacksForSingleUseGood: function (singleUseGood) {
             return _.filter(this.goodsMap, function(good) {
                 return good.is("goodPacks") && good.getGoodItemId() === singleUseGood.id;

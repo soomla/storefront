@@ -255,10 +255,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // After all maps and assets have been updated, update the item's ID
             item.setItemId(newItemId);
         },
-        supportsMarketPurchaseTypeOnly : function() {
-            var purchaseTypes = this.template.getSupportedPurchaseTypes();
-            return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
-        },
         getModelAssetDimensions : function(model) {
             if (model instanceof EconomyModels.VirtualGood) {
 
