@@ -4,6 +4,7 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
   modelFixture    = JSON.parse(modelFixture)
   templateFixture = JSON.parse(templateFixture)
   placeholder     = Urls.imagePlaceholder
+  barPlaceholder  = Urls.progressBarPlaceholder
   stubImage       = "data:image/png;base64,stubImage"
 
   deepClone = (p_object) ->
@@ -24,7 +25,7 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
 
         # This is necessary to initialize the internal objects of the template object
         # TODO: This will need to be refactored out
-        @store.buildTemplate(templateFixture)
+        @store.buildTemplate(deepClone(templateFixture))
       afterEach ->
 
         # Clear Backbone-Relation store, since it allows
@@ -48,6 +49,11 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
         it "addCurrency: it should use the placeholder when no asset is provided", ->
           @store.addCurrency({name: "coins"})
           expect(@store.assets.getItemAsset "currency_coins").toBe placeholder
+
+        it "addCurrency: should throw an exception when adding a currency with an existing name", ->
+          expect(=>
+            @store.addCurrency({name: "nuts"})
+          ).toThrow()
 
         it "removeCurrency: it should remove the currency", ->
           size = @store.getCurrencies().size()
@@ -81,6 +87,22 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
           expect(@store.assets.getItemAsset(currencyPack.id)).toBe placeholder
           expect(@store.packsMap[currencyPack.id]).toBeUndefined()
 
+        it "updateCurrencyName: updates an existing currency's name", ->
+          currency = @store.updateCurrencyName("currency_nuts", "coins")
+          expect(@store.getCurrency("currency_coins")).toEqual currency
+          expect(@store.getCurrency("currency_nuts")).toBeUndefined()
+
+        it "updateCurrencyName: updates an existing currency's asset mappings", ->
+          asset = @store.assets.getItemAsset("currency_nuts")
+          @store.updateCurrencyName("currency_nuts", "coins")
+          expect(@store.assets.getItemAsset "currency_coins").toBe asset
+          expect(@store.assets.getItemAsset "currency_nuts").not.toBe asset
+
+        it "updateCurrencyName: should throw an exception when updating a category with an existing name", ->
+          expect(=>
+            @store.updateCurrencyName("currency_nuts", "nuts")
+          ).toThrow()
+
 
       describe "Categories", ->
 
@@ -95,6 +117,11 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
         it "addCategory: it should use the placeholder when no asset is provided", ->
           @store.addCategory({name: "Spaceships"})
           expect(@store.assets.getCategoryAsset "Spaceships").toBe placeholder
+
+        it "addCategory: should throw an exception when adding a category with an existing name", ->
+          expect(=>
+            @store.addCategory({name: "ANIMALS"})
+          ).toThrow()
 
         it "removeCategory: it should remove the category", ->
           size = @store.getCategories().size()
@@ -117,11 +144,127 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
           expect(@store.assets.getCategoryAsset "SAVAGES").toBe asset
           expect(@store.assets.getCategoryAsset "ANIMALS").not.toBe asset
 
-        # TODO: Test updating category name to a duplicate name
+        it "updateCategoryName: should throw an exception when updating a category with an existing name", ->
+          expect(=>
+            @store.updateCategoryName("ANIMALS", "HINTS")
+          ).toThrow()
 
 
       describe "Virtual Goods", ->
 
-        it "getGoodPacksForSingleUseGood: returns good packs associated with the given single use good", ->
-          good = @store.getItem("switch")
-          expect(@store.getGoodPacksForSingleUseGood(good).length).toBe 2
+        it "addVirtualGood: adds all types of goods to the head of the category", ->
+          _.each ["singleUse", "lifetime", "equippable", "goodPacks", "upgradable"], (type) ->
+            good = @store.addVirtualGood({type: type, categoryId: "HINTS"})
+            expect(@store.getItem(good.id)).toEqual good
+            expect(@store.getCategory("HINTS").getGoods().first(good)).toBeTruthy()
+            expect(good.getType()).toBe type
+          , @
+
+        it "addVirtualGood: should add an asset for the good", ->
+          good = @store.addVirtualGood({type: "singleUse", categoryId: "HINTS", assetUrl: stubImage})
+          expect(@store.assets.getItemAsset(good.id)).toEqual stubImage
+
+        it "addVirtualGood: should use the placeholder when no asset is provided", ->
+          good = @store.addVirtualGood({type: "singleUse", categoryId: "HINTS"})
+          expect(@store.assets.getItemAsset(good.id)).toEqual placeholder
+
+        it "addVirtualGood: should add a single use good by default if the type isn't provided", ->
+          good = @store.addVirtualGood({type: "singleUse", categoryId: "HINTS"})
+          expect(@store.getSingleUseGoods().contains(good)).toBeTruthy()
+
+        it "addVirtualGood: should add single use goods to the dedicated single use goods collection", ->
+          good = @store.addVirtualGood({categoryId: "HINTS"})
+          expect(good.getType()).toBe "singleUse"
+
+        it "addVirtualGood: should assign the first virtual currency by default", ->
+          good = @store.addVirtualGood({type: "singleUse"})
+          expect(@store.getFirstCategory().getGoods().contains(good)).toBeTruthy()
+
+        it "addVirtualGood: should assign the first virtual currency by default", ->
+          good = @store.addVirtualGood({type: "singleUse", categoryId: "HINTS"})
+          expect(good.getCurrencyId()).toBe @store.getFirstCurrency().id
+
+        it "addVirtualGood: should assign the first single use good for good packs by default", ->
+          good = @store.addVirtualGood({type: "goodPacks", categoryId: "HINTS"})
+          expect(good.getGoodItemId()).toBe @store.getSingleUseGoods().first().id
+
+        it "addVirtualGood: should throw an error if adding a good pack before having any single use goods", ->
+          @store.getCategories().each(@store.removeCategory, @store)
+
+          # TODO: Investigate why this needs to be called.  The single use collection should be updated when goods are removed
+          @store.getSingleUseGoods().reset()
+
+          expect(=>
+            @store.addVirtualGood({type: "goodPacks", categoryId: "HINTS"})
+          ).toThrow()
+
+        describe "Market Purhcase only", ->
+
+          it "addVirtualGood: should add a market purchase virtual good", ->
+            delete @store.template.supportedFeatures.purchaseTypes.virtualItem
+            good = @store.addVirtualGood({type: "singleUse"})
+            expect(good.isMarketPurchaseType()).toBeTruthy()
+
+          it "addVirtualGood: should add an asset for good", ->
+            delete @store.template.supportedFeatures.purchaseTypes.virtualItem
+            good = @store.addVirtualGood({type: "singleUse", assetUrl: stubImage})
+            expect(@store.assets.getItemAsset(good.id)).toEqual stubImage
+
+          it "addVirtualGood: should use the placeholder when no asset is provided", ->
+            delete @store.template.supportedFeatures.purchaseTypes.virtualItem
+            good = @store.addVirtualGood({type: "singleUse"})
+            expect(@store.assets.getItemAsset(good.id)).toEqual placeholder
+
+
+        describe "Upgradable Goods", ->
+
+          it "addVirtualGood: should add an asset for the upgradable empty bar", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS", progressBarAssetUrl: stubImage})
+            expect(@store.assets.getUpgradeBarAsset(good.getEmptyUpgradeBarAssetId())).toBe stubImage
+
+          it "addVirtualGood: should add a mapping to the upgrade", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS", progressBarAssetUrl: stubImage})
+            expect(@store.goodsMap[good.id]).toEqual good
+
+          it "addVirtualGood: should add a first upgrade by default", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS", progressBarAssetUrl: stubImage})
+            expect(good.getUpgrades().size()).toBe 1
+
+          it "addUpgrade: should add an upgrade", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
+            @store.addUpgrade({goodItemId: good.id})
+            expect(good.getUpgrades().size()).toBe 2
+
+          it "addUpgrade: should add a mapping to the upgrade", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS", progressBarAssetUrl: stubImage})
+            upgrade = @store.addUpgrade({goodItemId: good.id})
+            expect(@store.goodsMap[upgrade.id]).toEqual upgrade
+
+          it "addUpgrade: should assign the first virtual currency by default", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
+            upgrade = @store.addUpgrade({goodItemId: good.id})
+            expect(upgrade.getCurrencyId()).toBe @store.getFirstCurrency().id
+
+          it "addUpgrade: should add assets for the upgrade", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
+            upgrade = @store.addUpgrade({goodItemId: good.id, progressBarAssetUrl: stubImage, assetUrl: stubImage})
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeBarAssetId())).toBe stubImage
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe stubImage
+
+          it "addUpgrade: should add assets for the upgrade", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
+            upgrade = @store.addUpgrade({goodItemId: good.id, progressBarAssetUrl: stubImage, assetUrl: stubImage})
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeBarAssetId())).toBe stubImage
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe stubImage
+
+          it "addUpgrade: should use placeholders when no assets are provided", ->
+            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
+            upgrade = @store.addUpgrade({goodItemId: good.id})
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeBarAssetId())).toBe barPlaceholder
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe placeholder
+
+
+        describe "Utility functions", ->
+          it "getGoodPacksForSingleUseGood: returns good packs associated with the given single use good", ->
+            good = @store.getItem("switch")
+            expect(@store.getGoodPacksForSingleUseGood(good).length).toBe 2

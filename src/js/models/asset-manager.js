@@ -342,6 +342,18 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                         this.assets.updateCategoryId(oldItemId, newName);
                         this.assets.updateModelAssetName(oldItemId, newName);
                     }
+                },
+                "goods:add" : function(good, options) {
+                    if (good.getType() === "upgradable") {
+                        this.assets.setUpgradeBarAsset(good.getEmptyUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder)
+                    } else {
+                        this.assets.setItemAsset(good.id, options.assetUrl || Urls.imagePlaceholder);
+                    }
+
+                },
+                "goods:upgrades:add" : function(upgrade, options) {
+                    this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
+                    this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);
                 }
 
             }, this);

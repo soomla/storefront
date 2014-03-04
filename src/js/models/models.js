@@ -242,9 +242,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 });
                 good.setPurchaseType({type: "market"});
 
-                // Ensure the model has an asset assigned
+                // Notify store
+                // Here: ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
-                this.assets.setItemAsset(good.id, assetUrl, "");
+                this.trigger("goods:add", good, options);
 
                 category = this.getFirstCategory();
 
@@ -253,8 +254,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 this.categoryMap[good.id] = category;
             } else {
 
-                var firstCurrencyId     = this.getFirstCurrency().id,
-                    progressBarAssetUrl = options.progressBarAssetUrl || Urls.progressBarAssetUrl;
+                var firstCurrencyId = this.getFirstCurrency().id;
 
                 switch(type) {
                     case "goodPacks":
@@ -283,13 +283,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 // For good packs, assign an arbitrary good item ID
                 if (good.is("goodPacks")) good.setGoodItemId(this.getSingleUseGoods().first().id);
 
-                // Ensure the model has an asset assigned
+                // Notify store
+                // Here: ensure the model has an asset assigned
                 // before adding it to the collection (which triggers a render)
-                if (type === "upgradable") {
-                    this.assets.setUpgradeBarAsset(good.getEmptyUpgradeBarAssetId(), progressBarAssetUrl)
-                } else {
-                    this.assets.setItemAsset(good.id, assetUrl);
-                }
+                this.trigger("goods:add", good, options);
 
                 var categoryId = options.categoryId || this.getFirstCategory().id;
                 category = this.getCategory(categoryId);
@@ -305,7 +302,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                     this.addUpgrade({
                         goodItemId          : good.id,
                         assetUrl            : assetUrl,
-                        progressBarAssetUrl : progressBarAssetUrl
+                        progressBarAssetUrl : options.progressBarAssetUrl
                     });
                 }
             }
@@ -330,10 +327,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             //
             var upgrade = good.addUpgrade(_.extend({firstCurrencyId : firstCurrencyId}, options));
 
-            // Ensure the upgrade has its assets assigned
+            // Notify store
+            // Here: ensure the upgrade has its assets assigned
             // before triggering the `change` event
-            this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
-            this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);
+            this.trigger("goods:upgrades:add", upgrade, options);
 
             // Manually trigger the event for rendering
             good.trigger("change");
