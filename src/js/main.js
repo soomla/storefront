@@ -17,6 +17,9 @@ require.config({
         assetManager            : "models/asset-manager",
         template                : "models/template",
 
+        // Dashboard Manipulation
+        modelManipulation       : "models/model-manipulation",
+
         // Views
         components              : "views/components",
         itemViews               : "views/item-views",
