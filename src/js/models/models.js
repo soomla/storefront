@@ -141,6 +141,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
 
         // Create theme object
         this.assets = new Assets.AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
+
+        if (_.isFunction(this.bindAssets)) this.bindAssets();
     };
 
     _.extend(Store.prototype, Backbone.Events, {
@@ -187,8 +189,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             try {
                 options.itemId = Currency.generateNameFor(options.name);
                 currency = new Currency(options);
-                var assetUrl = options.assetUrl || Urls.imagePlaceholder;
-                this.assets.setItemAsset(currency.id, assetUrl);
+                this.trigger("currencies:add", currency, options);
                 this.getCurrencies().add(currency);
             } catch (e) {
                 throw new Error(duplicateCurrencyErrorMessage);
@@ -199,8 +200,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             var category;
             try {
                 category = new Category(options);
-                var assetUrl = options.assetUrl || Urls.imagePlaceholder;
-                this.assets.setCategoryAsset(category.id, assetUrl, "");
+                this.trigger("categories:add", category, options);
                 this.getCategories().add(category);
 
                 // TODO: throw uniqueness error before storing assets
@@ -428,8 +428,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Remove all goods associated with this currency
             this._clearReverseOrder(category.getGoods(), this.removeVirtualGood);
 
-            // Remove the currency mappings
-            this.assets.removeCategoryAsset(category.id);
+            // Notify store
+            this.trigger("categories:remove", category);
 
             // Remove the category model
             category.trigger('destroy', category, category.collection, {});
@@ -445,8 +445,8 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Remove all packs associated with this currency
             this._clearReverseOrder(currency.getPacks(), this.removeCurrencyPack);
 
-            // Remove the currency mappings
-            this.removeItemId(currency.id);
+            // Notify store
+            this.trigger("currencies:remove", currency);
 
             // Remove the currency model
             currency.trigger('destroy', currency, currency.collection, {});

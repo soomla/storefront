@@ -306,6 +306,31 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         setCustomCss : function(css) {
             this.assets.setCustomCss(css);
             this.trigger("theme:customCss:change");
+        },
+
+        //
+        // This function should be invoked in the Store model constructor.
+        // It binds to applicative events and manipulates assets as necessary
+        //
+        bindAssets : function() {
+
+            this.on({
+                "currencies:add" : function(currency, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setItemAsset(currency.id, assetUrl);
+                },
+                "currencies:remove" : function(currency) {
+                    this.assets.removeItemAsset(currency.id);
+                },
+                "categories:add" : function(catgory, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setCategoryAsset(catgory.id, assetUrl, "");
+                },
+                "categories:remove" : function(category) {
+                    this.assets.removeCategoryAsset(category.id);
+                }
+
+            }, this);
         }
     };
 

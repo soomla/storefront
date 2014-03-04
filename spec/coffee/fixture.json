@@ -1,0 +1,382 @@
+{
+    "categories": [
+        {
+            "goods_itemIds": [ "elephant",
+                "lion",
+                "giraffe",
+                "cobra"
+            ],
+            "name": "ANIMALS"
+        },
+        {
+            "goods_itemIds": [ "hint_1_butterfly",
+                "hint_2_beatle",
+                "hint_3_firebug",
+                "hint_4_ant"
+            ],
+            "name": "HINTS"
+        },
+        {
+            "goods_itemIds": [ "shaker",
+                "invisibility",
+                "more_time",
+                "switch"
+            ],
+            "name": "POWERUPS"
+        },
+        {
+            "goods_itemIds": [ "banana",
+                "coconut",
+                "flower"
+            ],
+            "name": "UTILITIES"
+        }
+    ],
+    "currencies": [
+        {
+            "description": "",
+            "itemId": "currency_nuts",
+            "name": "NUTS"
+        }
+    ],
+    "currencyPacks": [
+        {
+            "currency_amount": 20000,
+            "currency_itemId": "currency_nuts",
+            "description": "The most affordable pack",
+            "itemId": "nuts_booster_pack",
+            "name": "NUTS BOOSTER PACK",
+            "purchasableItem": {
+                "marketItem": {
+                    "androidId": "android.test.purchased",
+                    "consumable": 1,
+                    "iosId": "nuts_booster_pack",
+                    "price": 0.98999999999999999
+                },
+                "purchaseType": "market"
+            }
+        },
+        {
+            "currency_amount": 50000,
+            "currency_itemId": "currency_nuts",
+            "description": "The most popular pack",
+            "itemId": "nuts_mega_pack",
+            "name": "NUTS MEGA PACK",
+            "purchasableItem": {
+                "marketItem": {
+                    "androidId": "nuts_mega_pack",
+                    "consumable": 1,
+                    "iosId": "nuts_mega_pack",
+                    "price": 2.9900000000000002
+                },
+                "purchaseType": "market"
+            }
+        },
+        {
+            "currency_amount": 100000,
+            "currency_itemId": "currency_nuts",
+            "description": "A huge nuts refill for your shopping spree",
+            "itemId": "nuts_ultra_pack",
+            "name": "NUTS ULTRA PACK",
+            "purchasableItem": {
+                "marketItem": {
+                    "androidId": "nuts_ultra_pack",
+                    "consumable": 1,
+                    "iosId": "nuts_ultra_pack",
+                    "price": 2.9900000000000002
+                },
+                "purchaseType": "market"
+            }
+        },
+        {
+            "currency_amount": 600000,
+            "currency_itemId": "currency_nuts",
+            "description": "The ultimate purchase - buy anything you want",
+            "itemId": "nuts_ultimate_pack",
+            "name": "NUTS ULTIMATE PACK",
+            "purchasableItem": {
+                "marketItem": {
+                    "androidId": "nuts_ultimate_pack",
+                    "consumable": 1,
+                    "iosId": "nuts_ultimate_pack",
+                    "price": 9.9900000000000002
+                },
+                "purchaseType": "market"
+            }
+        }
+    ],
+    "deviceId": "79D7010E-28FB-4C81-A767-4486086576DE",
+    "goods": {
+        "equippable": [
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "equipping": "category",
+                "itemId": "elephant",
+                "name": "ELEPHANT",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 250,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "equipping": "category",
+                "itemId": "lion",
+                "name": "LION",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 250,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "equipping": "category",
+                "itemId": "giraffe",
+                "name": "GIRAFFE",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 250,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "equipping": "category",
+                "itemId": "cobra",
+                "name": "COBRA",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 2500,
+                    "pvi_itemId": "currency_nuts"
+                }
+            }
+        ],
+        "goodPacks": [  ],
+        "goodUpgrades": [  ],
+        "lifetime": [
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "banana",
+                "name": "BANANA",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 250,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "coconut",
+                "name": "COCONUT",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 500,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "flower",
+                "name": "FLOWER",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 1000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            }
+        ],
+        "singleUse": [
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "hint_1_butterfly",
+                "name": "HINT 1 - BUTTERFLY",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 5000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "hint_2_beatle",
+                "name": "HINT 2 - BEATLE",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 5000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "hint_3_firebug",
+                "name": "HINT 3 - FIRE BUG",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 5000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "hint_4_ant",
+                "name": "HINT 4 - ANT",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 5000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "shaker",
+                "name": "SHAKER",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 2500,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "invisibility",
+                "name": "INVISIBILITY",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 2500,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "more_time",
+                "name": "MORE TIME",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 2500,
+                    "pvi_itemId": "currency_nuts"
+                }
+            },
+            {
+                "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
+                "itemId": "switch",
+                "name": "SWITCH",
+                "purchasableItem": {
+                    "purchaseType": "virtualItem",
+                    "pvi_amount": 10000,
+                    "pvi_itemId": "currency_nuts"
+                }
+            }
+        ]
+    },
+    "hooks": {
+        "sponsorpay": {
+            "currency_nuts": {
+                "description": "Earn nuts by completing offers by SponsorPay",
+                "name": "SponsorPay: Free Nuts"
+            }
+        }
+    },
+    "modelAssets": {
+        "categories": {
+            "ANIMALS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_4.png",
+            "HINTS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_1.png",
+            "POWERUPS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_2.png",
+            "UTILITIES": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_3.png"
+        },
+        "hooks": {
+            "__sponsorpay__currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+        },
+        "items": {
+            "banana": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-06.png",
+            "cobra": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal04.png",
+            "coconut": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-08.png",
+            "currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/coin.png",
+            "elephant": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal01.png",
+            "flower": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-09.png",
+            "giraffe": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal03.png",
+            "hint_1_butterfly": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints01.png",
+            "hint_2_beatle": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints02.png",
+            "hint_3_firebug": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints03.png",
+            "hint_4_ant": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints04.png",
+            "invisibility": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup02.png",
+            "lion": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal02.png",
+            "more_time": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup03.png",
+            "nuts_booster_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
+            "nuts_mega_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
+            "nuts_ultimate_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
+            "nuts_ultra_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
+            "remove_ads": "../../../storefront-themes/themes/jungleMaze/theme/img/no-ads.png",
+            "shaker": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup01.png",
+            "switch": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04.png"
+        }
+    },
+    "template": {
+        "baseUrl": "../../../storefront-themes/templates/airstrikeBravo/src",
+        "name": "airstrikeBravo",
+        "orientation": "landscape"
+    },
+    "theme": {
+        "background": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_BG.jpg",
+        "balance": {
+            "style": "color: #FFF;"
+        },
+        "currencyPacksCategoryImage": "../../../storefront-themes/themes/jungleMaze/theme/img/get_coins.png",
+        "fonts": [ "../../../storefront-themes/themes/jungleMaze/theme/fonts/Abrila.ttf",
+            "../../../storefront-themes/themes/jungleMaze/theme/fonts/Abrila.ttf"
+        ],
+        "headerBackground": "",
+        "hooks": {
+            "common": {
+                "offersMenuLinkImage": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+            },
+            "sponsorpay": {
+                "currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+            }
+        },
+        "images": {
+            "backImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BACK.png",
+            "buyImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BUY.png",
+            "contentBackground": "../../../storefront-themes/themes/jungleMaze/theme/img/ContentBackground.png",
+            "equip": "../../../storefront-themes/themes/jungleMaze/theme/img/equip.png",
+            "equipped": "../../../storefront-themes/themes/jungleMaze/theme/img/equipped.png",
+            "expandImage": "../../../storefront-themes/themes/jungleMaze/theme/img/expand.png",
+            "itemAreaBackground": "../../../storefront-themes/themes/jungleMaze/theme/img/ItemAreaBackground.png",
+            "itemBackgroundImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_Product.png",
+            "itemBackgroundImageExpanded": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_Product_Ext.png",
+            "notOwnedIndicatorImage": "../../../storefront-themes/themes/jungleMaze/theme/img/Gray_Owned.png",
+            "ownedIndicatorImage": "../../../storefront-themes/themes/jungleMaze/theme/img/Green_Owned.png",
+            "quitImage": "../../../storefront-themes/themes/jungleMaze/theme/img/QUIT.png"
+        },
+        "name": "jungleMaze",
+        "noFundsModal": {
+            "background": "../../../storefront-themes/themes/jungleMaze/theme/img/Alert-22.png",
+            "noButton": "../../../storefront-themes/themes/jungleMaze/theme/img/no_btn.png",
+            "text": "Insufficient funds.  Would you like to buy more?",
+            "textStyle": "text-shadow: 1px 2px #808080",
+            "yesButton": "../../../storefront-themes/themes/jungleMaze/theme/img/yes_btn.png"
+        },
+        "pages": {
+            "currencyPacks": {
+                "item": {
+                    "descriptionStyle": "font-size:20px;",
+                    "nameStyle": "font-size: 24px;",
+                    "priceStyle": "font-size: 24px;"
+                }
+            },
+            "goods": {
+                "item": {
+                    "descriptionStyle": "font-size: 20px; color: #101914;",
+                    "nameStyle": "font-size: 24px; color: #101914;",
+                    "priceStyle": "font-size: 24px; color: #101914;"
+                }
+            },
+            "menu": {
+                "title": "THE STORE"
+            }
+        },
+        "titleStyle": "color: #FFF",
+        "version": 1
+    }
+}
