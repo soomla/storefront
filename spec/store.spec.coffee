@@ -51,6 +51,31 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
           expect(@store.assets.getItemAsset(currency.id)).toBe placeholder
           # TODO: expect that all related currency packs and goods are removed
 
+
+      describe "Currency Packs", ->
+
+        it "addCurrencyPack: it should add a new currency pack model", ->
+          currencyPack = @store.addCurrencyPack({currency_itemId: "currency_nuts"})
+          expect(@store.getCurrencyPack(currencyPack.id)).toEqual currencyPack
+          expect(@store.getCurrencies().get(currencyPack.getCurrencyId()).getPacks().get(currencyPack.id)).toEqual currencyPack
+
+        it "addCurrencyPack: it should add an asset for the currency pack", ->
+          currencyPack = @store.addCurrencyPack({currency_itemId: "currency_nuts", assetUrl: stubImage})
+          expect(@store.assets.getItemAsset currencyPack.id).toBe stubImage
+
+        it "addCurrencyPack: it should use the placeholder when no asset is provided", ->
+          currencyPack = @store.addCurrencyPack({currency_itemId: "currency_nuts"})
+          expect(@store.assets.getItemAsset currencyPack.id).toBe placeholder
+
+        it "removeCurrencyPack: it should remove the currency pack", ->
+          size = @store.getCurrencies().last().getPacks().size()
+          currencyPack = @store.getCurrencies().last().getPacks().last()
+          @store.removeCurrencyPack(currencyPack)
+          expect(@store.getCurrencies().last().getPacks().size()).toBe (size - 1)
+          expect(@store.assets.getItemAsset(currencyPack.id)).toBe placeholder
+          expect(@store.packsMap[currencyPack.id]).toBeUndefined()
+
+
       describe "Categories", ->
 
         it "addCategory: it should add a new category model", ->

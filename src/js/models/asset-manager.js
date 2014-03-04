@@ -322,6 +322,13 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                 "currencies:remove" : function(currency) {
                     this.assets.removeItemAsset(currency.id);
                 },
+                "currencyPacks:add" : function(currencyPack, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setItemAsset(currencyPack.id, assetUrl);
+                },
+                "currencyPacks:remove" : function(currencyPack) {
+                    this.assets.removeItemAsset(currencyPack.id);
+                },
                 "categories:add" : function(catgory, options) {
                     var assetUrl = options.assetUrl || Urls.imagePlaceholder;
                     this.assets.setCategoryAsset(catgory.id, assetUrl, "");

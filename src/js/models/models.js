@@ -360,9 +360,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 currency_amount     : 1000
             });
 
-            // Ensure the model has an asset assigned
+            // Notify store
+            // Here: ensure the model has an asset assigned
             // before adding it to the collection (which triggers a render)
-            this.assets.setItemAsset(currencyPack.id, options.assetUrl || Urls.imagePlaceholder, "");
+            this.trigger("currencyPacks:add", currencyPack, options);
 
             // Add pack to currency
             var currency_itemId = options.currency_itemId;
@@ -418,7 +419,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         removeCurrencyPack : function(pack) {
 
             // Remove from mappings
-            this.removeItemId(pack.id);
+            if (_.has(this.packsMap, pack.id)) delete this.packsMap[pack.id];
+
+            // Notify store
+            this.trigger("currencyPacks:remove", pack);
 
             // Remove from category
             pack.trigger('destroy', pack, pack.collection, {});
