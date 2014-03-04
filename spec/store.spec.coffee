@@ -100,3 +100,10 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
           expect(@store.assets.getCategoryAsset(category.id)).toBe placeholder
           # TODO: expect that all related goods are removed
 
+
+
+      describe "Virtual Goods", ->
+
+        it "getGoodPacksForSingleUseGood: returns good packs associated with the given single use good", ->
+          good = @store.getItem("switch")
+          expect(@store.getGoodPacksForSingleUseGood(good).length).toBe 2

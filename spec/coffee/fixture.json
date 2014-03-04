@@ -153,7 +153,30 @@
                 }
             }
         ],
-        "goodPacks": [  ],
+        "goodPacks": [
+            {
+                "itemId": "switch_pack_5",
+                "good_amount": 5,
+                "name": "Switch 5-pack",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 250,
+                    "purchaseType": "virtualItem"
+                },
+                "good_itemId": "switch"
+            },
+            {
+                "itemId": "switch_pack_10",
+                "good_amount": 10,
+                "name": "Switch 10-pack",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 500,
+                    "purchaseType": "virtualItem"
+                },
+                "good_itemId": "switch"
+            }
+        ],
         "goodUpgrades": [  ],
         "lifetime": [
             {
