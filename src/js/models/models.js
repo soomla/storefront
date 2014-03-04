@@ -489,15 +489,17 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         updateCategoryName : function(id, newName) {
 
-            var newItemId   = newName,
-                categories  = this.getCategories(),
+            var categories  = this.getCategories(),
                 category    = categories.get(id);
 
             // If the new item ID is a duplicate, throw an error
-            if (categories.get(newItemId)) throw new Error(duplicateCategoryErrorMessage);
+            if (categories.get(newName)) throw new Error(duplicateCategoryErrorMessage);
 
-            // TODO: conditionally do this - only if store has category assets
-            this.updateCategoryId(category, newItemId);
+            // Notify store
+            this.trigger("categories:change:name", category, newName);
+
+            // After all assets have been updated, update the category's name (effectively its ID)
+            category.setName(newName);
 
             return category;
         },
@@ -583,18 +585,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
             var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
             this.assets.updateItemId(oldItemId, newItemId)
-        },
-
-        updateCategoryId : function(category, newItemId) {
-
-            var oldItemId = category.id;
-            if (this.template.supportsCategoryImages()) {
-                this.assets.updateCategoryId(oldItemId, newItemId);
-                this.assets.updateModelAssetName(oldItemId, newItemId);
-            }
-
-            // After all assets have been updated, update the category's name (effectively its ID)
-            category.setName(newItemId);
         },
         removeItemId : function(id) {
 

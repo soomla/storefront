@@ -335,6 +335,13 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                 },
                 "categories:remove" : function(category) {
                     this.assets.removeCategoryAsset(category.id);
+                },
+                "categories:change:name" : function(category, newName) {
+                    var oldItemId = category.id;
+                    if (this.template.supportsCategoryImages()) {
+                        this.assets.updateCategoryId(oldItemId, newName);
+                        this.assets.updateModelAssetName(oldItemId, newName);
+                    }
                 }
 
             }, this);

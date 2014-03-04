@@ -1,8 +1,10 @@
-define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, Urls, fixture) ->
+define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Urls, modelFixture, templateFixture) ->
 
-  fixture = JSON.parse(fixture)
-  placeholder = Urls.imagePlaceholder
-  stubImage = "data:image/png;base64,stubImage"
+  # Prepare variables used in many test cases
+  modelFixture    = JSON.parse(modelFixture)
+  templateFixture = JSON.parse(templateFixture)
+  placeholder     = Urls.imagePlaceholder
+  stubImage       = "data:image/png;base64,stubImage"
 
   deepClone = (p_object) ->
     JSON.parse(JSON.stringify(p_object))
@@ -14,11 +16,15 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
 
         # In order to reset the JSON object everytime,
         # we deep clone it before initializing the store
-        @store = new Models.Store(deepClone(fixture))
+        @store = new Models.Store(deepClone(modelFixture))
 
         # This is necessary to initialize the internal objects of the assets object
         # TODO: This will need to be refactored out
         @store.injectAssets({}, {});
+
+        # This is necessary to initialize the internal objects of the template object
+        # TODO: This will need to be refactored out
+        @store.buildTemplate(templateFixture)
       afterEach ->
 
         # Clear Backbone-Relation store, since it allows
@@ -100,6 +106,18 @@ define ["backbone", "models", "urls", "text!fixture1.json"], (Backbone, Models, 
           expect(@store.assets.getCategoryAsset(category.id)).toBe placeholder
           # TODO: expect that all related goods are removed
 
+        it "updateCategoryName: updates an existing category's name", ->
+          category = @store.updateCategoryName("ANIMALS", "SAVAGES")
+          expect(@store.getCategory("SAVAGES")).toEqual category
+          expect(@store.getCategory("ANIMALS")).toBeUndefined()
+
+        it "updateCategoryName: updates an existing category's asset mappings", ->
+          asset = @store.assets.getCategoryAsset("ANIMALS")
+          @store.updateCategoryName("ANIMALS", "SAVAGES")
+          expect(@store.assets.getCategoryAsset "SAVAGES").toBe asset
+          expect(@store.assets.getCategoryAsset "ANIMALS").not.toBe asset
+
+        # TODO: Test updating category name to a duplicate name
 
 
       describe "Virtual Goods", ->
