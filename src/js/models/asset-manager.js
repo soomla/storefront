@@ -357,6 +357,11 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                 "goods:upgrades:add" : function(upgrade, options) {
                     this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
                     this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);
+                },
+                "goods:upgrades:remove" : function(upgrade) {
+                    var upgradeImageAssetId = upgrade.getUpgradeImageAssetId(),
+                        upgradeBarAssetId   = upgrade.getUpgradeBarAssetId();
+                    this.assets.removeUpgradeAssets(upgradeImageAssetId, upgradeBarAssetId);
                 }
 
             }, this);

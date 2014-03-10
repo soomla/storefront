@@ -299,6 +299,13 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
             expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeBarAssetId())).toBe barPlaceholder
             expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe placeholder
 
+          it "removeUpgrade: should remove the upgrade", ->
+            upgrade = @store.getItem("speed_boost").getUpgrades().first()
+            @store.removeUpgrade(upgrade)
+            expect(@store.getItem("speed_boost_upgrade2")).toBeUndefined()
+            expect(@store.assets.getUpgradeBarAsset(upgrade.getUpgradeBarAssetId())).toBe barPlaceholder
+            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe placeholder
+
 
         describe "Utility functions", ->
 

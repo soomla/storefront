@@ -220,11 +220,11 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         removeUpgrade : function(upgrade) {
 
-            // Remove from mappings and delete upgrade-specific assets
-            this.removeItemId(upgrade.id);
-            var upgradeImageAssetId = upgrade.getUpgradeImageAssetId(),
-                upgradeBarAssetId   = upgrade.getUpgradeBarAssetId();
-            this.assets.removeUpgradeAssets(upgradeImageAssetId, upgradeBarAssetId);
+            // Remove ID from all maps
+            if (_.has(this.goodsMap, upgrade.id)) delete this.goodsMap[upgrade.id];
+
+            // Notify store
+            this.trigger("goods:upgrades:remove", upgrade);
 
             // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
             upgrade.trigger('destroy', upgrade, upgrade.collection, {});
@@ -303,18 +303,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
             var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
             this.assets.updateItemId(oldItemId, newItemId)
-        },
-        removeItemId : function(id) {
-
-            // Remove ID from all maps
-            // Check goods + category maps for virtual goods
-            // Check packs map for currency packs
-            _.each([this.goodsMap, this.packsMap, this.categoryMap], function(map) {
-                if (_.has(map, id)) delete map[id];
-            });
-
-            // Remove the item from the assets
-            this.assets.removeItemAsset(id);
         },
         setBalance : function(balances) {
 
