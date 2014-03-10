@@ -215,6 +215,7 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
             return currencyPack;
         },
 
+
         //
         // Remove functions
         //
@@ -258,6 +259,51 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
             // Remove the currency model
             currency.trigger('destroy', currency, currency.collection, {});
         },
+        removeVirtualGood : function(good) {
+
+            // Deal with upgradables
+            if (good.is("upgradable")) {
+
+                // Remove all upgrades associated with this good
+                this._clearReverseOrder(good.getUpgrades(), this.removeUpgrade);
+
+                // Remove listeners that were in charge of updating item IDs in model assets map
+                this.stopListening(good);
+
+            } else if (good.is("singleUse")) {
+                var goodPacks = this.getGoodPacksForSingleUseGood(good);
+
+                // Remove all good packs associated with this single use good
+                this._clearReverseOrder(goodPacks, this.removeVirtualGood);
+
+                // Remove from single use goods collection
+                this.singleUseGoods.remove(good);
+            }
+
+            // Remove ID from all maps
+            // Check goods + category maps for virtual goods
+            _.each([this.goodsMap, this.categoryMap], function(map) {
+                if (_.has(map, good.id)) delete map[good.id];
+            });
+
+            // Notify store
+            this.trigger("goods:remove", good);
+
+            // Remove from category
+            good.trigger('destroy', good, good.collection, {});
+        },
+        removeUpgrade : function(upgrade) {
+
+            // Remove ID from all maps
+            if (_.has(this.goodsMap, upgrade.id)) delete this.goodsMap[upgrade.id];
+
+            // Notify store
+            this.trigger("goods:upgrades:remove", upgrade);
+
+            // See: http://stackoverflow.com/questions/10218578/backbone-js-how-to-disable-sync-for-delete
+            upgrade.trigger('destroy', upgrade, upgrade.collection, {});
+        },
+
 
         //
         // Remove functions

@@ -352,7 +352,14 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
 
                 },
                 "goods:remove" : function(good) {
-                    this.assets.removeItemAsset(good.id);
+
+                    if (good.is("upgradable")) {
+
+                        // Remove zero-index bar
+                        this.assets.removeItemAsset(good.getEmptyUpgradeBarAssetId());
+                    } else {
+                        this.assets.removeItemAsset(good.id);
+                    }
                 },
                 "goods:upgrades:add" : function(upgrade, options) {
                     this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
