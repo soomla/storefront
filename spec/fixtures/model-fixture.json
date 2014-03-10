@@ -387,7 +387,16 @@
             "nuts_ultra_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
             "remove_ads": "../../../storefront-themes/themes/jungleMaze/theme/img/no-ads.png",
             "shaker": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup01.png",
-            "switch": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04.png"
+            "speed_boost_upgrade0_bar": "img/Container0_2_1373789535673.png",
+            "speed_boost_upgrade1": "img/1371815195_dashboard_3_4_square_1373789523814.png",
+            "speed_boost_upgrade2": "img/1371815195_dashboard_3_4_square_1373789526669.png",
+            "speed_boost_upgrade3": "img/1371815195_dashboard_3_4_square_1373789529663.png",
+            "speed_boost_upgrade1_bar": "img/Container1_2_1373789537888.png",
+            "speed_boost_upgrade2_bar": "img/Container2_2_1373789540733.png",
+            "speed_boost_upgrade3_bar": "img/Container3_2_1373789542999.png",
+            "switch": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04.png",
+            "switch_pack_5": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04-5.png",
+            "switch_pack_10": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04-10.png"
         }
     },
     "template": {
