@@ -369,6 +369,19 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                     var upgradeImageAssetId = upgrade.getUpgradeImageAssetId(),
                         upgradeBarAssetId   = upgrade.getUpgradeBarAssetId();
                     this.assets.removeUpgradeAssets(upgradeImageAssetId, upgradeBarAssetId);
+                },
+                "items:change:id" : function(item, oldItemId, newItemId) {
+
+                    // Update asset name maps
+                    if (item.is && item.is("upgradable")) {
+
+                        // Assume an overriding model asset ID was passed
+                        oldItemId = item.getEmptyUpgradeBarAssetId();
+                        newItemId = item.getEmptyUpgradeBarAssetId(newItemId);
+                    }
+
+                    this.assets.updateItemId(oldItemId, newItemId);
+                    this.assets.updateModelAssetName(oldItemId, newItemId);
                 }
 
             }, this);

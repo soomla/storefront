@@ -307,6 +307,61 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
             expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe placeholder
 
 
+        describe "Updating item IDs", ->
+
+          it "updateItemId: should update the good's ID", ->
+            newItemId = "newSwitch"
+            oldItemId = "switch"
+            good = @store.getItem(oldItemId)
+            @store.updateItemId(good, newItemId)
+
+            expect(good.id).toBe newItemId
+
+          it "updateItemId: should update the good's mapping", ->
+            newItemId = "newSwitch"
+            oldItemId = "switch"
+            good = @store.getItem(oldItemId)
+            category = @store.getGoodCategory(good.id)
+            @store.updateItemId(good, newItemId)
+
+            expect(@store.goodsMap[newItemId]).toEqual good
+            expect(@store.goodsMap[oldItemId]).toBeUndefined()
+            expect(@store.categoryMap[newItemId]).toEqual category
+            expect(@store.goodsMap[oldItemId]).toBeUndefined()
+
+
+          it "updateItemId: should update the currency pack's mapping", ->
+            newItemId = "nuts_mega_pack_new"
+            oldItemId = "nuts_mega_pack"
+            pack      = @store.getCurrencyPack(oldItemId)
+            @store.updateItemId(pack, newItemId)
+
+            expect(@store.packsMap[newItemId]).toEqual pack
+            expect(@store.packsMap[oldItemId]).toBeUndefined()
+
+          it "updateItemId: should update the item's assets", ->
+            newItemId = "newSwitch"
+            oldItemId = "switch"
+            good      = @store.getItem(oldItemId)
+            asset     = @store.assets.getItemAsset("switch")
+            @store.updateItemId(good, newItemId)
+
+            expect(@store.assets.getItemAsset(newItemId)).toEqual asset
+            expect(@store.assets.getItemAsset(oldItemId)).toEqual placeholder
+
+          it "updateItemId: should update the upgradable good's assets", ->
+            newItemId     = "speed_boost_new"
+            oldItemId     = "speed_boost"
+            good          = @store.getItem(oldItemId)
+            oldBarAssetId = good.getEmptyUpgradeBarAssetId()
+            newBarAssetId = good.getEmptyUpgradeBarAssetId(newItemId)
+            asset         = @store.assets.getItemAsset(oldBarAssetId)
+            @store.updateItemId(good, newItemId)
+
+            expect(@store.assets.getItemAsset(newBarAssetId)).toBe asset
+            expect(@store.assets.getItemAsset(oldBarAssetId)).toBe placeholder
+
+
         describe "Utility functions", ->
 
           it "getGoodPacksForSingleUseGood: returns good packs associated with the given single use good", ->

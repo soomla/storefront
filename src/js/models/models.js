@@ -182,37 +182,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         //
 
 
-        updateItemId : function(item, newItemId) {
-
-            var oldItemId = item.id;
-
-            // Update all maps
-            // Check goods + category maps for virtual goods
-            // Check packs map for currency packs
-            _.each([this.goodsMap, this.packsMap, this.categoryMap], function(map) {
-                if (_.has(map, oldItemId)) {
-                    map[newItemId] = map[oldItemId];
-                    delete map[oldItemId];
-                }
-            });
-
-            // Update asset name maps
-            if (item.is && item.is("upgradable")) {
-
-                // Assume an overriding model asset ID was passed
-                var oldEmptyUpgradeBarAssetId = item.getEmptyUpgradeBarAssetId(),
-                    newEmptyUpgradeBarAssetId = item.getEmptyUpgradeBarAssetId(newItemId);
-
-                this.assets.updateItemId(oldEmptyUpgradeBarAssetId, newEmptyUpgradeBarAssetId);
-                this.assets.updateModelAssetName(oldEmptyUpgradeBarAssetId, newEmptyUpgradeBarAssetId);
-            } else {
-                this.assets.updateItemId(oldItemId, newItemId);
-                this.assets.updateModelAssetName(oldItemId, newItemId);
-            }
-
-            // After all maps and assets have been updated, update the item's ID
-            item.setItemId(newItemId);
-        },
         getModelAssetDimensions : function(model) {
             if (model instanceof EconomyModels.VirtualGood) {
 

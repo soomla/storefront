@@ -356,6 +356,27 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
 
             return currency;
         },
+        updateItemId : function(item, newItemId) {
+
+            var oldItemId = item.id;
+
+            // Update all maps
+            // Check goods + category maps for virtual goods
+            // Check packs map for currency packs
+            // TODO: Replace with a more explicit type check using `instanceof`
+            _.each([this.goodsMap, this.packsMap, this.categoryMap], function(map) {
+                if (_.has(map, oldItemId)) {
+                    map[newItemId] = map[oldItemId];
+                    delete map[oldItemId];
+                }
+            });
+
+            // Notify store
+            this.trigger("items:change:id", item, oldItemId, newItemId);
+
+            // After all maps and assets have been updated, update the item's ID
+            item.setItemId(newItemId);
+        },
         supportsMarketPurchaseTypeOnly : function() {
             var purchaseTypes = this.template.getSupportedPurchaseTypes();
             return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
