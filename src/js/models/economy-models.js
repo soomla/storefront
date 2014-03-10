@@ -302,19 +302,19 @@ define("economyModels", ["backbone"], function(Backbone) {
 
             // If there's no current upgrade ID, we're still in the zero-upgrade state.
             // Return `this` as a dummy object
-            if (this.getCurrentUpgradeId() === "") return this;
+            if (this.getCurrentUpgradeId() === "") return null;
 
             return this.getUpgrades().get(this.getCurrentUpgradeId());
         },
         getNextUpgrade : function() {
-            var currentUpgrade  = this.getCurrentUpgrade(),
-                nextUpgradeId   = currentUpgrade.getNextItemId();
+            var currentUpgrade = this.getCurrentUpgrade();
 
             // Zero-upgrade case - return the first upgrade
-            if (_.isUndefined(nextUpgradeId)) return this.getUpgrades().first();
+            if (!currentUpgrade) return this.getUpgrades().first();
 
             // If we're in the last upgrade in the list,
             // Return it again
+            var nextUpgradeId = currentUpgrade.getNextItemId();
             (nextUpgradeId !== "") || (nextUpgradeId = currentUpgrade.id);
 
             return  this.getUpgrades().get(nextUpgradeId);
@@ -326,7 +326,10 @@ define("economyModels", ["backbone"], function(Backbone) {
             this.set("upgradeId", upgradeId);
         },
         isComplete : function() {
-            return (this.getUpgrades().last().id === this.getCurrentUpgrade().id);
+
+            // Default to an empty object if no current upgrade exists
+            var currentUpgrade = this.getCurrentUpgrade() || {};
+            return (this.getUpgrades().last().id === currentUpgrade.id);
         },
         getEmptyUpgradeBarAssetId : function(id) {
             return Upgrade.generateNameFor(id || this.id, 0) + Upgrade.barSuffix;
