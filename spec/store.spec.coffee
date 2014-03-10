@@ -198,6 +198,42 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
             @store.addVirtualGood({type: "goodPacks", categoryId: "HINTS"})
           ).toThrow()
 
+        it "removeVirtualGood: should remove the good", ->
+          good = @store.getItem("switch")
+          @store.removeVirtualGood(good)
+          expect(@store.getItem("switch")).toBeUndefined()
+
+        it "removeVirtualGood: should remove the good's asset", ->
+          good = @store.getItem("switch")
+          asset = @store.assets.getItemAsset("switch")
+          @store.removeVirtualGood(good)
+          expect(@store.assets.getItemAsset("switch")).toBe placeholder
+          expect(asset).not.toBe placeholder
+
+        it "removeVirtualGood: should remove single use goods from the single use goods collection", ->
+          good = @store.getItem("switch")
+          @store.removeVirtualGood(good)
+          expect(@store.getSingleUseGoods().get("switch")).toBeUndefined()
+
+        it "removeVirtualGood: should remove single use packs associated with a single use good", ->
+          good = @store.getItem("switch")
+          @store.removeVirtualGood(good)
+          expect(@store.getItem("switch_pack_5")).toBeUndefined()
+          expect(@store.getItem("switch_pack_10")).toBeUndefined()
+          expect(@store.assets.getItemAsset("switch_pack_5")).toBe placeholder
+          expect(@store.assets.getItemAsset("switch_pack_10")).toBe placeholder
+
+        it "removeVirtualGood: should remove all good upgrades associated with a good", ->
+          good = @store.getItem("speed_boost")
+          @store.removeVirtualGood(good)
+
+          expect(@store.assets.getItemAsset("speed_boost_upgrade0_bar")).toBe placeholder
+          _.each ["speed_boost_upgrade1", "speed_boost_upgrade2", "speed_boost_upgrade3"], (upgrade)=>
+            expect(@store.getItem(upgrade)).toBeUndefined()
+            expect(@store.assets.getItemAsset(upgrade)).toBe placeholder
+            expect(@store.assets.getItemAsset(upgrade + "_bar")).toBe placeholder
+
+
         describe "Market Purhcase only", ->
 
           it "addVirtualGood: should add a market purchase virtual good", ->

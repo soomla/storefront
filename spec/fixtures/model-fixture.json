@@ -1,7 +1,8 @@
 {
     "categories": [
         {
-            "goods_itemIds": [ "elephant",
+            "goods_itemIds": [
+                "elephant",
                 "lion",
                 "giraffe",
                 "cobra"
@@ -9,7 +10,8 @@
             "name": "ANIMALS"
         },
         {
-            "goods_itemIds": [ "hint_1_butterfly",
+            "goods_itemIds": [
+                "hint_1_butterfly",
                 "hint_2_beatle",
                 "hint_3_firebug",
                 "hint_4_ant"
@@ -17,7 +19,8 @@
             "name": "HINTS"
         },
         {
-            "goods_itemIds": [ "shaker",
+            "goods_itemIds": [
+                "shaker",
                 "invisibility",
                 "more_time",
                 "switch"
@@ -25,9 +28,11 @@
             "name": "POWERUPS"
         },
         {
-            "goods_itemIds": [ "banana",
+            "goods_itemIds": [
+                "banana",
                 "coconut",
-                "flower"
+                "flower",
+                "speed_boost"
             ],
             "name": "UTILITIES"
         }
@@ -177,7 +182,47 @@
                 "good_itemId": "switch"
             }
         ],
-        "goodUpgrades": [  ],
+        "goodUpgrades": [
+            {
+                "prev_itemId": "",
+                "next_itemId": "speed_boost_upgrade2",
+                "name": "Speed Boost",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 250,
+                    "purchaseType": "virtualItem"
+                },
+                "itemId": "speed_boost_upgrade1",
+                "description": "Walk and run faster by 25%",
+                "good_itemId": "speed_boost"
+            },
+            {
+                "prev_itemId": "speed_boost_upgrade1",
+                "next_itemId": "speed_boost_upgrade3",
+                "name": "Speed Boost",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 1000,
+                    "purchaseType": "virtualItem"
+                },
+                "itemId": "speed_boost_upgrade2",
+                "description": "Walk and run faster by 50%",
+                "good_itemId": "speed_boost"
+            },
+            {
+                "prev_itemId": "speed_boost_upgrade2",
+                "next_itemId": "",
+                "name": "Speed Boost",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 5000,
+                    "purchaseType": "virtualItem"
+                },
+                "itemId": "speed_boost_upgrade3",
+                "description": "Walk and run TWICE as fast!",
+                "good_itemId": "speed_boost"
+            }
+        ],
         "lifetime": [
             {
                 "description": "In publishing and graphic design, lorem ipsum is placeholder text (filler text)",
@@ -208,6 +253,16 @@
                     "pvi_amount": 1000,
                     "pvi_itemId": "currency_nuts"
                 }
+            },
+            {
+                "itemId": "speed_boost",
+                "name": "SPEED BOOST",
+                "purchasableItem": {
+                    "pvi_itemId": "currency_nuts",
+                    "pvi_amount": 100,
+                    "purchaseType": "virtualItem"
+                },
+                "description": "Walk and run faster by 25%"
             }
         ],
         "singleUse": [

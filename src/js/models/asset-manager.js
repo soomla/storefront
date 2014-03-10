@@ -351,6 +351,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                     }
 
                 },
+                "goods:remove" : function(good) {
+                    this.assets.removeItemAsset(good.id);
+                },
                 "goods:upgrades:add" : function(upgrade, options) {
                     this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
                     this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);

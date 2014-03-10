@@ -206,8 +206,14 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
                 this.singleUseGoods.remove(good);
             }
 
-            // Remove from mappings
-            this.removeItemId(good.id);
+            // Remove ID from all maps
+            // Check goods + category maps for virtual goods
+            _.each([this.goodsMap, this.categoryMap], function(map) {
+                if (_.has(map, good.id)) delete map[good.id];
+            });
+
+            // Notify store
+            this.trigger("goods:remove", good);
 
             // Remove from category
             good.trigger('destroy', good, good.collection, {});
