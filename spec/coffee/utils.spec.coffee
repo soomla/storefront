@@ -32,3 +32,27 @@ define ['utils'], (Utils) ->
       expect(Utils.getByKeychain(obj, "a.b.c")).toBe 1
       expect(Utils.getByKeychain(obj, "a.b.d")).toBe undefined
 
+
+    it "createThemeAssetMap: Should flattern the theme to an asset map of {keychain: asset} ", ->
+      obj = {}
+      template = {
+        a: {type: "image"}
+        b : {
+          b1: {type: "font"}
+          b2: {type: "backgroundImage"}
+        }
+      }
+      theme = {
+        a: "foo"
+        b: {
+          b1: "bar1"
+          b2: "bar2"
+        }
+      }
+      Utils.createThemeAssetMap(template, theme, obj, "")
+
+      expect(obj).toEqual {
+        "a": "foo"
+        "b.b1": "bar1"
+        "b.b2": "bar2"
+      }

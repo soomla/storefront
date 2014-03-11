@@ -61,33 +61,6 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
 
 
-	//
-	// Given the template and theme JSONs, manipulates the target object to
-    // hold a mapping of {<asset keychain> : <name>}
-    //
-    // i.e. {"pages.goods.list.background" : "img/bg.png"}
-    //
-    var createThemeAssetMap = function(templateObj, themeObj, target, keychain) {
-
-         _.each(templateObj, function(templateValue, templateKey) {
-            var themeValue = themeObj[templateKey];
-
-            // Check that theme value is defined.  This is to allow
-            // Template attributes that a certain theme chooses not to use
-            if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
-                var currentKeychain = keychain + "." + templateKey;
-                if (_.contains(["image", "backgroundImage", "font"], templateValue.type)) {
-                    currentKeychain = currentKeychain.replace(".", "");
-                    target[currentKeychain] = themeValue;
-                } else {
-                    createThemeAssetMap(templateValue, themeValue, target, currentKeychain);
-                }
-            }
-        });
-    };
-
-
-
     $(function() {
 
         window.SoomlaJS = _.extend({}, jsAPI, {
@@ -220,7 +193,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                     // Create an asset map for the theme assets
                     var themeAssetNames = {};
-                    createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
+                    Utils.createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
                     _this.store.injectAssets(modelAssetNames, themeAssetNames);
 
 
