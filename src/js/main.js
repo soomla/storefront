@@ -18,7 +18,8 @@ require.config({
         template                : "models/template",
 
         // Dashboard Manipulation
-        modelManipulation       : "models/model-manipulation",
+        modelManipulation       : "external/model-manipulation",
+        dimensionHelpers        : "external/dimension-helpers",
 
         // Views
         components              : "views/components",

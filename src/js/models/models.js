@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "modelManipulation"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, ModelManipulation) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "modelManipulation", "dimensionHelpers"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, ModelManipulation, DimensionHelpers) {
 
     // Cache base classes.
     var RelationalModel             = Backbone.RelationalModel;
@@ -142,7 +142,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         if (_.isFunction(this.bindAssets)) this.bindAssets();
     };
 
-    _.extend(Store.prototype, Backbone.Events, ModelManipulation, {
+    _.extend(Store.prototype, Backbone.Events, ModelManipulation, DimensionHelpers, {
 
 
         //
@@ -174,33 +174,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         },
         getCurrencies : function() {
             return this.economy.get("currencies");
-        },
-
-
-        //
-        // Dashboard manipulation functionality
-        //
-
-
-        getModelAssetDimensions : function(model) {
-            if (model instanceof EconomyModels.VirtualGood) {
-
-                if (model.is("upgradable")) {
-                    return this.template.getVirtualGoodAssetDimensions("goodUpgrades");
-                } else {
-                    return this.template.getVirtualGoodAssetDimensions(model.get("type"));
-                }
-
-            } else if (model instanceof EconomyModels.Currency) {
-                return this.template.getCurrencyAssetDimensions();
-            } else if (model instanceof EconomyModels.CurrencyPack) {
-                return this.template.getCurrencyPackAssetDimensions();
-            } else {
-                throw "Unknown model type";
-            }
-        },
-        getCategoryAssetDimensions : function() {
-            return this.template.getCategoryAssetDimensions();
         }
 
     }, {
