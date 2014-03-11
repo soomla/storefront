@@ -192,12 +192,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getGoodCategory: function(goodId) {
             return this.categoryMap[goodId];
         },
-        updateUpgradeAssets : function(model, newItemId) {
-
-            newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
-            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
-            this.assets.updateItemId(oldItemId, newItemId)
-        },
         setBalance : function(balances) {
 
             // Notify listeners before updating currencies

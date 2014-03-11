@@ -308,6 +308,15 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
             this.trigger("theme:customCss:change");
         },
 
+        // Currently not in use
+        updateUpgradeAssets : function(model, newItemId) {
+
+            newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
+            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
+            this.assets.updateItemId(oldItemId, newItemId)
+        },
+
+
         //
         // This function should be invoked in the Store model constructor.
         // It binds to applicative events and manipulates assets as necessary
