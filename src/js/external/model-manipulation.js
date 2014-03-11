@@ -385,6 +385,27 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
             return _.filter(this.goodsMap, function(good) {
                 return good.is("goodPacks") && good.getGoodItemId() === singleUseGood.id;
             });
+        },
+
+
+        //
+        // Private functions
+        //
+
+
+        //
+        // Remove all the given collection's items in reverse order.  This prevents:
+        // 1. Removal from a collection while iterating forward
+        // 2. An unclear Backbone Relational bug: "Uncaught TypeError: Cannot call method 'getAssociatedItemId' of undefined"
+        //
+        // Accepts both Backbone collections and plain arrays of Backbone objects
+        _clearReverseOrder : function(collection, removeFunction) {
+            for (var i = collection.length - 1; i >= 0; i--) {
+
+                // Apply condition on `at` function to check if `collection` is
+                // a Backbone collection or a plain array
+                removeFunction.call(this, collection.at ? collection.at(i) : collection[i]);
+            }
         }
 
     }
