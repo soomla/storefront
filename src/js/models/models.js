@@ -157,9 +157,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // UI + Dashboard related functionality
         //
 
-        buildTemplate : function(json) {
-            this.template = new Template(json, this.options.template.orientation);
-        },
         getTemplate : function() {
             return this.template;
         },
@@ -177,12 +174,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         }
 
     }, {
-        // A function for injecting model and theme assets
-        // externally after the object has been created
-        injectAssets : function(modelAssetNames, themeAssetNames) {
-            this.assets.modelAssetNames = modelAssetNames;
-            this.assets.themeAssetNames = themeAssetNames;
-        },
         getItem : function(itemId) {
             return this.goodsMap[itemId];
         },

@@ -1,4 +1,11 @@
-define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid) {
+define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "storefrontHelpers", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid, StorefrontHelpers) {
+
+
+    //
+    // Inject storefront helpers to the store prototype
+    // This step is necessary for supporting the storefront UI
+    //
+    _.extend(Models.Store.prototype, StorefrontHelpers);
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.

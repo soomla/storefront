@@ -17,10 +17,6 @@ require.config({
         assetManager            : "models/asset-manager",
         template                : "models/template",
 
-        // Dashboard Manipulation
-        modelManipulation       : "external/model-manipulation",
-        dimensionHelpers        : "external/dimension-helpers",
-
         // Views
         components              : "views/components",
         itemViews               : "views/item-views",
@@ -37,6 +33,11 @@ require.config({
         cssUtils                : "utils/css-utils",
         constants               : "utils/constants",
         errors                  : "utils/errors",
+
+        // External mixins for dashboard \ storefront UI
+        storefrontHelpers       : "models/storefront-helpers",
+        modelManipulation       : "external/model-manipulation",
+        dimensionHelpers        : "external/dimension-helpers",
 
         // Native APIs
         soomlaAndroid           : "api/soomla-android",
