@@ -34,49 +34,60 @@
     <!--<script src="../js/libs/require.js"></script>-->
     <script data-main="../src/js/main" src="../src/js/libs/require.js"></script>
     <script>
-        require.config({
-            paths: {
-                cs : "../../spec/lib/cs",
-                "coffee-script" : "../../spec/lib/coffee-script",
-                "store.spec" : "../../spec/store.spec",
-                "models.spec" : "../../spec/models.spec",
-                "asset-manager.spec" : "../../spec/asset-manager.spec",
-                "utils.spec" : "../../spec/utils.spec",
-                specs : "../../spec/specs",
+        (function() {
 
-                text: "../../spec//lib/requirejs.text-2.0.10",
-                modelFixture: "../../spec/fixtures/model-fixture",
-                templateFixture: "../../spec/fixtures/template"
+            var specPath = "../../spec";
 
-            }
-        });
+            require.config({
+                paths: {
+
+                    // Utilities
+                    cs                      : specPath + "/lib/cs",
+                    "coffee-script"         : specPath + "/lib/coffee-script",
+                    text                    : specPath + "/lib/requirejs.text-2.0.10",
+
+                    // Specs
+                    specs                   : specPath + "/specs",
+                    "store.spec"            : specPath + "/coffee/store.spec",
+                    "models.spec"           : specPath + "/coffee/models.spec",
+                    "asset-manager.spec"    : specPath + "/coffee/asset-manager.spec",
+                    "utils.spec"            : specPath + "/coffee/utils.spec",
 
 
-        require(["specs"], function() {
-            var jasmineEnv = jasmine.getEnv();
-            jasmineEnv.updateInterval = 1000;
+                    // Fixtures
+                    modelFixture            : specPath + "/fixtures/model-fixture",
+                    templateFixture         : specPath + "/fixtures/template"
 
-            var htmlReporter = new jasmine.HtmlReporter();
-
-            jasmineEnv.addReporter(htmlReporter);
-
-            jasmineEnv.specFilter = function (spec) {
-                return htmlReporter.specFilter(spec);
-            };
-
-            var currentWindowOnload = window.onload;
-
-            window.onload = function () {
-                if (currentWindowOnload) {
-                    currentWindowOnload();
                 }
-                execJasmine();
-            };
+            });
 
-            function execJasmine() {
-                jasmineEnv.execute();
-            }
-        });
+
+            require(["specs"], function() {
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var htmlReporter = new jasmine.HtmlReporter();
+
+                jasmineEnv.addReporter(htmlReporter);
+
+                jasmineEnv.specFilter = function (spec) {
+                    return htmlReporter.specFilter(spec);
+                };
+
+                var currentWindowOnload = window.onload;
+
+                window.onload = function () {
+                    if (currentWindowOnload) {
+                        currentWindowOnload();
+                    }
+                    execJasmine();
+                };
+
+                function execJasmine() {
+                    jasmineEnv.execute();
+                }
+            });
+        })();
 
     </script>
 
