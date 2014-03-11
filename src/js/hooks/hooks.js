@@ -188,7 +188,8 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
 
     //
     // A mixin of methods that will be exposed on the store model
-    // Assumes the existence of `this.hooks`, `this.assets`, `this.template`
+    // Assumes the existence of `this.hooks`, `this.template`
+    // `this.assets` was removed by event decoupling
     //
     var HooksMixin = {
         addHook : function(providerId, options) {
@@ -201,7 +202,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                 }, options));
 
                 this.setHookAsset(action, {url : options.assetUrl});
-                delete this.hooks.hooksMap[action.id];
+                this.hooks.hooksMap[action.id] = action;
 
                 // Start by adding the provider.  If it exists, the add operation will be ignored
                 var provider = this.hooks.providers.getOrAdd(providerId);
@@ -214,7 +215,11 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
             return undefined;
         },
         removeHook : function(hook) {
-            this.assets.removeHookAsset(hook.id);
+
+            // Notify store
+            this.trigger("hooks:remove", hook);
+
+            // Remove model
             delete this.hooks.hooksMap[hook.id];
             this.hooks.removeHook(hook);
         },

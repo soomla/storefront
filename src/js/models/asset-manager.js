@@ -391,6 +391,9 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
 
                     this.assets.updateItemId(oldItemId, newItemId);
                     this.assets.updateModelAssetName(oldItemId, newItemId);
+                },
+                "hooks:remove" : function(hook) {
+                    this.assets.removeHookAsset(hook.id);
                 }
 
             }, this);
