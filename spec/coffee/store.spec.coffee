@@ -1,4 +1,4 @@
-define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Urls, modelFixture, templateFixture) ->
+define ["backbone", "models", "utils", "urls", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, modelFixture, templateFixture) ->
 
   # Prepare variables used in many test cases
   modelFixture    = JSON.parse(modelFixture)
@@ -7,8 +7,77 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
   barPlaceholder  = Urls.progressBarPlaceholder
   stubImage       = "data:image/png;base64,stubImage"
 
-  deepClone = (p_object) ->
-    JSON.parse(JSON.stringify(p_object))
+
+  # Helper function for cloning deep objects
+  deepClone = (obj) ->
+    JSON.parse(JSON.stringify(obj))
+
+
+  # Helper function to correctly set up the prototype chain, for subclasses.
+  # Similar to `goog.inherits`, but uses a hash of prototype properties and
+  # class properties to be extended.
+  extend = (target, protoProps) ->
+    parent = target
+    child = null
+
+    # The constructor function for the new subclass is either defined by you
+    # (the "constructor" property in your `extend` definition), or defaulted
+    # by us to simply call the parent's constructor.
+    if (protoProps && _.has(protoProps, 'constructor'))
+      child = protoProps.constructor;
+    else
+      child = ->
+        parent.apply(@, arguments)
+
+    # Set the prototype chain to inherit from `parent`, without calling
+    # `parent`'s constructor function.
+    Surrogate = ->
+      @.constructor = child
+      return
+
+    Surrogate.prototype = parent.prototype
+    child.prototype = new Surrogate
+
+    # Add prototype properties (instance properties) to the subclass,
+    # if supplied.
+    if (protoProps)
+      _.extend(child.prototype, protoProps)
+
+    # Set a convenience property in case the parent's prototype is needed
+    # later.
+    child.__super__ = parent.prototype
+    child
+
+
+  describe "Store - static methods", ->
+
+    beforeEach ->
+      @Store = extend(Models.Store)
+      @Store.mixin = Models.Store.mixin
+
+    afterEach ->
+
+    it "mixin: should mixin attributes not names 'wrappers'", ->
+      @Store.mixin({
+        foo: (x)-> x
+        bar: {a: 1}
+        wrappers: {}
+      })
+      expect(typeof @Store.prototype.foo).toBe "function"
+      expect(@Store.prototype.bar).toEqual {a: 1}
+      expect(typeof @Store.prototype.wrappers).toBeUndefined
+
+    xit "mixin: should wrap functions if they have an implementation provided in 'wrappers'", ->
+      # TODO: Use spies
+      @Store.prototype.log = ()->
+      @Store.mixin({
+        wrappers: {
+          log: ->
+        }
+      })
+
+      # TODO: Call store.log and check that both functions were called
+
 
   describe "Store", ->
 
@@ -18,10 +87,6 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
         # In order to reset the JSON object everytime,
         # we deep clone it before initializing the store
         @store = new Models.Store(deepClone(modelFixture))
-
-        # This is necessary to initialize the internal objects of the assets object
-        # TODO: This will need to be refactored out
-        @store.injectAssets({}, {});
 
         # This is necessary to initialize the internal objects of the template object
         # TODO: This will need to be refactored out
@@ -372,3 +437,28 @@ define ["backbone", "models", "urls", "text!modelFixture.json", "text!templateFi
             expect(@store.supportsMarketPurchaseTypeOnly()).toBeFalsy()
             delete @store.template.supportedFeatures.purchaseTypes.virtualItem
             expect(@store.supportsMarketPurchaseTypeOnly()).toBeTruthy()
+
+
+        describe "JSON transformation", ->
+
+          it "toJSON: should include a correct modelAssets object", ->
+            modelAssetNames = _.extend {}, modelFixture.modelAssets.items, modelFixture.modelAssets.categories, modelFixture.modelAssets.hooks
+            @store.injectAssets(modelAssetNames, {});
+            expect(@store.toJSON().modelAssets).toEqual modelFixture.modelAssets
+
+          it "toJSON: should include a correct theme object", ->
+            themeAssetNames = {}
+            Utils.createThemeAssetMap(templateFixture.attributes, modelFixture.theme, themeAssetNames, "");
+            @store.injectAssets({}, themeAssetNames);
+            expect(@store.toJSON().theme).toEqual modelFixture.theme
+
+          it "toJSON: should omit the 'template.baseUrl' attribute", ->
+            json = deepClone(modelFixture)
+            json.template.baseUrl = "stubUrl"
+            Backbone.Relational.store.reset()
+            @store = new Models.Store(json)
+            @store.buildTemplate(deepClone(templateFixture))
+            expect(@store.toJSON().template.baseUrl).toBeUndefined()
+
+          it "toJSON: should include the custom CSS attribute", ->
+            expect(@store.toJSON().customCss).toEqual modelFixture.customCss

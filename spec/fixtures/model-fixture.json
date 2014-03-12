@@ -358,35 +358,35 @@
     },
     "modelAssets": {
         "categories": {
-            "ANIMALS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_4.png",
-            "HINTS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_1.png",
-            "POWERUPS": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_2.png",
-            "UTILITIES": "../../../storefront-themes/themes/jungleMaze/theme/img/-_Object_3.png"
+            "ANIMALS": "img/-_Object_4.png",
+            "HINTS": "img/-_Object_1.png",
+            "POWERUPS": "img/-_Object_2.png",
+            "UTILITIES": "img/-_Object_3.png"
         },
         "hooks": {
-            "__sponsorpay__currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+            "__sponsorpay__currency_nuts": "img/tapjoy.png"
         },
         "items": {
-            "banana": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-06.png",
-            "cobra": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal04.png",
-            "coconut": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-08.png",
-            "currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/coin.png",
-            "elephant": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal01.png",
-            "flower": "../../../storefront-themes/themes/jungleMaze/theme/img/Utilities/objects-09.png",
-            "giraffe": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal03.png",
-            "hint_1_butterfly": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints01.png",
-            "hint_2_beatle": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints02.png",
-            "hint_3_firebug": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints03.png",
-            "hint_4_ant": "../../../storefront-themes/themes/jungleMaze/theme/img/Hints/Hints04.png",
-            "invisibility": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup02.png",
-            "lion": "../../../storefront-themes/themes/jungleMaze/theme/img/Animals/Animal02.png",
-            "more_time": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup03.png",
-            "nuts_booster_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
-            "nuts_mega_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
-            "nuts_ultimate_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
-            "nuts_ultra_pack": "../../../storefront-themes/themes/jungleMaze/theme/img/Coins/objects-08.png",
-            "remove_ads": "../../../storefront-themes/themes/jungleMaze/theme/img/no-ads.png",
-            "shaker": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup01.png",
+            "banana": "img/Utilities/objects-06.png",
+            "cobra": "img/Animals/Animal04.png",
+            "coconut": "img/Utilities/objects-08.png",
+            "currency_nuts": "img/coin.png",
+            "elephant": "img/Animals/Animal01.png",
+            "flower": "img/Utilities/objects-09.png",
+            "giraffe": "img/Animals/Animal03.png",
+            "hint_1_butterfly": "img/Hints/Hints01.png",
+            "hint_2_beatle": "img/Hints/Hints02.png",
+            "hint_3_firebug": "img/Hints/Hints03.png",
+            "hint_4_ant": "img/Hints/Hints04.png",
+            "invisibility": "img/Powerups/Powerup02.png",
+            "lion": "img/Animals/Animal02.png",
+            "more_time": "img/Powerups/Powerup03.png",
+            "nuts_booster_pack": "img/Coins/objects-08.png",
+            "nuts_mega_pack": "img/Coins/objects-08.png",
+            "nuts_ultimate_pack": "img/Coins/objects-08.png",
+            "nuts_ultra_pack": "img/Coins/objects-08.png",
+            "remove_ads": "img/no-ads.png",
+            "shaker": "img/Powerups/Powerup01.png",
             "speed_boost_upgrade0_bar": "img/Container0_2_1373789535673.png",
             "speed_boost_upgrade1": "img/1371815195_dashboard_3_4_square_1373789523814.png",
             "speed_boost_upgrade2": "img/1371815195_dashboard_3_4_square_1373789526669.png",
@@ -394,9 +394,9 @@
             "speed_boost_upgrade1_bar": "img/Container1_2_1373789537888.png",
             "speed_boost_upgrade2_bar": "img/Container2_2_1373789540733.png",
             "speed_boost_upgrade3_bar": "img/Container3_2_1373789542999.png",
-            "switch": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04.png",
-            "switch_pack_5": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04-5.png",
-            "switch_pack_10": "../../../storefront-themes/themes/jungleMaze/theme/img/Powerups/Powerup04-10.png"
+            "switch": "img/Powerups/Powerup04.png",
+            "switch_pack_5": "img/Powerups/Powerup04-5.png",
+            "switch_pack_10": "img/Powerups/Powerup04-10.png"
         }
     },
     "template": {
@@ -404,45 +404,46 @@
         "name": "airstrikeBravo",
         "orientation": "landscape"
     },
+    "customCss" : "background: red;",
     "theme": {
-        "background": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_BG.jpg",
+        "background": "img/BG_BG.jpg",
         "balance": {
             "style": "color: #FFF;"
         },
-        "currencyPacksCategoryImage": "../../../storefront-themes/themes/jungleMaze/theme/img/get_coins.png",
-        "fonts": [ "../../../storefront-themes/themes/jungleMaze/theme/fonts/Abrila.ttf",
-            "../../../storefront-themes/themes/jungleMaze/theme/fonts/Abrila.ttf"
+        "currencyPacksCategoryImage": "img/get_coins.png",
+        "fonts": [ "fonts/Abrila.ttf",
+            "fonts/Abrila.ttf"
         ],
         "headerBackground": "",
         "hooks": {
             "common": {
-                "offersMenuLinkImage": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+                "offersMenuLinkImage": "img/tapjoy.png"
             },
             "sponsorpay": {
-                "currency_nuts": "../../../storefront-themes/themes/jungleMaze/theme/img/tapjoy.png"
+                "currency_nuts": "img/tapjoy.png"
             }
         },
         "images": {
-            "backImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BACK.png",
-            "buyImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BUY.png",
-            "contentBackground": "../../../storefront-themes/themes/jungleMaze/theme/img/ContentBackground.png",
-            "equip": "../../../storefront-themes/themes/jungleMaze/theme/img/equip.png",
-            "equipped": "../../../storefront-themes/themes/jungleMaze/theme/img/equipped.png",
-            "expandImage": "../../../storefront-themes/themes/jungleMaze/theme/img/expand.png",
-            "itemAreaBackground": "../../../storefront-themes/themes/jungleMaze/theme/img/ItemAreaBackground.png",
-            "itemBackgroundImage": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_Product.png",
-            "itemBackgroundImageExpanded": "../../../storefront-themes/themes/jungleMaze/theme/img/BG_Product_Ext.png",
-            "notOwnedIndicatorImage": "../../../storefront-themes/themes/jungleMaze/theme/img/Gray_Owned.png",
-            "ownedIndicatorImage": "../../../storefront-themes/themes/jungleMaze/theme/img/Green_Owned.png",
-            "quitImage": "../../../storefront-themes/themes/jungleMaze/theme/img/QUIT.png"
+            "backImage": "img/BACK.png",
+            "buyImage": "img/BUY.png",
+            "contentBackground": "img/ContentBackground.png",
+            "equip": "img/equip.png",
+            "equipped": "img/equipped.png",
+            "expandImage": "img/expand.png",
+            "itemAreaBackground": "img/ItemAreaBackground.png",
+            "itemBackgroundImage": "img/BG_Product.png",
+            "itemBackgroundImageExpanded": "img/BG_Product_Ext.png",
+            "notOwnedIndicatorImage": "img/Gray_Owned.png",
+            "ownedIndicatorImage": "img/Green_Owned.png",
+            "quitImage": "img/QUIT.png"
         },
         "name": "jungleMaze",
         "noFundsModal": {
-            "background": "../../../storefront-themes/themes/jungleMaze/theme/img/Alert-22.png",
-            "noButton": "../../../storefront-themes/themes/jungleMaze/theme/img/no_btn.png",
+            "background": "img/Alert-22.png",
+            "noButton": "img/no_btn.png",
             "text": "Insufficient funds.  Would you like to buy more?",
             "textStyle": "text-shadow: 1px 2px #808080",
-            "yesButton": "../../../storefront-themes/themes/jungleMaze/theme/img/yes_btn.png"
+            "yesButton": "img/yes_btn.png"
         },
         "pages": {
             "currencyPacks": {

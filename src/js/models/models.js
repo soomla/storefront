@@ -252,14 +252,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Prepare a JSON using the original prototype's toJSON method
             var json = RelationalModel.prototype.toJSON.apply(this.economy);
 
-            // Deep clone the model assets and theme since they might be manipulated
-            // by this function and we don't want to affect the original objects
-            json.modelAssets = $.extend(true, {}, this.assets.modelAssets);
-            json.theme = $.extend(true, {}, this.assets.theme);
-
-            // Delete field that is injected just for SDK state emulation
-            delete json.theme.hooks_providers;
-
             // Remove all fields injected into models during runtime
             // e.g. balance, equipped...
             _.each(json.currencies, function(currency) {
@@ -336,43 +328,32 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Assign hooks
             json.hooks = this.hooks.toJSON();
 
-
-            // Update model assets
-            var modelAssetNames = this.assets.modelAssetNames;
-
-            // Iterate over categories, items and hooks and replace their
-            // assets with the proper asset names
-            _.each(json.modelAssets, function(assets, map) {
-                _.each(json.modelAssets[map], function(name, itemId) {
-                    json.modelAssets[map][itemId] = modelAssetNames[itemId];
-                });
-            });
-
-            // Update theme assets
-            var themeAssetNames = this.assets.themeAssetNames;
-            _.each(themeAssetNames, function(name, keychain) {
-                Utils.setByKeyChain(json.theme, keychain, name);
-            });
-
-
-
-            // Remove the injected base URL (only for loading assets in the dashboard)
-            // Clone explanation: Backbone's implementation to toJSON() clones the model's attributes.  This is
-            // a shallow clone.  See http://underscorejs.org/#clone
-            // This is why cloning the template object first is necessary.  Manipulating it directly will
-            // affect the original model which we don't want
-            // TODO: Remove once the storefront loads its template files (.less, .handlbars, *Views.js) from S3 URLs
-            json.template = _.clone(this.assets.template);
-            delete json.template.baseUrl;
-
-            var customCss = this.getCustomCss();
-            if (customCss) json.customCss = customCss;
-
             return json;
         }
     });
 
     _.extend(Store.prototype, Hooks.HooksMixin, Assets.AssetsMixin);
+
+    //
+    // Store.mixin:
+    // Similar to `_.extend`, but also checks for a `wappers` property
+    // And wraps existing functions in `Store.prototype` with functions
+    // provided in `wrappers`
+    //
+    _.extend(Store, {
+        mixin : function(source) {
+            _.extend(this.prototype, _.omit(source, "wrappers"));
+            _.each(source.wrappers, function(fn, name) {
+
+                // Check if the source and target are both actually functions
+                if(_.isFunction(fn) && _.isFunction(this.prototype[name])) {
+
+                    // Wrap the original function with the new one
+                    this.prototype[name] = _.wrap(this.prototype[name], fn);
+                }
+            }, this);
+        }
+    });
 
 
     // Assign store API version - to be used externally

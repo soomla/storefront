@@ -5,7 +5,8 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
     // Inject storefront helpers to the store prototype
     // This step is necessary for supporting the storefront UI
     //
-    _.extend(Models.Store.prototype, StorefrontHelpers);
+    //    _.extend(Models.Store.prototype, StorefrontHelpers);
+    Models.Store.mixin(StorefrontHelpers)
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.

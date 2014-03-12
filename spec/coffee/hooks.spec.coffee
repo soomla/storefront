@@ -33,10 +33,6 @@ define ['backbone', 'models', 'assetManager', 'urls', 'hooks', 'text!modelFixtur
       # we deep clone it before initializing the store
       @store = new Models.Store(deepClone(modelFixture))
 
-      # This is necessary to initialize the internal objects of the assets object
-      # TODO: This will need to be refactored out
-      @store.injectAssets({}, {});
-
       # This is necessary to initialize the internal objects of the template object
       # TODO: This will need to be refactored out
       @store.buildTemplate(deepClone(templateFixture))
