@@ -342,15 +342,18 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
     //
     _.extend(Store, {
         mixin : function(source) {
-            _.extend(this.prototype, _.omit(source, "wrappers"));
-            _.each(source.wrappers, function(fn, name) {
+            _.each(_.toArray(arguments), function(source) {
 
-                // Check if the source and target are both actually functions
-                if(_.isFunction(fn) && _.isFunction(this.prototype[name])) {
+                _.extend(this.prototype, _.omit(source, "wrappers"));
+                _.each(source.wrappers, function(fn, name) {
 
-                    // Wrap the original function with the new one
-                    this.prototype[name] = _.wrap(this.prototype[name], fn);
-                }
+                    // Check if the source and target are both actually functions
+                    if(_.isFunction(fn) && _.isFunction(this.prototype[name])) {
+
+                        // Wrap the original function with the new one
+                        this.prototype[name] = _.wrap(this.prototype[name], fn);
+                    }
+                }, this);
             }, this);
         }
     });

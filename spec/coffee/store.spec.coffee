@@ -57,15 +57,20 @@ define ["backbone", "models", "utils", "urls", "text!modelFixture.json", "text!t
 
     afterEach ->
 
-    it "mixin: should mixin attributes not names 'wrappers'", ->
+    it "mixin: should mixin attributes (from muliple modules) not names 'wrappers'", ->
       @Store.mixin({
         foo: (x)-> x
         bar: {a: 1}
         wrappers: {}
+      }, {
+        soom: 2
+        la: ()->
       })
       expect(typeof @Store.prototype.foo).toBe "function"
       expect(@Store.prototype.bar).toEqual {a: 1}
       expect(typeof @Store.prototype.wrappers).toBeUndefined
+      expect(@Store.prototype.soom).toBe 2
+      expect(typeof @Store.prototype.la).toBe "function"
 
     xit "mixin: should wrap functions if they have an implementation provided in 'wrappers'", ->
       # TODO: Use spies
