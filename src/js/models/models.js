@@ -27,7 +27,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // Save for later reference
         this.options = options;
 
-        _.bindAll(this, "buildTemplate");
         _.bindAll(this, "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
 
         // Create a {ID : good} map with goods from all categories
@@ -140,6 +139,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         this.assets = new Assets.AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
 
         if (_.isFunction(this.bindAssets)) this.bindAssets();
+        if (_.isFunction(this.initializeStorefrontHelpers)) this.initializeStorefrontHelpers();
     };
 
     _.extend(Store.prototype, Backbone.Events, ModelManipulation, DimensionHelpers, {
