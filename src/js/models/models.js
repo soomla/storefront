@@ -142,19 +142,16 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         if (_.isFunction(this.initializeStorefrontHelpers)) this.initializeStorefrontHelpers();
     };
 
-    _.extend(Store.prototype, Backbone.Events, ModelManipulation, DashboardHelpers, {
-
-
-        //
-        // UI only functionality
-        //
-        getCurrency : function(id) {
-            return this.getCurrencies().get(id);
-        },
-
+    _.extend(
+        Store.prototype,
+        Backbone.Events,
+        ModelManipulation,
+        DashboardHelpers,
+        Hooks.HooksMixin,
+        Assets.AssetsMixin, {
 
         //
-        // UI + Dashboard related functionality
+        // Category methods
         //
 
         getCategories : function() {
@@ -166,20 +163,32 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         getFirstCategory : function() {
             return this.getCategories().first();
         },
+        getGoodCategory: function(goodId) {
+            return this.categoryMap[goodId];
+        },
+
+
+        //
+        // Currency methods
+        //
+
         getCurrencies : function() {
             return this.economy.get("currencies");
-        }
-
-    }, {
-        getItem : function(itemId) {
-            return this.goodsMap[itemId];
+        },
+        getCurrency : function(id) {
+            return this.getCurrencies().get(id);
+        },
+        getFirstCurrency: function() {
+            return this.getCurrencies().first();
         },
         getCurrencyPack : function(itemId) {
             return this.packsMap[itemId];
         },
-        getGoodCategory: function(goodId) {
-            return this.categoryMap[goodId];
-        },
+
+        //
+        // Utility methods
+        //
+
         setBalance : function(balances) {
 
             // Notify listeners before updating currencies
@@ -234,9 +243,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Notify listeners after updating goods
             this.trigger("goods:update:after");
             return this;
-        },
-        getFirstCurrency: function() {
-            return this.getCurrencies().first();
         },
         getSingleUseGoods : function() {
             return this.singleUseGoods;
@@ -326,7 +332,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         }
     });
 
-    _.extend(Store.prototype, Hooks.HooksMixin, Assets.AssetsMixin);
 
     //
     // Store.mixin:
