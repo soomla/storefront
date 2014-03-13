@@ -37,7 +37,7 @@ require.config({
         // External mixins for dashboard \ storefront UI
         storefrontHelpers       : "models/storefront-helpers",
         modelManipulation       : "external/model-manipulation",
-        dimensionHelpers        : "external/dimension-helpers",
+        dashboardHelpers        : "external/dashboard-helpers",
 
         // Native APIs
         soomlaAndroid           : "api/soomla-android",

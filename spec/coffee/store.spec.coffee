@@ -443,6 +443,19 @@ define ["backbone", "models", "utils", "urls", "text!modelFixture.json", "text!t
             delete @store.template.supportedFeatures.purchaseTypes.virtualItem
             expect(@store.supportsMarketPurchaseTypeOnly()).toBeTruthy()
 
+          it "getTemplate: should return a template object", ->
+            expect(typeof @store.getTemplate()).toBe "object"
+
+          it "getSingleUseGoods: should retunrn all goods of type 'singleUse'", ->
+            goods = new Backbone.Collection
+            @store.getCategories().each (category)->
+              category.getGoods().each (good)->
+                goods.add(good) if good.getType() == "singleUse"
+
+            @store.getSingleUseGoods().each (good)->
+              expect(goods.get(good.id).toJSON()).toEqual good.toJSON()
+
+
 
         describe "JSON transformation", ->
 

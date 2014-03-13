@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "modelManipulation", "dimensionHelpers"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, ModelManipulation, DimensionHelpers) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "modelManipulation", "dashboardHelpers"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, ModelManipulation, DashboardHelpers) {
 
     // Cache base classes.
     var RelationalModel             = Backbone.RelationalModel;
@@ -142,7 +142,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         if (_.isFunction(this.initializeStorefrontHelpers)) this.initializeStorefrontHelpers();
     };
 
-    _.extend(Store.prototype, Backbone.Events, ModelManipulation, DimensionHelpers, {
+    _.extend(Store.prototype, Backbone.Events, ModelManipulation, DashboardHelpers, {
 
 
         //
@@ -157,9 +157,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // UI + Dashboard related functionality
         //
 
-        getTemplate : function() {
-            return this.template;
-        },
         getCategories : function() {
             return this.economy.get("categories");
         },

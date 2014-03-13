@@ -1,4 +1,4 @@
-define("dimensionHelpers", ["economyModels"], function(EconomyModels) {
+define("dashboardHelpers", ["economyModels"], function(EconomyModels) {
 
     //
     // `this` refers to an instance of the `Store` object
@@ -24,6 +24,9 @@ define("dimensionHelpers", ["economyModels"], function(EconomyModels) {
         },
         getCategoryAssetDimensions : function() {
             return this.template.getCategoryAssetDimensions();
+        },
+        getTemplate : function() {
+            return this.template;
         }
     }
 });
