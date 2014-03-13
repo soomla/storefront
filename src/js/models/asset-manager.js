@@ -397,6 +397,15 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
                 }
 
             }, this);
+        },
+
+        initializeAssetManager : function(options) {
+
+            // Create theme object
+            this.assets = new AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
+
+            // Bind functionality that is in this mixin
+            _.bindAll(this, "updateUpgradeAssets");
         }
     };
 

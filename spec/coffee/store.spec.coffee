@@ -1,4 +1,4 @@
-define ["backbone", "models", "utils", "urls", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, modelFixture, templateFixture) ->
+define ["backbone", "models", "utils", "urls", "assetManager", "template", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, Assets, Template, modelFixture, templateFixture) ->
 
   # Prepare variables used in many test cases
   modelFixture    = JSON.parse(modelFixture)
@@ -444,7 +444,10 @@ define ["backbone", "models", "utils", "urls", "text!modelFixture.json", "text!t
             expect(@store.supportsMarketPurchaseTypeOnly()).toBeTruthy()
 
           it "getTemplate: should return a template object", ->
-            expect(typeof @store.getTemplate()).toBe "object"
+            expect(@store.getTemplate() instanceof Template).toBeTruthy()
+
+          it "initializeAssetManager: should return an `AssetManager` object", ->
+            expect(@store.assets instanceof Assets.AssetManager).toBeTruthy()
 
           it "getSingleUseGoods: should retunrn all goods of type 'singleUse'", ->
             goods = new Backbone.Collection

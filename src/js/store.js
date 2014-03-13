@@ -1,4 +1,4 @@
-define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "storefrontHelpers", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid, StorefrontHelpers) {
+define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "assetManager", "storefrontHelpers", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid, Assets, StorefrontHelpers) {
 
 
     //
@@ -6,7 +6,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
     // This step is necessary for supporting the storefront UI
     //
     //    _.extend(Models.Store.prototype, StorefrontHelpers);
-    Models.Store.mixin(StorefrontHelpers)
+    Models.Store.mixin(StorefrontHelpers, Assets.AssetsMixin);
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.

@@ -1,4 +1,4 @@
-define("models", ["backbone", "economyModels", "utils", "urls", "template", "assetManager", "hooks", "modelManipulation", "dashboardHelpers"], function(Backbone, EconomyModels, Utils, Urls, Template, Assets, Hooks, ModelManipulation, DashboardHelpers) {
+define("models", ["backbone", "economyModels", "utils", "urls", "template", "hooks", "modelManipulation", "dashboardHelpers"], function(Backbone, EconomyModels, Utils, Urls, Template, Hooks, ModelManipulation, DashboardHelpers) {
 
     // Cache base classes.
     var RelationalModel             = Backbone.RelationalModel;
@@ -27,7 +27,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // Save for later reference
         this.options = options;
 
-        _.bindAll(this, "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
+        _.bindAll(this, "setBalance", "updateVirtualGoods");
 
         // Create a {ID : good} map with goods from all categories
         var goodsMap    = this.goodsMap     = {};
@@ -135,10 +135,10 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // Create hooks object
         this.hooks = new Hooks.HookManager({theme : options.theme, hooks : options.hooks, hooksProviders : options.hooks_providers || {}});
 
-        // Create theme object
-        this.assets = new Assets.AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
 
+        // TODO: Create separation - don't mixin these methods that are invoked only once.
         if (_.isFunction(this.bindAssets)) this.bindAssets();
+        if (_.isFunction(this.initializeAssetManager)) this.initializeAssetManager(options);
         if (_.isFunction(this.initializeStorefrontHelpers)) this.initializeStorefrontHelpers();
     };
 
@@ -147,8 +147,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         Backbone.Events,
         ModelManipulation,
         DashboardHelpers,
-        Hooks.HooksMixin,
-        Assets.AssetsMixin, {
+        Hooks.HooksMixin, {
 
         //
         // Category methods
