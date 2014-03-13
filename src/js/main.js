@@ -60,7 +60,7 @@ require.config({
         handlebars          	: "storefront/libs/handlebars-1.0.rc.2",
 
         // jQuery related
-        jquery              	: "libs/jquery/jquery-1.9.1.min",
+        jquery              	: "storefront/libs/jquery/jquery-1.9.1.min",
         "jquery.pnotify"        : "storefront/libs/jquery/jquery.pnotify",
         jqueryUtils             : "storefront/libs/jquery/jquery-utils",
         "jquery.preload"        : "storefront/libs/jquery/jquery.preload",

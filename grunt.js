@@ -67,8 +67,8 @@ module.exports = function (grunt) {
         // This is helpful when you want to build your theme and test it
         // in a browser after it was built
         // ===================================================================
-        // mkdir("-p", distFolder + "/js/libs/jquery");
-        // cp("js/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/libs/jquery");
+        // mkdir("-p", distFolder + "/js/storefront/libs/jquery");
+        // cp("js/storefront/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/storefront/libs/jquery");
         // cp("mobile-preview.html", distFolder + "/");
     });
 
@@ -90,8 +90,8 @@ module.exports = function (grunt) {
     grunt.registerTask('production', function() {
 
         // Add an external local copy of jquery
-        mkdir("-p", distFolder + "/js/libs/jquery");
-        cp(srcFolder + "/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
+        mkdir("-p", distFolder + "/js/storefront/libs/jquery");
+        cp(srcFolder + "/js/storefront/libs/jquery/jquery-1.*.min.js", distFolder + "/js/storefront/libs/jquery");
 
         // Add mobile preview HTML
         cp("./mobile-preview.html", distFolder);
