@@ -14,8 +14,7 @@ require.config({
         // Models
         economyModels           : "models/economy-models",
         models                  : "models/models",
-        assetManager            : "models/asset-manager",
-        template                : "models/template",
+        hooks                   : "models/hooks",
 
         // Views
         components              : "views/components",
@@ -30,24 +29,23 @@ require.config({
         stringUtils             : "utils/string-utils",
         urls                    : "utils/urls",
         userAgent               : "utils/user-agent",
-        cssUtils                : "utils/css-utils",
         constants               : "utils/constants",
         errors                  : "utils/errors",
 
         // External mixins for dashboard \ storefront UI
-        storefrontHelpers       : "models/storefront-helpers",
         modelManipulation       : "external/model-manipulation",
         dashboardHelpers        : "external/dashboard-helpers",
+        template                : "external/template",
 
-        // Native APIs
-        soomlaAndroid           : "api/soomla-android",
-        soomlaiOS               : "api/soomla-ios",
-        nativeApiStubs          : "api/native-api-stubs",
-        jsAPI                   : "api/js-api",
-        messaging               : "api/messaging",
-
-        // Hooks
-        hooks                   : "hooks/hooks",
+        // Storefront UI related modules and Native APIs
+        storefrontHelpers       : "storefront/storefront-helpers",
+        assetManager            : "storefront/asset-manager",
+        soomlaAndroid           : "storefront/soomla-android",
+        soomlaiOS               : "storefront/soomla-ios",
+        nativeApiStubs          : "storefront/native-api-stubs",
+        jsAPI                   : "storefront/js-api",
+        messaging               : "storefront/messaging",
+        cssUtils                : "storefront/utils/css-utils",
 
         // 3rd party modules
         imagesloaded            : "libs/imagesloaded-3.0.4",

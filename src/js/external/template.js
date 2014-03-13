@@ -160,6 +160,8 @@ define("template", ["underscore", "backbone", "utils"], function(_, Backbone, Ut
         getSupportedPurchaseTypes : function() {
             return this.supportedFeatures.purchaseTypes;
         },
+
+        // TODO: Ensure this function isn't shared between 'external' (dahsboard) modules and 'storefront' modules
         supportsCategoryImages : function() {
             return !_.isUndefined(this.supportedFeatures.categoryImages);
         }
