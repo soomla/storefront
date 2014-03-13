@@ -71,14 +71,14 @@ require.config({
         backboneFramework       : "libs/backbone/backbone-1.1.0",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.6",
         backboneExtensions      : "libs/backbone/backbone-extensions",
-        marionetteFramework 	: "libs/backbone/backbone.marionette.core-1.4.0",
-        marionetteExtensions    : "libs/backbone/marionette-extensions",
-        "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
-        "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
+        marionetteFramework 	: "storefront/libs/backbone/backbone.marionette.core-1.4.0",
+        marionetteExtensions    : "storefront/libs/backbone/marionette-extensions",
+        "backbone.babysitter"   : "storefront/libs/backbone/backbone.babysitter-0.0.6",
+        "backbone.wreqr"        : "storefront/libs/backbone/backbone.wreqr-0.2.0",
 
         // Aggregative modules
         backbone            	: "libs/backbone/backbone",
-        marionette            	: "libs/backbone/marionette"
+        marionette            	: "storefront/libs/backbone/marionette"
     },
     shim: {
         underscore: {
