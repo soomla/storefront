@@ -406,6 +406,8 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
 
             // Bind functionality that is in this mixin
             _.bindAll(this, "updateUpgradeAssets");
+
+            this.bindAssets();
         }
     };
 

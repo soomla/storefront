@@ -137,7 +137,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "hoo
 
 
         // TODO: Create separation - don't mixin these methods that are invoked only once.
-        if (_.isFunction(this.bindAssets)) this.bindAssets();
         if (_.isFunction(this.initializeAssetManager)) this.initializeAssetManager(options);
         if (_.isFunction(this.initializeStorefrontHelpers)) this.initializeStorefrontHelpers();
     };
