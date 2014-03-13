@@ -27,7 +27,7 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
         // Save for later reference
         this.options = options;
 
-        _.bindAll(this, "getBalance", "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
+        _.bindAll(this, "setBalance", "updateUpgradeAssets", "updateVirtualGoods");
 
         // Create a {ID : good} map with goods from all categories
         var goodsMap    = this.goodsMap     = {};
@@ -193,9 +193,6 @@ define("models", ["backbone", "economyModels", "utils", "urls", "template", "ass
             // Notify listeners after updating goods
             this.trigger("currencies:update:after");
             return this;
-        },
-        getBalance : function(currencyId) {
-            return this.getCurrency(currencyId).getBalance();
         },
         updateVirtualGoods : function(goods) {
 
