@@ -1,4 +1,4 @@
-define ["backbone", "models", "utils", "urls", "assetManager", "template", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, Assets, Template, modelFixture, templateFixture) ->
+define ["backbone", "models", "utils", "urls", "assetManager", "template", "errors", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, Assets, Template, Errors, modelFixture, templateFixture) ->
 
   # Prepare variables used in many test cases
   modelFixture    = JSON.parse(modelFixture)
@@ -266,7 +266,7 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "text
 
           expect(=>
             @store.addVirtualGood({type: "goodPacks", categoryId: "HINTS"})
-          ).toThrow()
+          ).toThrow(new Errors.NoSingleUseGoodsError())
 
         it "removeVirtualGood: should remove the good", ->
           good = @store.getItem("switch")
