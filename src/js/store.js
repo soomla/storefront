@@ -175,7 +175,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
-                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "css.handlebars",
+                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "js/storefront/css.handlebars",
                     templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
                     cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
                     templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
