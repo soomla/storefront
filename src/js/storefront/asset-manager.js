@@ -1,4 +1,4 @@
-define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hooks, Utils, Urls) {
+define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
 
 
     // Arrays for testing model types
