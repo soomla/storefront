@@ -9,7 +9,7 @@ require.config({
     paths: {
 
         // Initialization
-        store                   : "store",
+        init                    : "storefront/init",
 
         // Models
         economyModels           : "js-store/models/economy-models",
@@ -121,4 +121,4 @@ require.config({
     }
 });
 
-require(["store"]);
+require(["init"]);
