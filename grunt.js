@@ -54,8 +54,8 @@ module.exports = function (grunt) {
     grunt.registerTask('copy', 'Copies more necessary resources to the distribution folder', function() {
 
         // Copy Javascript
-        mkdir("-p", distFolder + "/js/libs", distFolder + "/css/mixins");
-        cp(srcFolder + "/js/libs/require.js", distFolder + "/js/libs/");
+        mkdir("-p", distFolder + "/js/js-store/libs", distFolder + "/css/mixins");
+        cp(srcFolder + "/js/js-store/libs/require.js", distFolder + "/js/js-store/libs/");
 
         // Copy HTML + Less
         cp("-R", srcFolder + "/store.html", srcFolder + "/storefront/css.handlebars", distFolder + "/");

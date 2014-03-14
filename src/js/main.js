@@ -12,15 +12,15 @@ require.config({
         store                   : "store",
 
         // Models
-        economyModels           : "models/economy-models",
-        models                  : "models/models",
-        hooks                   : "models/hooks",
+        economyModels           : "js-store/models/economy-models",
+        models                  : "js-store/models/models",
+        hooks                   : "js-store/models/hooks",
 
         // Utilities
-        utils                   : "utils/utils",
-        stringUtils             : "utils/string-utils",
-        urls                    : "utils/urls",
-        constants               : "utils/constants",
+        utils                   : "js-store/utils/utils",
+        stringUtils             : "js-store/utils/string-utils",
+        urls                    : "js-store/utils/urls",
+        constants               : "js-store/utils/constants",
 
         // External mixins for dashboard \ storefront UI
         modelManipulation       : "external/model-manipulation",
@@ -67,17 +67,17 @@ require.config({
         "jquery.fastbutton"     : "storefront/libs/jquery/jquery.google.fastbutton",
 
         // Backbone related
-        underscore          	: "libs/underscore-1.5.2",
-        backboneFramework       : "libs/backbone/backbone-1.1.0",
-        backboneRelational  	: "libs/backbone/backbone-relational-0.8.6",
-        backboneExtensions      : "libs/backbone/backbone-extensions",
+        underscore          	: "js-store/libs/underscore-1.5.2",
+        backboneFramework       : "js-store/libs/backbone/backbone-1.1.0",
+        backboneRelational  	: "js-store/libs/backbone/backbone-relational-0.8.6",
+        backboneExtensions      : "js-store/libs/backbone/backbone-extensions",
         marionetteFramework 	: "storefront/libs/backbone/backbone.marionette.core-1.4.0",
         marionetteExtensions    : "storefront/libs/backbone/marionette-extensions",
         "backbone.babysitter"   : "storefront/libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "storefront/libs/backbone/backbone.wreqr-0.2.0",
 
         // Aggregative modules
-        backbone            	: "libs/backbone/backbone",
+        backbone            	: "js-store/libs/backbone/backbone",
         marionette            	: "storefront/libs/backbone/marionette"
     },
     shim: {
