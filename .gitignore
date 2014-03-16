@@ -35,7 +35,7 @@ dwsync.xml
 intermediate
 publish
 .idea
-node_modules
+**/node_modules
 deploy
 
 # build script local files
