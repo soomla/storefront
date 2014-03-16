@@ -13,6 +13,7 @@ require.config({
 
         // Models
         economyModels           : "js-store/models/economy-models",
+        storeModel              : "js-store/models/store-model",
         models                  : "js-store/models/models",
         hooks                   : "js-store/models/hooks",
 

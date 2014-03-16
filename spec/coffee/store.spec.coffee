@@ -1,4 +1,4 @@
-define ["backbone", "models", "utils", "urls", "assetManager", "template", "errors", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Models, Utils, Urls, Assets, Template, Errors, modelFixture, templateFixture) ->
+define ["backbone", "storeModel", "utils", "urls", "assetManager", "template", "errors", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Store, Utils, Urls, Assets, Template, Errors, modelFixture, templateFixture) ->
 
   # Prepare variables used in many test cases
   modelFixture    = JSON.parse(modelFixture)
@@ -52,8 +52,8 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
   describe "Store - static methods", ->
 
     beforeEach ->
-      @Store = extend(Models.Store)
-      @Store.mixin = Models.Store.mixin
+      @Store = extend(Store)
+      @Store.mixin = Store.mixin
 
     afterEach ->
 
@@ -91,7 +91,7 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
 
         # In order to reset the JSON object everytime,
         # we deep clone it before initializing the store
-        @store = new Models.Store(deepClone(modelFixture))
+        @store = new Store(deepClone(modelFixture))
 
         # This is necessary to initialize the internal objects of the template object
         # TODO: This will need to be refactored out
@@ -473,7 +473,7 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
             json = deepClone(modelFixture)
             json.template.baseUrl = "stubUrl"
             Backbone.Relational.store.reset()
-            @store = new Models.Store(json)
+            @store = new Store(json)
             @store.buildTemplate(deepClone(templateFixture))
             expect(@store.toJSON().template.baseUrl).toBeUndefined()
 
