@@ -133,6 +133,8 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
           expect(@store.assets.getItemAsset(currency.id)).toBe placeholder
           # TODO: expect that all related currency packs and goods are removed
 
+        # TODO: Test that all associated goods and packs are removed when a currency is deleted
+
 
       describe "Currency Packs", ->
 
@@ -246,7 +248,7 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
           good = @store.addVirtualGood({categoryId: "HINTS"})
           expect(good.getType()).toBe "singleUse"
 
-        it "addVirtualGood: should assign the first virtual currency by default", ->
+        it "addVirtualGood: should assign the first category by default", ->
           good = @store.addVirtualGood({type: "singleUse"})
           expect(@store.getFirstCategory().getGoods().contains(good)).toBeTruthy()
 
@@ -350,12 +352,6 @@ define ["backbone", "models", "utils", "urls", "assetManager", "template", "erro
             good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
             upgrade = @store.addUpgrade({goodItemId: good.id})
             expect(upgrade.getCurrencyId()).toBe @store.getFirstCurrency().id
-
-          it "addUpgrade: should add assets for the upgrade", ->
-            good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
-            upgrade = @store.addUpgrade({goodItemId: good.id, progressBarAssetUrl: stubImage, assetUrl: stubImage})
-            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeBarAssetId())).toBe stubImage
-            expect(@store.assets.getUpgradeAsset(upgrade.getUpgradeImageAssetId())).toBe stubImage
 
           it "addUpgrade: should add assets for the upgrade", ->
             good = @store.addVirtualGood({type: "upgradable", categoryId: "HINTS"})
