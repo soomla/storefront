@@ -68,7 +68,7 @@ require.config({
 
         // Backbone related
         underscore          	: "js-store/libs/underscore-1.6.0",
-        backboneFramework       : "js-store/libs/backbone/backbone-1.1.0",
+        backboneFramework       : "js-store/libs/backbone/backbone-1.1.2",
         backboneRelational  	: "js-store/libs/backbone/backbone-relational-0.8.6",
         backboneExtensions      : "js-store/libs/backbone/backbone-extensions",
         marionetteFramework 	: "storefront/libs/backbone/backbone.marionette.core-1.4.0",
@@ -85,8 +85,7 @@ require.config({
             deps: ['jquery']
         },
         "backboneFramework" : {
-            deps: ['underscore'],
-            exports: 'Backbone'
+            deps: ['underscore']
         },
         backbone : {
             deps: ['backboneFramework']
