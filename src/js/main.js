@@ -67,7 +67,7 @@ require.config({
         "jquery.fastbutton"     : "storefront/libs/jquery/jquery.google.fastbutton",
 
         // Backbone related
-        underscore          	: "js-store/libs/underscore-1.5.2",
+        underscore          	: "js-store/libs/underscore-1.6.0",
         backboneFramework       : "js-store/libs/backbone/backbone-1.1.0",
         backboneRelational  	: "js-store/libs/backbone/backbone-relational-0.8.6",
         backboneExtensions      : "js-store/libs/backbone/backbone-extensions",
@@ -81,9 +81,6 @@ require.config({
         marionette            	: "storefront/libs/backbone/marionette"
     },
     shim: {
-        underscore: {
-            exports: '_'
-        },
         "imagesloaded": {
             deps: ['jquery']
         },
