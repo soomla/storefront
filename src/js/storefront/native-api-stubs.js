@@ -47,7 +47,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
                 // The good is purchased via other virtual items
                 var balances    = {},
                     currencyId  = model.getCurrencyId(),
-                    newBalance  = SoomlaJS.store.getBalance(currencyId) - model.getPrice(currencyId);
+                    newBalance  = SoomlaJS.store.getCurrency(currencyId).getBalance() - model.getPrice(currencyId);
 
                 // Check if there's enough balance for the purchase
                 if (newBalance < 0) {
@@ -76,7 +76,7 @@ define("nativeApiStubs", ["constants"], function(Constants){
             // Calculate and assign the new currency balance
             var balances    = {},
                 currencyId  = model.getCurrencyId(),
-                newBalance  = SoomlaJS.store.getBalance(currencyId) + amount;
+                newBalance  = SoomlaJS.store.getCurrency(currencyId).getBalance() + amount;
 
             balances[currencyId] = {balance: newBalance};
 

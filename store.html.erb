@@ -26,20 +26,20 @@
 
     <% if dist_type == "dist" %>
 
-        <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/js-store/libs/require.js"] %>"></script>
         <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
         <script src="<%= sfjs_assets["#{dist_type}/js/main.js"] %>"></script>
 
     <% elsif dist_type == "src" %>
 
-        <script src="<%= sfjs_assets["#{dist_type}/js/libs/require.js"] %>"></script>
+        <script src="<%= sfjs_assets["#{dist_type}/js/js-store/libs/require.js"] %>"></script>
         <script src="<%= template_assets["#{dist_type}/js/#{template_name}Views.js"] %>"></script>
 
         <%
            sfjs_assets.each do |name, url|
 
              # Deploy if
-             next if (name == "#{dist_type}/js/libs/require.js" || name == "#{dist_type}/js/main.js")
+             next if (name == "#{dist_type}/js/js-store/libs/require.js" || name == "#{dist_type}/js/main.js")
         %>
 
             <script src="<%= url %>"></script>
@@ -74,7 +74,7 @@
 			    var json = <%= JSON model %>;
 			    var options = {
 				    env : "dist",
-				    cssHandlebarsUrl : "<%= sfjs_assets["#{dist_type}/css.handlebars"] %>",
+				    cssHandlebarsUrl : "<%= sfjs_assets["#{dist_type}/storefront/css.handlebars"] %>",
 				    templateJsonUrl : "<%= template_assets["#{dist_type}/template.json"] %>",
 				    assets : <%= JSON theme_assets %>
 			    };

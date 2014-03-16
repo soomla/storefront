@@ -53,7 +53,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 </div>
 
 <!-- JavaScript at the bottom for fast page loading -->
-<script src="js/libs/jquery/jquery-1.9.1.min.js"></script>
+<script src="js/storefront/libs/jquery/jquery-1.9.1.min.js"></script>
 
 <!-- jQuery plugins -->
 
@@ -76,7 +76,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
         // so no need to extend the store object with native API functions
         STUB_API : true,
         uiReady : function() {
-            // Stub implementation so that store.js will succeed when calling this
+            // Stub implementation so that init.js will succeed when calling this
         },
         playSound : function(filePath) {},
         storeInitialized : function() {
@@ -174,7 +174,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
 
     });
 </script>
-<script data-main="js/main" src="js/libs/require.js"></script>
+<script data-main="js/main" src="js/js-store/libs/require.js"></script>
 <!-- end scripts -->
 
 <div id="soomla-info-modal" class="modal" style="display: none">

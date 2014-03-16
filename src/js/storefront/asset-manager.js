@@ -1,4 +1,4 @@
-define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hooks, Utils, Urls) {
+define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls) {
 
 
     // Arrays for testing model types
@@ -306,6 +306,108 @@ define("assetManager", ["underscore", "hooks", "utils", "urls"], function(_, Hoo
         setCustomCss : function(css) {
             this.assets.setCustomCss(css);
             this.trigger("theme:customCss:change");
+        },
+
+        // Currently not in use
+        updateUpgradeAssets : function(model, newItemId) {
+
+            newItemId       = model.getEmptyUpgradeBarAssetId(newItemId);
+            var oldItemId   = model.getEmptyUpgradeBarAssetId(model.previousAttributes().itemId);
+            this.assets.updateItemId(oldItemId, newItemId)
+        },
+
+
+        //
+        // This function should be invoked in the Store model constructor.
+        // It binds to applicative events and manipulates assets as necessary
+        //
+        bindAssets : function() {
+
+            this.on({
+                "currencies:add" : function(currency, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setItemAsset(currency.id, assetUrl);
+                },
+                "currencies:remove" : function(currency) {
+                    this.assets.removeItemAsset(currency.id);
+                },
+                "currencyPacks:add" : function(currencyPack, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setItemAsset(currencyPack.id, assetUrl);
+                },
+                "currencyPacks:remove" : function(currencyPack) {
+                    this.assets.removeItemAsset(currencyPack.id);
+                },
+                "categories:add" : function(catgory, options) {
+                    var assetUrl = options.assetUrl || Urls.imagePlaceholder;
+                    this.assets.setCategoryAsset(catgory.id, assetUrl, "");
+                },
+                "categories:remove" : function(category) {
+                    this.assets.removeCategoryAsset(category.id);
+                },
+                "categories:change:name" : function(category, newName) {
+                    var oldItemId = category.id;
+                    if (this.template.supportsCategoryImages()) {
+                        this.assets.updateCategoryId(oldItemId, newName);
+                        this.assets.updateModelAssetName(oldItemId, newName);
+                    }
+                },
+                "goods:add" : function(good, options) {
+                    if (good.getType() === "upgradable") {
+                        this.assets.setUpgradeBarAsset(good.getEmptyUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder)
+                    } else {
+                        this.assets.setItemAsset(good.id, options.assetUrl || Urls.imagePlaceholder);
+                    }
+
+                },
+                "goods:remove" : function(good) {
+
+                    if (good.is("upgradable")) {
+
+                        // Remove zero-index bar
+                        this.assets.removeItemAsset(good.getEmptyUpgradeBarAssetId());
+                    } else {
+                        this.assets.removeItemAsset(good.id);
+                    }
+                },
+                "goods:upgrades:add" : function(upgrade, options) {
+                    this.assets.setUpgradeAsset(upgrade.getUpgradeImageAssetId(), options.assetUrl || Urls.imagePlaceholder);
+                    this.assets.setUpgradeBarAsset(upgrade.getUpgradeBarAssetId(), options.progressBarAssetUrl || Urls.progressBarPlaceholder);
+                },
+                "goods:upgrades:remove" : function(upgrade) {
+                    var upgradeImageAssetId = upgrade.getUpgradeImageAssetId(),
+                        upgradeBarAssetId   = upgrade.getUpgradeBarAssetId();
+                    this.assets.removeUpgradeAssets(upgradeImageAssetId, upgradeBarAssetId);
+                },
+                "items:change:id" : function(item, oldItemId, newItemId) {
+
+                    // Update asset name maps
+                    if (item.is && item.is("upgradable")) {
+
+                        // Assume an overriding model asset ID was passed
+                        oldItemId = item.getEmptyUpgradeBarAssetId();
+                        newItemId = item.getEmptyUpgradeBarAssetId(newItemId);
+                    }
+
+                    this.assets.updateItemId(oldItemId, newItemId);
+                    this.assets.updateModelAssetName(oldItemId, newItemId);
+                },
+                "hooks:remove" : function(hook) {
+                    this.assets.removeHookAsset(hook.id);
+                }
+
+            }, this);
+        },
+
+        initializeAssetManager : function(options) {
+
+            // Create theme object
+            this.assets = new AssetManager(_.pick(options, "template", "theme", "modelAssets", "customCss"));
+
+            // Bind functionality that is in this mixin
+            _.bindAll(this, "updateUpgradeAssets");
+
+            this.bindAssets();
         }
     };
 

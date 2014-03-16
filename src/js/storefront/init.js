@@ -1,4 +1,12 @@
-define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid) {
+define("init", ["jquery", "jsAPI", "models", "components", "handlebars", "utils", "userAgent", "soomlaiOS", "soomlaAndroid", "assetManager", "storefrontHelpers", "nativeApiStubs", "less", "templates", "helperViews", "jquery.preload"], function($, jsAPI, Models, Components, Handlebars, Utils, UserAgent, SoomlaIos, SoomlaAndroid, Assets, StorefrontHelpers) {
+
+
+    //
+    // Inject storefront helpers to the store prototype
+    // This step is necessary for supporting the storefront UI
+    //
+    //    _.extend(Models.Store.prototype, StorefrontHelpers);
+    Models.Store.mixin(StorefrontHelpers, Assets.AssetsMixin);
 
     // Checks if we're hosted in a parent frame.
     // If so, notify it of the given event.
@@ -49,33 +57,6 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
                 return true;
             }
             return false;
-        });
-    };
-
-
-
-	//
-	// Given the template and theme JSONs, manipulates the target object to
-    // hold a mapping of {<asset keychain> : <name>}
-    //
-    // i.e. {"pages.goods.list.background" : "img/bg.png"}
-    //
-    var createThemeAssetMap = function(templateObj, themeObj, target, keychain) {
-
-         _.each(templateObj, function(templateValue, templateKey) {
-            var themeValue = themeObj[templateKey];
-
-            // Check that theme value is defined.  This is to allow
-            // Template attributes that a certain theme chooses not to use
-            if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
-                var currentKeychain = keychain + "." + templateKey;
-                if (_.contains(["image", "backgroundImage", "font"], templateValue.type)) {
-                    currentKeychain = currentKeychain.replace(".", "");
-                    target[currentKeychain] = themeValue;
-                } else {
-                    createThemeAssetMap(templateValue, themeValue, target, currentKeychain);
-                }
-            }
         });
     };
 
@@ -194,7 +175,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                 // Add the data type for the template request since
                 // Android doesn't auto-convert the response to a javascript object
-                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "css.handlebars",
+                var cssHandlebarsUrl    = options.cssHandlebarsUrl || "js/storefront/css.handlebars",
                     templateJsonUrl     = options.templateJsonUrl  || (templatesFolder  + "/template.json"),
                     cssRequest 			= $.ajax({ url: cssHandlebarsUrl }),
                     templateRequest 	= $.ajax({ url: templateJsonUrl, dataType: "json" }),
@@ -213,7 +194,7 @@ define("store", ["jquery", "jsAPI", "models", "components", "handlebars", "utils
 
                     // Create an asset map for the theme assets
                     var themeAssetNames = {};
-                    createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
+                    Utils.createThemeAssetMap(template.attributes, originalTheme, themeAssetNames, "");
                     _this.store.injectAssets(modelAssetNames, themeAssetNames);
 
 

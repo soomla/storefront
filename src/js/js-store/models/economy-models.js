@@ -10,14 +10,20 @@ define("economyModels", ["backbone"], function(Backbone) {
     };
 
 
-    // Cache base classes.
-    var RelationalModel = Backbone.RelationalModel.extend({
+    var BaseModel = Backbone.RelationalModel.extend({
+        setItemId : function(id) {
+            return this.set("itemId", id);
+        },
         setName: function (name) {
             this.set("name", name);
         },
         getName: function () {
             return this.get("name");
-        },
+        }
+    });
+
+    var PurchasableVirtualItem = BaseModel.extend({
+        idAttribute : "itemId",
         getIosId : function() {
             return this.purchasableItem.marketItem.iosId;
         },
@@ -30,9 +36,6 @@ define("economyModels", ["backbone"], function(Backbone) {
         // Functions for market purchase type items.
         // These are common between goods and currency packs
         // because some goods can be purchased directly from the market.
-        setItemId : function(id) {
-            return this.set("itemId", id);
-        },
         setMarketItemId : function(type, id) {
             switch (type) {
                 case "iosId" :
@@ -63,15 +66,14 @@ define("economyModels", ["backbone"], function(Backbone) {
     }),
     Collection = Backbone.Collection;
 
-    Object.defineProperties(RelationalModel.prototype, {
+    Object.defineProperties(PurchasableVirtualItem.prototype, {
         purchasableItem : {
             get : function() { return this.get("purchasableItem"); }
         }
     });
 
 
-    var CurrencyPack = RelationalModel.extend({
-        idAttribute : "itemId",
+    var CurrencyPack = PurchasableVirtualItem.extend({
         defaults : {
             name : "Untitled"
         },
@@ -100,8 +102,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     });
     _.extend(CurrencyPack.prototype, DescriptionModule);
 
-    var VirtualGood = RelationalModel.extend({
-        idAttribute : "itemId",
+    var VirtualGood = PurchasableVirtualItem.extend({
         defaults : {
             name        : "Untitled",
             purchasableItem : {
@@ -176,7 +177,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var SingleUseGood = VirtualGood.extend({
 
         // Single use goods should have a balance of 0 by default
-        defaults : $.extend(true, {balance : 0}, VirtualGood.prototype.defaults),
+        defaults : $.extend(true, {balance : 0, type : "singleUse"}, VirtualGood.prototype.defaults),
         getBalance : function() {
             return this.get("balance");
         }
@@ -213,21 +214,24 @@ define("economyModels", ["backbone"], function(Backbone) {
     var EquippableGood = OwnableItem.extend({
 
         // Equippable goods should, by default, have a balance of 0 and not be equipped
-        defaults : $.extend(true, {equipped : false, equipping : "category"}, SingleUseGood.prototype.defaults),
+        defaults : $.extend(true, {equipped : false, equipping : "category", balance : 0, type : "equippable"}, VirtualGood.prototype.defaults),
         isEquipped : function() {
             return !!this.get("equipped");
         },
         setEquipping : function(equipped) {
+            if (!this.isOwned()) throw new Error("[Item ID - " + this.id + "]: Cannot equip a good that isn't owned")
             return this.set("equipped", equipped)
         }
     });
 
-    var LifetimeGood = OwnableItem.extend();
+    var LifetimeGood = OwnableItem.extend({
+        defaults : $.extend(true, {balance : 0, type : "lifetime"}, VirtualGood.prototype.defaults)
+    });
 
     var Upgrade = VirtualGood.extend({
 
         // Assign empty item ID pointers as defaults
-        defaults : $.extend(true, {prev_itemId : "", next_itemId : ""}, VirtualGood.prototype.defaults),
+        defaults : $.extend(true, {prev_itemId : "", next_itemId : "", type : "goodUpgrade"}, VirtualGood.prototype.defaults),
 
         initialize : function() {
             if (!this.has("itemId")) this.set("itemId", _.uniqueId("item_"));
@@ -238,6 +242,12 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         getUpgradeBarAssetId : function(id) {
             return this.getUpgradeImageAssetId(id) + Upgrade.barSuffix;
+        },
+        getNextItemId : function() {
+            return this.get("next_itemId");
+        },
+        getPrevItemId : function() {
+            return this.get("prev_itemId");
         }
     }, {
         generateNameFor : function(name, i) {
@@ -292,19 +302,19 @@ define("economyModels", ["backbone"], function(Backbone) {
 
             // If there's no current upgrade ID, we're still in the zero-upgrade state.
             // Return `this` as a dummy object
-            if (this.getCurrentUpgradeId() === "") return this;
+            if (this.getCurrentUpgradeId() === "") return null;
 
             return this.getUpgrades().get(this.getCurrentUpgradeId());
         },
         getNextUpgrade : function() {
-            var currentUpgrade  = this.getCurrentUpgrade(),
-                nextUpgradeId   = currentUpgrade.get("next_itemId");
+            var currentUpgrade = this.getCurrentUpgrade();
 
             // Zero-upgrade case - return the first upgrade
-            if (_.isUndefined(nextUpgradeId)) return this.getUpgrades().first();
+            if (!currentUpgrade) return this.getUpgrades().first();
 
             // If we're in the last upgrade in the list,
             // Return it again
+            var nextUpgradeId = currentUpgrade.getNextItemId();
             (nextUpgradeId !== "") || (nextUpgradeId = currentUpgrade.id);
 
             return  this.getUpgrades().get(nextUpgradeId);
@@ -316,7 +326,10 @@ define("economyModels", ["backbone"], function(Backbone) {
             this.set("upgradeId", upgradeId);
         },
         isComplete : function() {
-            return (this.getUpgrades().last().id === this.getCurrentUpgrade().id);
+
+            // Default to an empty object if no current upgrade exists
+            var currentUpgrade = this.getCurrentUpgrade() || {};
+            return (this.getUpgrades().last().id === currentUpgrade.id);
         },
         getEmptyUpgradeBarAssetId : function(id) {
             return Upgrade.generateNameFor(id || this.id, 0) + Upgrade.barSuffix;
@@ -369,7 +382,8 @@ define("economyModels", ["backbone"], function(Backbone) {
     var CurrencyPacksCollection = Collection.extend({ model : CurrencyPack }),
         VirtualGoodsCollection  = Collection.extend({ model : VirtualGood  });
 
-    var Currency = RelationalModel.extend({
+    var Currency = BaseModel.extend({
+        idAttribute : "itemId",
         defaults : {
             name    : "coins",
             balance : 0
@@ -386,7 +400,6 @@ define("economyModels", ["backbone"], function(Backbone) {
                 }
             }
         ],
-        idAttribute : "itemId",
         getBalance : function() {
             return this.get("balance");
         },
@@ -403,7 +416,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         }
     });
 
-    var Category = RelationalModel.extend({
+    var Category = BaseModel.extend({
         idAttribute: "name",
         defaults : {
             name    : "General"
@@ -431,7 +444,7 @@ define("economyModels", ["backbone"], function(Backbone) {
 
     // A container model for holding the relational tree
     // of currencies + packs, and categories + goods
-    var Economy = RelationalModel.extend({
+    var Economy = Backbone.RelationalModel.extend({
         relations: [
             {
                 type: Backbone.HasMany,
@@ -456,6 +469,8 @@ define("economyModels", ["backbone"], function(Backbone) {
 
 
     return {
+        BaseModel                   : PurchasableVirtualItem,
+        PurchasableVirtualItem      : PurchasableVirtualItem,
         VirtualGood                 : VirtualGood,
         SingleUseGood 				: SingleUseGood,
         SingleUsePack 				: SingleUsePack,
@@ -470,8 +485,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         CategoryCollection          : CategoryCollection,
         VirtualCurrencyCollection   : VirtualCurrencyCollection,
         CurrencyPacksCollection     : CurrencyPacksCollection,
-        Economy                     : Economy,
-        RelationalModel             : RelationalModel
+        Economy                     : Economy
     };
 
 });

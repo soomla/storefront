@@ -54,11 +54,11 @@ module.exports = function (grunt) {
     grunt.registerTask('copy', 'Copies more necessary resources to the distribution folder', function() {
 
         // Copy Javascript
-        mkdir("-p", distFolder + "/js/libs", distFolder + "/css/mixins");
-        cp(srcFolder + "/js/libs/require.js", distFolder + "/js/libs/");
+        mkdir("-p", distFolder + "/js/js-store/libs", distFolder + "/css/mixins");
+        cp(srcFolder + "/js/js-store/libs/require.js", distFolder + "/js/js-store/libs/");
 
         // Copy HTML + Less
-        cp("-R", srcFolder + "/store.html", srcFolder + "/css.handlebars", distFolder + "/");
+        cp("-R", srcFolder + "/store.html", srcFolder + "/storefront/css.handlebars", distFolder + "/");
         cp("-R", srcFolder + "/css/mixins/bootstrap", distFolder + "/css/mixins/");
         cp("-R", srcFolder + "/css/mixins/layout.less", distFolder + "/css/mixins/");
         cp("-R", srcFolder + "/css/img", distFolder + "/css/");
@@ -67,8 +67,8 @@ module.exports = function (grunt) {
         // This is helpful when you want to build your theme and test it
         // in a browser after it was built
         // ===================================================================
-        // mkdir("-p", distFolder + "/js/libs/jquery");
-        // cp("js/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/libs/jquery");
+        // mkdir("-p", distFolder + "/js/storefront/libs/jquery");
+        // cp("js/storefront/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/storefront/libs/jquery");
         // cp("mobile-preview.html", distFolder + "/");
     });
 
@@ -90,8 +90,8 @@ module.exports = function (grunt) {
     grunt.registerTask('production', function() {
 
         // Add an external local copy of jquery
-        mkdir("-p", distFolder + "/js/libs/jquery");
-        cp(srcFolder + "/js/libs/jquery/jquery-1.*.min.js", distFolder + "/js/libs/jquery");
+        mkdir("-p", distFolder + "/js/storefront/libs/jquery");
+        cp(srcFolder + "/js/storefront/libs/jquery/jquery-1.*.min.js", distFolder + "/js/storefront/libs/jquery");
 
         // Add mobile preview HTML
         cp("./mobile-preview.html", distFolder);

@@ -74,6 +74,7 @@ define("utils", function() {
         // ( {a : {b : {c :10}}},  ["a", "b", "c"], 20 )  ==>  {a : {b : {c :20}}}
         setByKeyChain : function(target, keychain, value) {
 
+            // Handle dot-delimited sting keychains.
             if (_.isString(keychain)) keychain = keychain.split(".");
 
             var obj = target;
@@ -94,9 +95,13 @@ define("utils", function() {
         // Based on https://github.com/documentcloud/underscore-contrib
         //
         getByKeychain: function getPath (obj, keychain) {
+
             // If we have reached an undefined property
             // then stop executing and return undefined
             if (obj === undefined) return void 0;
+
+            // Handle dot-delimited sting keychains.
+            if (_.isString(keychain)) keychain = keychain.split(".");
 
             // If the path array has no more elements, we've reached
             // the intended property and return its value
@@ -107,6 +112,30 @@ define("utils", function() {
             if (obj === null) return void 0;
 
             return getPath(obj[_.first(keychain)], _.rest(keychain));
+        },
+        //
+        // Given the template and theme JSONs, manipulates the target object to
+        // hold a mapping of {<asset keychain> : <name>}
+        //
+        // i.e. {"pages.goods.list.background" : "img/bg.png"}
+        //
+        createThemeAssetMap : function createThemeAssetMapRecursive(templateObj, themeObj, target, keychain) {
+
+            _.each(templateObj, function(templateValue, templateKey) {
+                var themeValue = themeObj[templateKey];
+
+                // Check that theme value is defined.  This is to allow
+                // Template attributes that a certain theme chooses not to use
+                if (_.isObject(templateValue) && !_.isUndefined(themeValue)) {
+                    var currentKeychain = keychain + "." + templateKey;
+                    if (_.contains(["image", "backgroundImage", "font"], templateValue.type)) {
+                        currentKeychain = currentKeychain.replace(".", "");
+                        target[currentKeychain] = themeValue;
+                    } else {
+                        createThemeAssetMapRecursive(templateValue, themeValue, target, currentKeychain);
+                    }
+                }
+            });
         }
     };
 });

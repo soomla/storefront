@@ -9,87 +9,84 @@ require.config({
     paths: {
 
         // Initialization
-        store                   : "store",
+        init                    : "storefront/init",
 
         // Models
-        economyModels           : "models/economy-models",
-        models                  : "models/models",
-        assetManager            : "models/asset-manager",
-        template                : "models/template",
-
-        // Views
-        components              : "views/components",
-        itemViews               : "views/item-views",
-        expandableItemViews     : "views/expandable-item-views",
-        collectionViews         : "views/collection-views",
-        helperViews             : "views/helper-views",
-        templates           	: "views/templates",
+        economyModels           : "js-store/models/economy-models",
+        storeModel              : "js-store/models/store-model",
+        models                  : "js-store/models/models",
+        hooks                   : "js-store/models/hooks",
 
         // Utilities
-        utils                   : "utils/utils",
-        stringUtils             : "utils/string-utils",
-        urls                    : "utils/urls",
-        userAgent               : "utils/user-agent",
-        cssUtils                : "utils/css-utils",
-        constants               : "utils/constants",
-        errors                  : "utils/errors",
+        utils                   : "js-store/utils/utils",
+        stringUtils             : "js-store/utils/string-utils",
+        urls                    : "js-store/utils/urls",
+        constants               : "js-store/utils/constants",
 
-        // Native APIs
-        soomlaAndroid           : "api/soomla-android",
-        soomlaiOS               : "api/soomla-ios",
-        nativeApiStubs          : "api/native-api-stubs",
-        jsAPI                   : "api/js-api",
-        messaging               : "api/messaging",
+        // External mixins for dashboard \ storefront UI
+        modelManipulation       : "external/model-manipulation",
+        dashboardHelpers        : "external/dashboard-helpers",
+        template                : "external/template",
 
-        // Hooks
-        hooks                   : "hooks/hooks",
+        // Storefront UI related modules and Native APIs
+        storefrontHelpers       : "storefront/storefront-helpers",
+        assetManager            : "storefront/asset-manager",
+        soomlaAndroid           : "storefront/soomla-android",
+        soomlaiOS               : "storefront/soomla-ios",
+        nativeApiStubs          : "storefront/native-api-stubs",
+        jsAPI                   : "storefront/js-api",
+        messaging               : "storefront/messaging",
 
-        // 3rd party modules
-        imagesloaded            : "libs/imagesloaded-3.0.4",
-        eventie                 : "libs/eventie-1.0.3",
-        eventEmitter            : "libs/event-emitter-4.2.0",
-        fastbutton              : "libs/google.fastbutton",
-        less                	: "libs/less-1.3.3",
-        iscroll                 : "libs/iscroll",
-        handlebars          	: "libs/handlebars-1.0.rc.2",
+        // Storefront utilities
+        cssUtils                : "storefront/utils/css-utils",
+        userAgent               : "storefront/utils/user-agent",
+        errors                  : "storefront/utils/errors",
+
+        // Storefront views
+        itemViews               : "storefront/views/item-views",
+        expandableItemViews     : "storefront/views/expandable-item-views",
+        collectionViews         : "storefront/views/collection-views",
+        helperViews             : "storefront/views/helper-views",
+        templates           	: "storefront/views/templates",
+        components              : "storefront/views/components",
+
+
+        // Storefront - 3rd party modules
+        imagesloaded            : "storefront/libs/imagesloaded-3.0.4",
+        eventie                 : "storefront/libs/eventie-1.0.3",
+        eventEmitter            : "storefront/libs/event-emitter-4.2.0",
+        less                	: "storefront/libs/less-1.3.3",
+        fastbutton              : "storefront/libs/google.fastbutton",
+        iscroll                 : "storefront/libs/iscroll",
+        handlebars          	: "storefront/libs/handlebars-1.0.rc.2",
 
         // jQuery related
-        jquery              	: "libs/jquery/jquery-1.9.1.min",
-        "jquery.fastbutton"     : "libs/jquery/jquery.google.fastbutton",
-        "jquery.preload"        : "libs/jquery/jquery.preload",
-        "jquery.pnotify"        : "libs/jquery/jquery.pnotify",
-        jqueryUtils             : "libs/jquery/jquery-utils",
+        jquery              	: "storefront/libs/jquery/jquery-1.9.1.min",
+        "jquery.pnotify"        : "storefront/libs/jquery/jquery.pnotify",
+        jqueryUtils             : "storefront/libs/jquery/jquery-utils",
+        "jquery.preload"        : "storefront/libs/jquery/jquery.preload",
+        "jquery.fastbutton"     : "storefront/libs/jquery/jquery.google.fastbutton",
 
         // Backbone related
-        underscore          	: "libs/underscore-1.5.2",
-        backboneFramework       : "libs/backbone/backbone-1.1.0",
-        backboneRelational  	: "libs/backbone/backbone-relational-0.8.6",
-        backboneExtensions      : "libs/backbone/backbone-extensions",
-        marionetteFramework 	: "libs/backbone/backbone.marionette.core-1.4.0",
-        marionetteExtensions    : "libs/backbone/marionette-extensions",
-        "backbone.babysitter"   : "libs/backbone/backbone.babysitter-0.0.6",
-        "backbone.wreqr"        : "libs/backbone/backbone.wreqr-0.2.0",
+        underscore          	: "js-store/libs/underscore-1.6.0",
+        backboneFramework       : "js-store/libs/backbone/backbone-1.1.2",
+        backboneRelational  	: "js-store/libs/backbone/backbone-relational-0.8.6",
+        backboneExtensions      : "js-store/libs/backbone/backbone-extensions",
+        marionetteFramework 	: "storefront/libs/backbone/backbone.marionette.core-1.4.0",
+        marionetteExtensions    : "storefront/libs/backbone/marionette-extensions",
+        "backbone.babysitter"   : "storefront/libs/backbone/backbone.babysitter-0.0.6",
+        "backbone.wreqr"        : "storefront/libs/backbone/backbone.wreqr-0.2.0",
 
         // Aggregative modules
-        backbone            	: "libs/backbone/backbone",
-        marionette            	: "libs/backbone/marionette"
+        backbone            	: "js-store/libs/backbone/backbone",
+        marionette            	: "storefront/libs/backbone/marionette"
     },
     shim: {
-        underscore: {
-            exports: '_'
-        },
         "imagesloaded": {
             deps: ['jquery']
         },
-        "jquery.preload": {
-            deps: ['jquery']
-        },
-        "jquery.fastbutton": {
-            deps: ['jquery', 'fastbutton']
-        },
         "backboneFramework" : {
-            deps: ['underscore'],
-            exports: 'Backbone'
+            deps: ['underscore']
         },
         backbone : {
             deps: ['backboneFramework']
@@ -106,10 +103,19 @@ require.config({
         },
         templates : {
             deps: ['handlebars']
+        },
+
+
+        // Storefront related shims
+        "jquery.fastbutton": {
+            deps: ['jquery', 'fastbutton']
+        },
+        "jquery.preload": {
+            deps: ['jquery']
         }
 
         // No need to export globally in 'shim' section
     }
 });
 
-require(["store"]);
+require(["init"]);
