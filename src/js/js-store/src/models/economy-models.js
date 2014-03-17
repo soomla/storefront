@@ -10,6 +10,78 @@ define("economyModels", ["backbone"], function(Backbone) {
     };
 
 
+    /**
+     * This implementation of deep extend was yanked from the jQuery 1.9.1 source.
+     * All functions that test if an argument is a function, object or array, were replaced
+     * by underscore implementations.
+     */
+    var deepExtend = function() {
+        var src, copyIsArray, copy, name, options, clone,
+            target = arguments[0] || {},
+            i = 1,
+            length = arguments.length,
+            deep = false;
+
+        // Handle a deep copy situation
+        if ( typeof target === "boolean" ) {
+            deep = target;
+            target = arguments[1] || {};
+            // skip the boolean and the target
+            i = 2;
+        }
+
+        // Handle case when target is a string or something (possible in deep copy)
+        if ( typeof target !== "object" && !_.isFunction(target) ) {
+            target = {};
+        }
+
+        // extend jQuery itself if only one argument is passed
+        if ( length === i ) {
+            target = this;
+            --i;
+        }
+
+        for ( ; i < length; i++ ) {
+            // Only deal with non-null/undefined values
+            if ( (options = arguments[ i ]) != null ) {
+                // Extend the base object
+                for ( name in options ) {
+                    src = target[ name ];
+                    copy = options[ name ];
+
+                    // Prevent never-ending loop
+                    if ( target === copy ) {
+                        continue;
+                    }
+
+                    // Recurse if we're merging plain objects or arrays
+                    if ( deep && copy && ( _.isObject(copy) || (copyIsArray = _.isArray(copy)) ) ) {
+                        if ( copyIsArray ) {
+                            copyIsArray = false;
+                            clone = src && _.isArray(src) ? src : [];
+
+                        } else {
+                            clone = src && _.isObject(src) ? src : {};
+                        }
+
+                        // Never move original objects, clone them
+                        target[ name ] = deepExtend( deep, clone, copy );
+
+                        // Don't bring in undefined values
+                    } else if ( copy !== undefined ) {
+                        target[ name ] = copy;
+                    }
+                }
+            }
+        }
+
+        // Return the modified object
+        return target;
+    };
+
+
+
+
     var BaseModel = Backbone.RelationalModel.extend({
         setItemId : function(id) {
             return this.set("itemId", id);
@@ -59,7 +131,7 @@ define("economyModels", ["backbone"], function(Backbone) {
 
             // Instead of mutating the model's attribute, clone it to a new one and mutate that.
             // Backbone will trigger the change event only this way.
-            var purchasableItem = $.extend(true, {}, this.purchasableItem);
+            var purchasableItem = deepExtend(true, {}, this.purchasableItem);
             _.extend(purchasableItem.marketItem, options);
             return this.set("purchasableItem", purchasableItem);
         }
@@ -88,8 +160,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         },
         setPrice : function(price) {
 
-            // Use jQuery's extend to achieve a deep clone
-            var purchasableItem = $.extend(true, {}, this.purchasableItem);
+            var purchasableItem = deepExtend(true, {}, this.purchasableItem);
             purchasableItem.marketItem.price = price;
             return this.set("purchasableItem", purchasableItem);
         },
@@ -177,7 +248,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var SingleUseGood = VirtualGood.extend({
 
         // Single use goods should have a balance of 0 by default
-        defaults : $.extend(true, {balance : 0, type : "singleUse"}, VirtualGood.prototype.defaults),
+        defaults : deepExtend(true, {balance : 0, type : "singleUse"}, VirtualGood.prototype.defaults),
         getBalance : function() {
             return this.get("balance");
         }
@@ -187,7 +258,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var SingleUsePack = VirtualGood.extend({
 
         // Single use packs should have a default amount of 1
-        defaults : $.extend(true, {good_amount : 1, type : "goodPacks"}, VirtualGood.prototype.defaults),
+        defaults : deepExtend(true, {good_amount : 1, type : "goodPacks"}, VirtualGood.prototype.defaults),
 
         getAmount : function() {
             return this.get("good_amount")
@@ -214,7 +285,7 @@ define("economyModels", ["backbone"], function(Backbone) {
     var EquippableGood = OwnableItem.extend({
 
         // Equippable goods should, by default, have a balance of 0 and not be equipped
-        defaults : $.extend(true, {equipped : false, equipping : "category", balance : 0, type : "equippable"}, VirtualGood.prototype.defaults),
+        defaults : deepExtend(true, {equipped : false, equipping : "category", balance : 0, type : "equippable"}, VirtualGood.prototype.defaults),
         isEquipped : function() {
             return !!this.get("equipped");
         },
@@ -225,13 +296,13 @@ define("economyModels", ["backbone"], function(Backbone) {
     });
 
     var LifetimeGood = OwnableItem.extend({
-        defaults : $.extend(true, {balance : 0, type : "lifetime"}, VirtualGood.prototype.defaults)
+        defaults : deepExtend(true, {balance : 0, type : "lifetime"}, VirtualGood.prototype.defaults)
     });
 
     var Upgrade = VirtualGood.extend({
 
         // Assign empty item ID pointers as defaults
-        defaults : $.extend(true, {prev_itemId : "", next_itemId : "", type : "goodUpgrade"}, VirtualGood.prototype.defaults),
+        defaults : deepExtend(true, {prev_itemId : "", next_itemId : "", type : "goodUpgrade"}, VirtualGood.prototype.defaults),
 
         initialize : function() {
             if (!this.has("itemId")) this.set("itemId", _.uniqueId("item_"));
@@ -271,7 +342,7 @@ define("economyModels", ["backbone"], function(Backbone) {
         ],
 
         // Upgradable goods should have a zero-upgrade level by default
-        defaults : $.extend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
+        defaults : deepExtend(true, {upgradeId : ""}, VirtualGood.prototype.defaults),
 
         initialize : function() {
             _.bindAll(this, "reorderUpgrades", "resetUpgrades");
