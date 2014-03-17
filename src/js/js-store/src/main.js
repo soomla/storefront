@@ -36,7 +36,8 @@ require.config({
     // TODO: Evaluate if this shim can be removed, since Backbone 1.1.2 and Underscore 1.6.0 are AMD-defined
     shim: {
         "backboneFramework" : {
-            deps: ['underscore']
+            deps: ['underscore'],
+            exports: "Backbone"
         },
         backbone : {
             deps: ['backboneFramework']
