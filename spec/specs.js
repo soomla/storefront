@@ -1,1 +1,1 @@
-define(["cs!store.spec", "cs!models.spec", "cs!asset-manager.spec", "cs!utils.spec", "cs!hooks.spec"], function() {});
+define(["cs!store.spec", "cs!asset-manager.spec", "cs!hooks.spec"], function() {});

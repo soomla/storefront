@@ -15,7 +15,7 @@
 
     <!-- include spec files here... -->
     <script>
-        requirejsOverrideBaseUrl = "../src/js"
+        requirejsOverrideBaseUrl = "../src"
         // Stub native API calls to simulate an Android client
         // and so that they won't block execution \ prevent higher level DOM event handlers from running
         window.SoomlaNative = {
@@ -32,11 +32,11 @@
 
 
     <!--<script src="../js/libs/require.js"></script>-->
-    <script data-main="../src/js/main" src="../src/js/storefront/libs/require.js"></script>
+    <script data-main="../src/main" src="../src/libs/require.js"></script>
     <script>
         (function() {
 
-            var specPath = "../../spec";
+            var specPath = "../spec";
 
             require.config({
                 paths: {
@@ -48,9 +48,8 @@
 
                     // Specs
                     specs                   : specPath + "/specs",
-                    "store.spec"            : specPath + "/coffee/store.spec",
-                    "asset-manager.spec"    : specPath + "/coffee/asset-manager.spec",
-                    "hooks.spec"            : specPath + "/coffee/hooks.spec",
+                    "models.spec"           : specPath + "/coffee/models.spec",
+                    "utils.spec"            : specPath + "/coffee/utils.spec",
 
 
                     // Fixtures
