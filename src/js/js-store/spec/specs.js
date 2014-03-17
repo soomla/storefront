@@ -1,1 +1,1 @@
-define(["cs!models.spec", "cs!utils.spec"], function() {});
+define(["cs!models.spec", "cs!utils.spec", "cs!store.spec"], function() {});

@@ -178,6 +178,9 @@ define("storeModel", ["backbone", "economyModels", "hooks", "modelManipulation"]
             // Utility methods
             //
 
+            getItem : function(itemId) {
+                return this.goodsMap[itemId];
+            },
             setBalance : function(balances) {
 
                 // Notify listeners before updating currencies

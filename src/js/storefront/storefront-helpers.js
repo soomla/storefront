@@ -16,10 +16,6 @@ define("storefrontHelpers", ["template", "utils"], function(Template, Utils) {
             this.template = new Template(json, this.options.template.orientation);
         },
 
-        getItem : function(itemId) {
-            return this.goodsMap[itemId];
-        },
-
         initializeStorefrontHelpers : function() {
             _.bindAll(this, "buildTemplate");
         },

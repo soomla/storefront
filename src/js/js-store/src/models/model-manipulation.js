@@ -378,8 +378,18 @@ define("modelManipulation", ["economyModels", "urls", "errors"], function(Econom
             item.setItemId(newItemId);
         },
         supportsMarketPurchaseTypeOnly : function() {
-            var purchaseTypes = this.template.getSupportedPurchaseTypes();
-            return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
+            try {
+
+                // This block depends on having a template defined on the store object,
+                // and will succeed only if we're running with a storefront
+                var purchaseTypes = this.template.getSupportedPurchaseTypes();
+                return (purchaseTypes && purchaseTypes.market && !purchaseTypes.virtualItem);
+            } catch(e) {
+
+                // A TypeError will be thrown if no template is defined
+                // That will happen in the case of no storefront UI, only Store model
+                return false;
+            }
         },
         getGoodPacksForSingleUseGood: function (singleUseGood) {
             return _.filter(this.goodsMap, function(good) {
