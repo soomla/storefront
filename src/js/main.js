@@ -23,6 +23,7 @@ require.config({
         stringUtils             : "js-store/utils/string-utils",
         urls                    : "js-store/utils/urls",
         constants               : "js-store/utils/constants",
+        errors                  : "js-store/utils/errors",
 
         // External mixins for dashboard \ storefront UI
         dashboardHelpers        : "external/dashboard-helpers",
@@ -40,7 +41,6 @@ require.config({
         // Storefront utilities
         cssUtils                : "storefront/utils/css-utils",
         userAgent               : "storefront/utils/user-agent",
-        errors                  : "storefront/utils/errors",
 
         // Storefront views
         itemViews               : "storefront/views/item-views",
