@@ -16,6 +16,7 @@ require.config({
         storeModel              : "js-store/models/store-model",
         models                  : "js-store/models/models",
         hooks                   : "js-store/models/hooks",
+        modelManipulation       : "js-store/models/model-manipulation",
 
         // Utilities
         utils                   : "js-store/utils/utils",
@@ -24,7 +25,6 @@ require.config({
         constants               : "js-store/utils/constants",
 
         // External mixins for dashboard \ storefront UI
-        modelManipulation       : "external/model-manipulation",
         dashboardHelpers        : "external/dashboard-helpers",
         template                : "external/template",
 
