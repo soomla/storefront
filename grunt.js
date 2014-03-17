@@ -54,11 +54,12 @@ module.exports = function (grunt) {
     grunt.registerTask('copy', 'Copies more necessary resources to the distribution folder', function() {
 
         // Copy Javascript
-        mkdir("-p", distFolder + "/js/js-store/libs", distFolder + "/css/mixins");
-        cp(srcFolder + "/js/js-store/libs/require.js", distFolder + "/js/js-store/libs/");
+        mkdir("-p", distFolder + "/js/storefront/libs", distFolder + "/css/mixins");
+        cp(srcFolder + "/js/storefront/libs/require.js", distFolder + "/js/storefront/libs/");
 
         // Copy HTML + Less
-        cp("-R", srcFolder + "/store.html", srcFolder + "/storefront/css.handlebars", distFolder + "/");
+        cp("-R", srcFolder + "/store.html", distFolder + "/");
+        cp("-R", srcFolder + "/js/storefront/css.handlebars", distFolder + "/js/storefront/");
         cp("-R", srcFolder + "/css/mixins/bootstrap", distFolder + "/css/mixins/");
         cp("-R", srcFolder + "/css/mixins/layout.less", distFolder + "/css/mixins/");
         cp("-R", srcFolder + "/css/img", distFolder + "/css/");
@@ -68,7 +69,7 @@ module.exports = function (grunt) {
         // in a browser after it was built
         // ===================================================================
         // mkdir("-p", distFolder + "/js/storefront/libs/jquery");
-        // cp("js/storefront/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/storefront/libs/jquery");
+        // cp(srcFolder + "/js/storefront/libs/jquery/jquery-1.9.1.min.js", distFolder + "/js/storefront/libs/jquery");
         // cp("mobile-preview.html", distFolder + "/");
     });
 

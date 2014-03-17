@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
     var distFolder      = "./dist",
-        srcFolder       = ".";
+        srcFolder       = "./src";
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),

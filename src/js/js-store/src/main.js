@@ -24,7 +24,7 @@ require.config({
 
         // Backbone related
         underscore          	: "libs/underscore-1.6.0",
-        backboneFramework       : "libs/backbone/backbone-1.1.2",
+        backboneFramework       : "libs/backbone/backbone-1.1.0",
         backboneRelational  	: "libs/backbone/backbone-relational-0.8.6",
         backboneExtensions      : "libs/backbone/backbone-extensions",
 

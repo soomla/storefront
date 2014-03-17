@@ -12,18 +12,18 @@ require.config({
         init                    : "storefront/init",
 
         // Models
-        economyModels           : "js-store/models/economy-models",
-        storeModel              : "js-store/models/store-model",
-        models                  : "js-store/models/models",
-        hooks                   : "js-store/models/hooks",
-        modelManipulation       : "js-store/models/model-manipulation",
+        economyModels           : "js-store/src/models/economy-models",
+        storeModel              : "js-store/src/models/store-model",
+        models                  : "js-store/src/models/models",
+        hooks                   : "js-store/src/models/hooks",
+        modelManipulation       : "js-store/src/models/model-manipulation",
 
         // Utilities
-        utils                   : "js-store/utils/utils",
-        stringUtils             : "js-store/utils/string-utils",
-        urls                    : "js-store/utils/urls",
-        constants               : "js-store/utils/constants",
-        errors                  : "js-store/utils/errors",
+        utils                   : "js-store/src/utils/utils",
+        stringUtils             : "js-store/src/utils/string-utils",
+        urls                    : "js-store/src/utils/urls",
+        constants               : "js-store/src/utils/constants",
+        errors                  : "js-store/src/utils/errors",
 
         // External mixins for dashboard \ storefront UI
         dashboardHelpers        : "external/dashboard-helpers",
@@ -68,17 +68,17 @@ require.config({
         "jquery.fastbutton"     : "storefront/libs/jquery/jquery.google.fastbutton",
 
         // Backbone related
-        underscore          	: "js-store/libs/underscore-1.6.0",
-        backboneFramework       : "js-store/libs/backbone/backbone-1.1.2",
-        backboneRelational  	: "js-store/libs/backbone/backbone-relational-0.8.6",
-        backboneExtensions      : "js-store/libs/backbone/backbone-extensions",
+        underscore          	: "js-store/src/libs/underscore-1.6.0",
+        backboneFramework       : "js-store/src/libs/backbone/backbone-1.1.0",
+        backboneRelational  	: "js-store/src/libs/backbone/backbone-relational-0.8.6",
+        backboneExtensions      : "js-store/src/libs/backbone/backbone-extensions",
         marionetteFramework 	: "storefront/libs/backbone/backbone.marionette.core-1.4.0",
         marionetteExtensions    : "storefront/libs/backbone/marionette-extensions",
         "backbone.babysitter"   : "storefront/libs/backbone/backbone.babysitter-0.0.6",
         "backbone.wreqr"        : "storefront/libs/backbone/backbone.wreqr-0.2.0",
 
         // Aggregative modules
-        backbone            	: "js-store/libs/backbone/backbone",
+        backbone            	: "js-store/src/libs/backbone/backbone",
         marionette            	: "storefront/libs/backbone/marionette"
     },
     shim: {
@@ -86,7 +86,11 @@ require.config({
             deps: ['jquery']
         },
         "backboneFramework" : {
-            deps: ['underscore']
+            deps: ['underscore'],
+
+            // Eventhough Backbone 1.1.2 is an AMD module, still export it to the window
+            // because some Backbone plugins assume it's there
+            exports: "Backbone"
         },
         backbone : {
             deps: ['backboneFramework']
