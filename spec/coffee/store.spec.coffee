@@ -1,4 +1,4 @@
-define ["backbone", "storeModel", "utils", "urls", "assetManager", "template", "errors", "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Store, Utils, Urls, Assets, Template, Errors, modelFixture, templateFixture) ->
+define ["backbone", "storeModel", "utils", "urls", "assetManager", "template", "errors", "dashboardHelpers",  "text!modelFixture.json", "text!templateFixture.json"], (Backbone, Store, Utils, Urls, Assets, Template, Errors, DashboardHelpers, modelFixture, templateFixture) ->
 
   # Prepare variables used in many test cases
   modelFixture    = JSON.parse(modelFixture)
@@ -47,6 +47,10 @@ define ["backbone", "storeModel", "utils", "urls", "assetManager", "template", "
     # later.
     child.__super__ = parent.prototype
     child
+
+
+  # Extend Store prototype
+  _.extend(Store.prototype, DashboardHelpers)
 
 
   describe "Store - static methods", ->

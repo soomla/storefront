@@ -1,4 +1,4 @@
-define("storeModel", ["backbone", "economyModels", "hooks", "modelManipulation", "dashboardHelpers"], function(Backbone, EconomyModels, Hooks, ModelManipulation, DashboardHelpers) {
+define("storeModel", ["backbone", "economyModels", "hooks", "modelManipulation"], function(Backbone, EconomyModels, Hooks, ModelManipulation) {
 
     // Cache base classes.
     var RelationalModel             = Backbone.RelationalModel;
@@ -137,7 +137,6 @@ define("storeModel", ["backbone", "economyModels", "hooks", "modelManipulation",
         Store.prototype,
         Backbone.Events,
         ModelManipulation,
-        DashboardHelpers,
         Hooks.HooksMixin, {
 
             //
