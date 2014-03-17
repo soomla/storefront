@@ -42,13 +42,17 @@ define ['backbone', 'models', 'assetManager', 'urls', 'hooks', 'text!modelFixtur
       # registering each object in the store only once
       Backbone.Relational.store.reset()
 
-    it "addHook: should add a hook", ->
-      hook = @store.addHook("sponsorpay", {action : "offerwall"});
-      expect(@store.getHookById(hook.id)).toEqual hook
-
     it "removeHook: should remove a hook's assets", ->
       hook = @store.addHook("sponsorpay", {action : "offerwall"});
       @store.setHookAsset(hook, {url : stubImage, name : "stubName"});
       expect(@store.assets.getHookAsset(hook.id)).toEqual stubImage
       @store.removeHook(hook)
       expect(@store.assets.getHookAsset(hook.id)).toEqual placeholder
+
+    it "setHookAsset: should set an asset for the hook", ->
+      hook = @store.addHook("sponsorpay", {action : "offerwall", assetUrl: stubImage});
+      expect(@store.getHookAsset(hook.id)).toEqual stubImage
+
+    it "getHookAsset: should use the placeholder when no asset is provided", ->
+      expect(@store.getHookAsset("stubHookId")).toEqual placeholder
+

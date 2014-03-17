@@ -299,6 +299,9 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
             // Force the preview to update by triggering a change event on the model
             hook.trigger("change:asset");
         },
+        getHookAsset : function(id, key) {
+            return this.assets.getHookAsset(id, key);
+        },
         setOffersMenuLinkAsset : function(options) {
             (options) || (options = {});
             this.assets.setOffersMenuLinkAsset(options.url, options.name);
@@ -391,6 +394,9 @@ define("assetManager", ["underscore", "utils", "urls"], function(_, Utils, Urls)
 
                     this.assets.updateItemId(oldItemId, newItemId);
                     this.assets.updateModelAssetName(oldItemId, newItemId);
+                },
+                "hooks:add" : function(hook, options) {
+                    this.setHookAsset(hook, options);
                 },
                 "hooks:remove" : function(hook) {
                     this.assets.removeHookAsset(hook.id);

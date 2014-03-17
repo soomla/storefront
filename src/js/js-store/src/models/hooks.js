@@ -201,7 +201,7 @@ define("hooks", ["underscore", "backbone", "stringUtils", "constants"], function
                     itemId  : this.getFirstCurrency().id
                 }, options));
 
-                this.setHookAsset(action, {url : options.assetUrl});
+                this.trigger("hooks:add", action, {url : options.assetUrl});
                 this.hooks.hooksMap[action.id] = action;
 
                 // Start by adding the provider.  If it exists, the add operation will be ignored
