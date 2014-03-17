@@ -1,0 +1,45 @@
+{
+  "name": "js-store",
+  "version": "0.0.1",
+  "description": "Javascript F2P game economy library. Part of The SOOMLA Project - framework for virtual economies in mobile games.",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soomla/js-store"
+  },
+  "keywords": [
+    "IAP",
+    "in",
+    "app",
+    "purchase",
+    "virtual",
+    "economy",
+    "consumable",
+    "goods",
+    "F2P",
+    "free",
+    "to",
+    "play",
+    "games",
+    "indie",
+    "games",
+    "indie",
+    "game",
+    "developers"
+  ],
+  "author": "Gur Dotan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soomla/js-store/issues"
+  },
+  "homepage": "https://github.com/soomla/js-store",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.9.2",
+    "grunt-contrib-requirejs": "~0.4.3",
+    "grunt-contrib-clean": "~0.5.0"
+  }
+}
