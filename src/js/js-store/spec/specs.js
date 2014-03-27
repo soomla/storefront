@@ -1,1 +1,0 @@
-define(["cs!models.spec", "cs!utils.spec", "cs!storeModel.spec", "cs!hooks.spec"], function() {});

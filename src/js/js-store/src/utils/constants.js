@@ -1,3 +1,0 @@
-define("constants", {
-    SPONSORPAY : "sponsorpay"
-});
