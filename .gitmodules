@@ -1,0 +1,3 @@
+[submodule "src/js/js-store"]
+	path = src/js/js-store
+	url = git@github.com:soomla/js-store.git
