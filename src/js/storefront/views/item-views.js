@@ -3,6 +3,8 @@ define("itemViews", ["marionette", "urls", "jquery.fastbutton", "jqueryUtils"], 
     var BaseView = Marionette.ItemView.extend({
         _imagePlaceholder       : Urls.imagePlaceholder,
         _progressBarPlaceholder : Urls.progressBarPlaceholder
+    }, {
+        mixin : Marionette.View.mixin
     });
 
 

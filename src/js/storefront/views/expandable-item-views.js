@@ -61,15 +61,13 @@ define("expandableItemViews", ["marionette", "itemViews", "cssUtils", "jquery.fa
     //
     // Extend functionality with expandable module and vendor prefixed transitionend event
     //
-    _.each(
-        [
-            ExpandableUpgradableItemView,
-            ExpandableEquippableItemView,
-            ExpandableSingleUseItemView,
-            ExpandableSingleUsePackView,
-            ExpandableLifetimeItemView
-        ], function(View) {
-        View.mixin = Backbone.View.mixin; // TODO: Solve this hack
+    _.each([
+        ExpandableUpgradableItemView,
+        ExpandableEquippableItemView,
+        ExpandableSingleUseItemView,
+        ExpandableSingleUsePackView,
+        ExpandableLifetimeItemView
+    ], function(View) {
         View.mixin(ExpandableModule);
         View.prototype.triggers[transitionendEvent] = "expandCollapseTransitionend";
     });
