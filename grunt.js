@@ -86,6 +86,10 @@ module.exports = function (grunt) {
         cp("-R", srcFolder + "/*", deployFolder + "/src");
         mv(distFolder, deployFolder);
         cp("store.html.erb", deployFolder);
+
+        // Make sure js-store holds only sources
+        rm("-rf", deployFolder + "/src/js/js-store/*");
+        cp("-R", srcFolder + "/js/js-store/src", deployFolder + "/src/js/js-store/");
     });
 
     grunt.registerTask('production', function() {
